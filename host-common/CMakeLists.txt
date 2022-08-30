@@ -20,7 +20,7 @@ target_include_directories(
     logging-base
     PRIVATE
     include/host-common
-    ${GFXSTREAM_REPO_ROOT}
+    ${AEMU_COMMON_REPO_ROOT}
     ${GFXSTREAM_REPO_ROOT}/include)
 target_link_libraries(
     logging-base
@@ -98,9 +98,9 @@ if (BUILD_STANDALONE)
         PRIVATE
         include/host-common
         include/host-common/opengl
-        ${GFXSTREAM_REPO_ROOT}
+        ${AEMU_COMMON_REPO_ROOT}
         ${GFXSTREAM_REPO_ROOT}/include
-        ${GFXSTREAM_REPO_ROOT}/stream-servers)
+        ${AEMU_COMMON_REPO_ROOT}/stream-servers)
     target_link_libraries(
         gfxstream-host-common
         PUBLIC
@@ -137,7 +137,7 @@ add_library(
 target_include_directories(
     gfxstream-host-common-testing-support
     PRIVATE
-    ${GFXSTREAM_REPO_ROOT})
+    ${AEMU_COMMON_REPO_ROOT})
 target_link_libraries(
     gfxstream-host-common-testing-support
     PUBLIC
@@ -163,7 +163,7 @@ if (ENABLE_VKCEREAL_TESTS)
     target_include_directories(
         gfxstream-host-common_unittests
         PRIVATE
-        ${GFXSTREAM_REPO_ROOT}
+        ${AEMU_COMMON_REPO_ROOT}
         ${GFXSTREAM_REPO_ROOT}/include)
 
     target_link_libraries(
