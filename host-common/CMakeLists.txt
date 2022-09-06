@@ -20,7 +20,6 @@ target_include_directories(
     logging-base
     PRIVATE
     include/host-common
-    ${GFXSTREAM_REPO_ROOT}
     ${GFXSTREAM_REPO_ROOT}/include)
 target_link_libraries(
     logging-base
@@ -102,7 +101,6 @@ if (BUILD_STANDALONE)
         PRIVATE
         include/host-common
         include/host-common/opengl
-        ${GFXSTREAM_REPO_ROOT}
         ${GFXSTREAM_REPO_ROOT}/include)
     target_link_libraries(
         gfxstream-host-common
@@ -139,8 +137,8 @@ add_library(
     testing/MockAndroidVmOperations.cpp)
 target_include_directories(
     gfxstream-host-common-testing-support
-    PRIVATE
-    ${GFXSTREAM_REPO_ROOT})
+    PUBLIC
+    ${AEMU_COMMON_REPO_ROOT})
 target_link_libraries(
     gfxstream-host-common-testing-support
     PUBLIC
@@ -166,7 +164,7 @@ if (ENABLE_VKCEREAL_TESTS)
     target_include_directories(
         gfxstream-host-common_unittests
         PRIVATE
-        ${GFXSTREAM_REPO_ROOT}
+        ${AEMU_COMMON_REPO_ROOT}
         ${GFXSTREAM_REPO_ROOT}/include)
 
     target_link_libraries(
