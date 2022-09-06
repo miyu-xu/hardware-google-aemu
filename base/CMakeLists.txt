@@ -77,9 +77,9 @@ if (BUILD_STANDALONE)
     target_include_directories(
         gfxstream-base
         PRIVATE
-        ${GFXSTREAM_REPO_ROOT}/include
+        ${AEMU_COMMON_REPO_ROOT}/include
         PUBLIC
-        ${GFXSTREAM_REPO_ROOT})
+        ${AEMU_COMMON_REPO_ROOT})
     if (NOT MSVC)
         target_compile_options(
             gfxstream-base PRIVATE -fvisibility=default)
@@ -101,10 +101,10 @@ add_library(
 target_include_directories(
     gfxstream-base-testing-support
     PRIVATE
-    ${GFXSTREAM_REPO_ROOT}
-    ${GFXSTREAM_REPO_ROOT}/include
+    ${AEMU_COMMON_REPO_ROOT}/include
     PUBLIC
-    ${GFXSTREAM_REPO_ROOT}/base/testing)
+    ${AEMU_COMMON_REPO_ROOT}
+    ${AEMU_COMMON_REPO_ROOT}/base/testing)
 target_link_libraries(
     gfxstream-base-testing-support
     PRIVATE

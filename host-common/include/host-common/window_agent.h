@@ -21,7 +21,9 @@
 // #include "android/skin/rect.h"
 // #include "android/utils/compiler.h"
 
+#ifndef USING_ANDROID_BP
 ANDROID_BEGIN_HEADER
+#endif
 
 // Window agent's possible message types
 typedef enum {
@@ -126,4 +128,6 @@ typedef struct QAndroidEmulatorWindowAgent {
     void (*getWindowPosition)(int*, int*);
 } QAndroidEmulatorWindowAgent;
 
+#ifndef USING_ANDROID_BP
 ANDROID_END_HEADER
+#endif
