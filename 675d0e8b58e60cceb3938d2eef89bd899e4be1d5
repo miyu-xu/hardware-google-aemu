@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "85e9b75f_a8925b9f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2022-09-14T20:38:14Z",
+      "side": 1,
+      "message": "cherry-pick from vulkan-cereal",
+      "revId": "675d0e8b58e60cceb3938d2eef89bd899e4be1d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
