@@ -48,6 +48,7 @@ using ::testing::Key;
 using ::testing::Le;
 using ::testing::MockFunction;
 using ::testing::Ne;
+using ::testing::Optional;
 using ::testing::Pair;
 using ::testing::Pointee;
 using ::testing::Ref;
@@ -582,6 +583,20 @@ TEST(HealthMonitorWatchdogBuilderTest, MultipleSettersTest) {
         .WillOnce(Return(taskId));
     EXPECT_CALL(monitor, stopMonitoringTask(taskId)).Times(1);
     WATCHDOG_BUILDER(monitor, "test message").setHangType(hangType).setTimeoutMs(timeoutMs).build();
+}
+
+TEST(HealthMonitorWatchdogTest, ReleaseTest) {
+    MockHealthMonitor monitor;
+    MockHealthMonitor::Id taskId = 0x8271;
+    EXPECT_CALL(monitor, startMonitoringTask(_, Eq(std::nullopt), kDefaultTimeoutMs, _))
+        .Times(1)
+        .WillOnce(Return(taskId));
+
+    auto watchdog = WATCHDOG_BUILDER(monitor, "test message").build();
+    EXPECT_THAT(watchdog->release(), Optional(taskId));
+    EXPECT_EQ(watchdog->release(), std::nullopt);
+
+    EXPECT_CALL(monitor, stopMonitoringTask(_)).Times(0);
 }
 
 }  // namespace emugl
