@@ -184,14 +184,55 @@ class HealthWatchdog {
         : mHealthMonitor(healthMonitor), mThreadId(getCurrentThreadId()) {
         auto& threadTasks = getMonitoredThreadTasks();
         auto& stack = threadTasks[&mHealthMonitor];
-        mId = mHealthMonitor.startMonitoringTask(
+        typename HealthMonitorT::Id id = mHealthMonitor.startMonitoringTask(
             std::move(metadata), std::move(onHangAnnotationsCallback), timeout,
             stack.empty() ? std::nullopt : std::make_optional(stack.top()));
-        stack.push(mId);
+        mId = id;
+        stack.push(id);
     }
 
     ~HealthWatchdog() {
-        mHealthMonitor.stopMonitoringTask(mId);
+        if (!mId.has_value()) {
+            return;
+        }
+        mHealthMonitor.stopMonitoringTask(mId.value());
+        checkedStackPop();
+    }
+
+    void touch() {
+        if (!mId.has_value()) {
+            return;
+        }
+        mHealthMonitor.touchMonitoredTask(*mId);
+    }
+
+    // Return the underlying Id, and don't issue a stop on destruction.
+    std::optional<typename HealthMonitorT::Id> release() {
+        if (mId.has_value()) {
+            checkedStackPop();
+        }
+        return std::exchange(mId, std::nullopt);
+    }
+
+   private:
+    using ThreadTasks =
+        std::unordered_map<HealthMonitorT*, std::stack<typename HealthMonitorT::Id>>;
+    std::optional<typename HealthMonitorT::Id> mId;
+    HealthMonitorT& mHealthMonitor;
+    const unsigned long mThreadId;
+
+    // Thread local stack of task Ids enables better reentrant behavior.
+    // Multiple health monitors are not expected or advised, but as an injected dependency,
+    // it is possible.
+    ThreadTasks& getMonitoredThreadTasks() {
+        static thread_local ThreadTasks threadTasks;
+        return threadTasks;
+    }
+
+    // Pop the stack for the current thread, but with validation. Must be called with a non-empty
+    // WatchDog.
+    void checkedStackPop() {
+        typename HealthMonitorT::Id id = mId.value();
         auto& threadTasks = getMonitoredThreadTasks();
         auto& stack = threadTasks[&mHealthMonitor];
         if (getCurrentThreadId() != mThreadId) {
@@ -206,29 +247,12 @@ class HealthWatchdog {
             GFXSTREAM_ABORT(FatalError(ABORT_REASON_OTHER))
                 << "HealthWatchdog thread local stack is empty!";
         }
-        if (stack.top() != mId) {
-            ERR("HealthWatchdog id %d does not match top of stack: %d ", mId, stack.top());
+        if (stack.top() != id) {
+            ERR("HealthWatchdog id %d does not match top of stack: %d ", id, stack.top());
             GFXSTREAM_ABORT(FatalError(ABORT_REASON_OTHER))
-                << "HealthWatchdog id " << mId << " does not match top of stack: " << stack.top();
+                << "HealthWatchdog id " << id << " does not match top of stack: " << stack.top();
         }
         stack.pop();
-    }
-
-    void touch() { mHealthMonitor.touchMonitoredTask(mId); }
-
-   private:
-    using ThreadTasks =
-        std::unordered_map<HealthMonitorT*, std::stack<typename HealthMonitorT::Id>>;
-    typename HealthMonitorT::Id mId;
-    HealthMonitorT& mHealthMonitor;
-    const unsigned long mThreadId;
-
-    // Thread local stack of task Ids enables better reentrant behavior.
-    // Multiple health monitors are not expected or advised, but as an injected dependency,
-    // it is possible.
-    ThreadTasks& getMonitoredThreadTasks() {
-        static thread_local ThreadTasks threadTasks;
-        return threadTasks;
     }
 };
 
