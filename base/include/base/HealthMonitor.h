@@ -22,6 +22,7 @@
 #include <queue>
 #include <stack>
 #include <string>
+#include <type_traits>
 #include <unordered_map>
 #include <unordered_set>
 #include <variant>
@@ -36,8 +37,9 @@
 using android::base::EventHangMetadata;
 using android::base::getCurrentThreadId;
 
-#define WATCHDOG_DATA(msg, hangType, data) \
-    std::make_unique<EventHangMetadata>(__FILE__, __func__, msg, __LINE__, hangType, data)
+#define WATCHDOG_BUILDER(healthMonitor, msg)                                                       \
+    ::emugl::HealthWatchdogBuilder<std::decay_t<decltype(healthMonitor)>>(healthMonitor, __FILE__, \
+                                                                          __func__, msg, __LINE__)
 
 namespace emugl {
 
@@ -169,10 +171,13 @@ class HealthMonitor : public android::base::Thread {
 };
 
 // This class provides an RAII mechanism for monitoring a task.
-template <class Clock = steady_clock>
+// HealthMonitorT should have the exact same interface as HealthMonitor. Note that HealthWatchdog
+// can be used in performance critical path, so we use a template to dispatch a call here to
+// overcome the performance cost of virtual function dispatch.
+template <class HealthMonitorT = HealthMonitor<>>
 class HealthWatchdog {
    public:
-    HealthWatchdog(HealthMonitor<Clock>& healthMonitor, std::unique_ptr<EventHangMetadata> metadata,
+    HealthWatchdog(HealthMonitorT& healthMonitor, std::unique_ptr<EventHangMetadata> metadata,
                    std::optional<std::function<std::unique_ptr<HangAnnotations>()>>
                        onHangAnnotationsCallback = std::nullopt,
                    uint64_t timeout = kDefaultTimeoutMs)
@@ -213,9 +218,9 @@ class HealthWatchdog {
 
    private:
     using ThreadTasks =
-        std::unordered_map<HealthMonitor<Clock>*, std::stack<typename HealthMonitor<Clock>::Id>>;
-    typename HealthMonitor<Clock>::Id mId;
-    HealthMonitor<Clock>& mHealthMonitor;
+        std::unordered_map<HealthMonitorT*, std::stack<typename HealthMonitorT::Id>>;
+    typename HealthMonitorT::Id mId;
+    HealthMonitorT& mHealthMonitor;
     const unsigned long mThreadId;
 
     // Thread local stack of task Ids enables better reentrant behavior.
@@ -225,6 +230,59 @@ class HealthWatchdog {
         static thread_local ThreadTasks threadTasks;
         return threadTasks;
     }
+};
+
+// HealthMonitorT should have the exact same interface as HealthMonitor. This template parameter is
+// used for injecting a different type for testing.
+template <class HealthMonitorT>
+class HealthWatchdogBuilder {
+   public:
+    HealthWatchdogBuilder(HealthMonitorT& healthMonitor, const char* fileName,
+                          const char* functionName, const char* message, uint32_t line)
+        : mHealthMonitor(healthMonitor),
+          mMetadata(std::make_unique<EventHangMetadata>(
+              fileName, functionName, message, line, EventHangMetadata::HangType::kOther, nullptr)),
+          mTimeoutMs(kDefaultTimeoutMs),
+          mOnHangCallback(std::nullopt) {}
+
+    DISALLOW_COPY_ASSIGN_AND_MOVE(HealthWatchdogBuilder);
+
+    HealthWatchdogBuilder& setHangType(EventHangMetadata::HangType hangType) {
+        mMetadata->hangType = hangType;
+        return *this;
+    }
+    HealthWatchdogBuilder& setTimeoutMs(uint32_t timeoutMs) {
+        mTimeoutMs = timeoutMs;
+        return *this;
+    }
+    // F should be a callable that returns a std::unique_ptr<EventHangMetadata::HangAnnotations>. We
+    // use template instead of std::function here to avoid extra copy.
+    template <class F>
+    HealthWatchdogBuilder& setOnHangCallback(F&& callback) {
+        mOnHangCallback =
+            std::function<std::unique_ptr<HangAnnotations>()>(std::forward<F>(callback));
+        return *this;
+    }
+
+    HealthWatchdogBuilder& setAnnotations(std::unique_ptr<HangAnnotations> annotations) {
+        mMetadata->data = std::move(annotations);
+        return *this;
+    }
+
+    std::unique_ptr<HealthWatchdog<HealthMonitorT>> build() {
+        // We are allocating on the heap, so there is a performance hit. However we also allocate
+        // EventHangMetadata on the heap, so this should be Ok. If we see performance issues with
+        // these allocations, for HealthWatchdog, we can always use placement new + noop deleter to
+        // avoid heap allocation for HealthWatchdog.
+        return std::make_unique<HealthWatchdog<HealthMonitorT>>(
+            mHealthMonitor, std::move(mMetadata), std::move(mOnHangCallback), mTimeoutMs);
+    }
+
+   private:
+    HealthMonitorT& mHealthMonitor;
+    std::unique_ptr<EventHangMetadata> mMetadata;
+    uint32_t mTimeoutMs;
+    std::optional<std::function<std::unique_ptr<HangAnnotations>()>> mOnHangCallback;
 };
 
 }  // namespace emugl
