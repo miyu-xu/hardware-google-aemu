@@ -48,6 +48,7 @@ using ::testing::Key;
 using ::testing::Le;
 using ::testing::MockFunction;
 using ::testing::Ne;
+using ::testing::Optional;
 using ::testing::Pair;
 using ::testing::Pointee;
 using ::testing::Ref;
@@ -466,20 +467,20 @@ TEST_F(HealthMonitorTest, siblingsHangParentStillHealthy) {
     healthMonitor.stopMonitoringTask(parent);
 }
 
+class MockHealthMonitor {
+   public:
+    using Id = uint32_t;
+    MOCK_METHOD(
+        Id, startMonitoringTask,
+        (std::unique_ptr<EventHangMetadata> metadata,
+         std::optional<std::function<std::unique_ptr<HangAnnotations>()>> onHangAnnotationsCallback,
+         uint64_t timeout, std::optional<Id>));
+
+    MOCK_METHOD(void, touchMonitoredTask, (Id));
+    MOCK_METHOD(void, stopMonitoringTask, (Id));
+};
+
 TEST_F(HealthMonitorTest, watchdogBuilderTest) {
-    class MockHealthMonitor {
-       public:
-        using Id = uint32_t;
-        MOCK_METHOD(Id, startMonitoringTask,
-                    (std::unique_ptr<EventHangMetadata> metadata,
-                     std::optional<std::function<std::unique_ptr<HangAnnotations>()>>
-                         onHangAnnotationsCallback,
-                     uint64_t timeout, std::optional<Id>));
-
-        MOCK_METHOD(void, touchMonitoredTask, (Id));
-        MOCK_METHOD(void, stopMonitoringTask, (Id));
-    };
-
     // Test simple build function and default values.
     {
         MockHealthMonitor monitor;
@@ -589,6 +590,20 @@ TEST_F(HealthMonitorTest, watchdogBuilderTest) {
             .setTimeoutMs(timeoutMs)
             .build();
     }
+}
+
+TEST_F(HealthMonitorTest, WatchdogRelease) {
+    MockHealthMonitor monitor;
+    MockHealthMonitor::Id taskId = 0x8271;
+    EXPECT_CALL(monitor, startMonitoringTask(_, Eq(std::nullopt), kDefaultTimeoutMs, _))
+        .Times(1)
+        .WillOnce(Return(taskId));
+
+    auto watchdog = WATCHDOG_BUILDER(monitor, "test message").build();
+    EXPECT_THAT(watchdog->release(), Optional(taskId));
+    EXPECT_EQ(watchdog->release(), std::nullopt);
+
+    EXPECT_CALL(monitor, stopMonitoringTask(_)).Times(0);
 }
 
 }  // namespace emugl
