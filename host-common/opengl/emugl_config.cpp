@@ -16,7 +16,7 @@
 #include "gpuinfo.h"
 
 #include "base/StringFormat.h"
-#include "base/System.h"
+#include "base/system/System.h"
 #include "../globals.h"
 #include "../misc.h"
 #include "EmuglBackendList.h"
