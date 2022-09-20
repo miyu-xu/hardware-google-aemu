@@ -7,6 +7,10 @@ target_link_libraries(gfxstream-base.headers INTERFACE gfxstream-host-common.hea
 target_include_directories(gfxstream-base.headers INTERFACE include)
 
 if (BUILD_STANDALONE)
+    aemu_generate_flatbuffers_cpp_headers(
+        TARGET flat-byte-vector-mru-cache
+        SCHEMA FlatByteVectorMruCache.fbs)
+
     set(gfxstream-base-common-sources
         AlignedBuf.cpp
         CompressingStream.cpp
@@ -18,6 +22,7 @@ if (BUILD_STANDALONE)
         HealthMonitor.cpp
         LayoutResolver.cpp
         MemStream.cpp
+        MruCache.cpp
         StdioStream.cpp
         MemoryTracker.cpp
         MessageChannel.cpp
@@ -72,6 +77,8 @@ if (BUILD_STANDALONE)
         lz4
         perfetto-tracing-only
         logging-base
+        flat-byte-vector-mru-cache
+        flatbuffers
         ${gfxstream-base-platform-deps})
 
     target_include_directories(
@@ -120,6 +127,7 @@ if (ENABLE_VKCEREAL_TESTS)
         ArraySize_unittest.cpp
         LayoutResolver_unittest.cpp
         LruCache_unittest.cpp
+        MruCache_unittest.cpp
         ManagedDescriptor_unittest.cpp
         Optional_unittest.cpp
         ring_buffer_unittest.cpp
@@ -129,6 +137,8 @@ if (ENABLE_VKCEREAL_TESTS)
     target_link_libraries(
         gfxstream-base_unittests
         PRIVATE
+        flat-byte-vector-mru-cache
+        flatbuffers
         gfxstream-base.headers
         ${GFXSTREAM_BASE_LIB}
         logging-base
