@@ -16,6 +16,24 @@
       "message": "Will let Greg take a look but LGTM. Build errors look like they should be resolved by preceding CL?",
       "revId": "715e0ef81da13298643b15e90931ca0d7292609c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4de02d24_1aa66d59",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2022-09-21T20:00:16Z",
+      "side": 1,
+      "message": "I believe the parent CL hasn\u0027t propagated to the older branch. Let\u0027s see what happens if I rerun the pre-submit.",
+      "parentUuid": "b423587a_020ebb3b",
+      "revId": "715e0ef81da13298643b15e90931ca0d7292609c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
