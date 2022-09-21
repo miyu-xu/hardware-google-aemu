@@ -1,0 +1,203 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e78b1880_bd9679b3",
+        "filename": "base/FlatByteVectorMruCache.fbs",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-09-21T22:19:36Z",
+      "side": 1,
+      "message": "Could we add some documentation on the tables and fields here? (Most of it is fairly self explanatory, but I think it\u0027s good practice to always document protobuf or flatbuffer files.",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 1
+      },
+      "revId": "b06f22c3b2a2f98dfaf3fd9becbc466692d0177b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3c75a48b_015b5843",
+        "filename": "base/MruCache.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-09-21T22:19:36Z",
+      "side": 1,
+      "message": "A bit surprised that we have to re-implement a crc32 function here. Can\u0027t we re-use something?",
+      "revId": "b06f22c3b2a2f98dfaf3fd9becbc466692d0177b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "46ff1549_c09d3682",
+        "filename": "base/MruCache.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-09-21T22:19:36Z",
+      "side": 1,
+      "message": "You probably want to make it static to avoid recomputing on each invocation. (constexpr doesn\u0027t guarantee that. Details at https://stackoverflow.com/questions/13865842/does-static-constexpr-variable-inside-a-function-make-sense)",
+      "revId": "b06f22c3b2a2f98dfaf3fd9becbc466692d0177b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "77fe793d_eea8c244",
+        "filename": "base/include/base/MruCache.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-09-21T22:19:36Z",
+      "side": 1,
+      "message": "please document (method and param)",
+      "revId": "b06f22c3b2a2f98dfaf3fd9becbc466692d0177b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2380c037_a3b65530",
+        "filename": "base/include/base/MruCache.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-09-21T22:19:36Z",
+      "side": 1,
+      "message": "please document the purpose of this class as well as its public methods",
+      "revId": "b06f22c3b2a2f98dfaf3fd9becbc466692d0177b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fe35bb25_a281a69d",
+        "filename": "base/include/base/MruCache.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-09-21T22:19:36Z",
+      "side": 1,
+      "message": "it\u0027s very unfortunate to have to make a copy of the key. Would suggest thinking of alternative designs. Perhaps getting rid of EntryWithSize for the cache keys?",
+      "revId": "b06f22c3b2a2f98dfaf3fd9becbc466692d0177b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "357c7ecd_7c5d8fa2",
+        "filename": "base/include/base/MruCache.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-09-21T22:19:36Z",
+      "side": 1,
+      "message": "I\u0027m not sure why EntryWithSize is being used for the cache key? Usually something named \"Entry\" refers to the value in the cache only, not the key.\n\nIf we really need this, would suggest renaming to something more generic like DataAndSize.\n\nBut more generally, can\u0027t we use K directly as the cache key?",
+      "revId": "b06f22c3b2a2f98dfaf3fd9becbc466692d0177b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6e2843a5_ec492a8d",
+        "filename": "base/include/base/MruCache.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-09-21T22:19:36Z",
+      "side": 1,
+      "message": "please document class + public methods (and FileBackupCacheObserver)",
+      "revId": "b06f22c3b2a2f98dfaf3fd9becbc466692d0177b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4aa4c680_2c4ba232",
+        "filename": "base/include/base/MruCache.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-09-21T22:19:36Z",
+      "side": 1,
+      "message": "in particular, be sure to document what happens for error conditions such as file not found in these methods",
+      "revId": "b06f22c3b2a2f98dfaf3fd9becbc466692d0177b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "430ad3cb_e037f84b",
+        "filename": "base/include/base/MruCache.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-09-21T22:19:36Z",
+      "side": 1,
+      "message": "Are we ok with making a copy of data here? (potentially large object)",
+      "range": {
+        "startLine": 160,
+        "startChar": 57,
+        "endLine": 160,
+        "endChar": 82
+      },
+      "revId": "b06f22c3b2a2f98dfaf3fd9becbc466692d0177b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8f3f3984_96b9b77a",
+        "filename": "base/include/base/MruCache.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 242,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-09-21T22:19:36Z",
+      "side": 1,
+      "message": "Google Cpp style disallows public aliases in headers if it\u0027s for convenience only (https://engdoc.corp.google.com/eng/doc/devguide/cpp/styleguide.md?cl\u003dhead#Aliases)\n\n\"Don\u0027t put an alias in your public API just to save typing in the implementation; do so only if you intend it to be used by your clients.\"\n\nAlso:\n\n\"When defining a public alias, document the intent of the new name\"",
+      "revId": "b06f22c3b2a2f98dfaf3fd9becbc466692d0177b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
