@@ -35,6 +35,7 @@ constexpr int64_t kEmulatorGraphicsHangSyncThread = 10026;
 constexpr int64_t kEmulatorGraphicsUnHangSyncThread = 10027;
 constexpr int64_t kEmulatorGraphicsBadPacketLength = 10031;
 constexpr int64_t kEmulatorGraphicsDuplicateSequenceNum = 10032;
+constexpr int64_t kEmulatorGraphicsVulkanOutOfMemory = 10033;
 
 void (*MetricsLogger::add_instant_event_callback)(int64_t event_code) = nullptr;
 void (*MetricsLogger::add_instant_event_with_descriptor_callback)(int64_t event_code,
@@ -190,6 +191,13 @@ struct MetricTypeVisitor {
         if (MetricsLogger::add_instant_event_with_descriptor_callback) {
             MetricsLogger::add_instant_event_with_descriptor_callback(
                 kEmulatorGraphicsDuplicateSequenceNum, DuplicateSequenceNumEvent.opcode);
+        }
+    }
+
+    void operator()(const MetricEventVulkanOutOfMemory vkOutOfMemoryEvent) const {
+        if (MetricsLogger::add_instant_event_with_descriptor_callback) {
+            MetricsLogger::add_instant_event_with_descriptor_callback(
+                kEmulatorGraphicsVulkanOutOfMemory, vkOutOfMemoryEvent.vkResultCode);
         }
     }
 };

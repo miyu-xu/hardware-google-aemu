@@ -93,11 +93,14 @@ struct GfxstreamVkAbort {
     int line;
     int64_t abort_reason;
 };
+struct MetricEventVulkanOutOfMemory {
+    int64_t vkResultCode;
+};
 
 using MetricEventType =
     std::variant<std::monostate, MetricEventBadPacketLength, MetricEventDuplicateSequenceNum,
                  MetricEventFreeze, MetricEventUnFreeze, MetricEventHang, MetricEventUnHang,
-                 GfxstreamVkAbort>;
+                 MetricEventVulkanOutOfMemory, GfxstreamVkAbort>;
 
 class MetricsLogger {
    public:
