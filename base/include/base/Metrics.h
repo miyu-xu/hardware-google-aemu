@@ -77,12 +77,10 @@ struct MetricEventDuplicateSequenceNum {
 struct MetricEventFreeze {};
 struct MetricEventUnFreeze { int64_t frozen_ms; };
 struct MetricEventHang {
-    uint64_t taskId; /* From HealthMonitor */
     EventHangMetadata* metadata;
     int64_t otherHungTasks;
 };
 struct MetricEventUnHang {
-    uint64_t taskId; /* From HealthMonitor */
     EventHangMetadata* metadata;
     int64_t hung_ms;
 };
@@ -93,10 +91,11 @@ struct GfxstreamVkAbort {
     int line;
     int64_t abort_reason;
 };
+struct MetricEventVulkanOutOfMemory { int64_t vkResultCode; };
 
 using MetricEventType =
     std::variant<std::monostate, MetricEventBadPacketLength, MetricEventDuplicateSequenceNum,
-                 MetricEventFreeze, MetricEventUnFreeze, MetricEventHang, MetricEventUnHang,
+                 MetricEventFreeze, MetricEventUnFreeze, MetricEventHang, MetricEventUnHang, MetricEventVulkanOutOfMemory,
                  GfxstreamVkAbort>;
 
 class MetricsLogger {
