@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b423587a_020ebb3b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1899526
+      },
+      "writtenOn": "2022-09-21T16:22:47Z",
+      "side": 1,
+      "message": "Will let Greg take a look but LGTM. Build errors look like they should be resolved by preceding CL?",
+      "revId": "715e0ef81da13298643b15e90931ca0d7292609c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
