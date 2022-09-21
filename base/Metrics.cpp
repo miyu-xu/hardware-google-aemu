@@ -112,6 +112,10 @@ struct MetricTypeVisitor {
                         kEmulatorGraphicsHangSyncThread, hangEvent.otherHungTasks);
                     break;
                 }
+                case EventHangMetadata::HangType::kOther: {
+                    // We don't collect metrics for this type of hang.
+                    break;
+                }
             }
         }
 
@@ -144,6 +148,10 @@ struct MetricTypeVisitor {
                 case EventHangMetadata::HangType::kSyncThread: {
                     MetricsLogger::add_instant_event_with_metric_callback(
                         kEmulatorGraphicsUnHangSyncThread, unHangEvent.hung_ms);
+                    break;
+                }
+                case EventHangMetadata::HangType::kOther: {
+                    // We don't collect metrics for this type of hang.
                     break;
                 }
             }

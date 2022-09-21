@@ -43,7 +43,7 @@ struct EventHangMetadata {
     // TODO: willho@ replace this enum with a generic string field embedded in the
     // proto and replace the individual event codes with a general hang event
     // Requires a new callback to be passed from the vm to gfxstream_backend_init
-    enum class HangType { kRenderThread, kSyncThread };
+    enum class HangType { kRenderThread, kSyncThread, kOther };
     HangType hangType;
 
     EventHangMetadata(const char* file, const char* function, const char* msg, int line,
