@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3a7d1e02_0ec5d849",
+        "filename": "base/include/base/HealthMonitor.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2022-09-22T01:37:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bc6cbe9f_c768bcb1",
+      "range": {
+        "startLine": 198,
+        "startChar": 42,
+        "endLine": 198,
+        "endChar": 53
+      },
+      "revId": "7af318a39ea56fd76ab281b460e854cec1c31b00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "451e92b8_e90f0796",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-09-21T22:31:02Z",
       "side": 1,
       "message": "I\u0027m curious why we need double logging? Won\u0027t GFXSTREAM_ABORT also log?",
+      "range": {
+        "startLine": 251,
+        "startChar": 11,
+        "endLine": 253,
+        "endChar": 97
+      },
+      "revId": "7af318a39ea56fd76ab281b460e854cec1c31b00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e2dcf713_29f1dfa2",
+        "filename": "base/include/base/HealthMonitor.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 253,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2022-09-22T01:37:30Z",
+      "side": 1,
+      "message": "Done. Removed.",
+      "parentUuid": "451e92b8_e90f0796",
       "range": {
         "startLine": 251,
         "startChar": 11,
