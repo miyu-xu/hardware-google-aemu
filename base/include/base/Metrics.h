@@ -68,6 +68,12 @@ struct EventHangMetadata {
 };
 
 // Events that can be logged.
+struct MetricEventBadPacketLength {
+    int64_t len;
+};
+struct MetricEventDuplicateSequenceNum {
+    int64_t opcode;
+};
 struct MetricEventFreeze {};
 struct MetricEventUnFreeze { int64_t frozen_ms; };
 struct MetricEventHang {
@@ -88,8 +94,10 @@ struct GfxstreamVkAbort {
     int64_t abort_reason;
 };
 
-using MetricEventType = std::variant<std::monostate, MetricEventFreeze, MetricEventUnFreeze,
-                                     MetricEventHang, MetricEventUnHang, GfxstreamVkAbort>;
+using MetricEventType =
+    std::variant<std::monostate, MetricEventBadPacketLength, MetricEventDuplicateSequenceNum,
+                 MetricEventFreeze, MetricEventUnFreeze, MetricEventHang, MetricEventUnHang,
+                 GfxstreamVkAbort>;
 
 class MetricsLogger {
    public:
