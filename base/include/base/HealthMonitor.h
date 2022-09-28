@@ -25,12 +25,13 @@
 #include <type_traits>
 #include <unordered_map>
 #include <unordered_set>
+#include <utility>
 #include <variant>
 
-#include "base/ConditionVariable.h"
-#include "base/Lock.h"
+#include "base/synchronization/ConditionVariable.h"
+#include "base/synchronization/Lock.h"
 #include "base/Metrics.h"
-#include "base/Thread.h"
+#include "base/threads/Thread.h"
 #include "host-common/GfxstreamFatalError.h"
 #include "host-common/logging.h"
 
