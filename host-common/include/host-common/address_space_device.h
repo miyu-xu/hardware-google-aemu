@@ -27,8 +27,6 @@ struct AddressSpaceCreateInfo {
     bool createRenderThread;
     void *externalAddr;
     uint64_t externalAddrSize;
-    uint32_t contextId;
-    uint32_t capsetId;
     const char *contextName;
     uint32_t contextNameSize;
 };

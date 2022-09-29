@@ -569,7 +569,6 @@ protected:
             [this](struct asg_context context,
                base::Stream* loadStream,
                ConsumerCallbacks callbacks,
-               uint32_t contextId, uint32_t capsetId,
                std::optional<std::string> nameOpt) {
                Consumer* c = new Consumer(context, callbacks);
                mCurrentConsumer = c;

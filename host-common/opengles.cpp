@@ -273,10 +273,9 @@ android_startOpenglesRenderer(int width, int height, bool guestPhoneApi, int gue
         // create
         [](struct asg_context context,
            android::base::Stream* loadStream, ConsumerCallbacks callbacks,
-           uint32_t contextId, uint32_t capsetId,
            std::optional<std::string> nameOpt) {
            return sRenderer->addressSpaceGraphicsConsumerCreate(
-               context, loadStream, callbacks, contextId, capsetId, std::move(nameOpt));
+               context, loadStream, callbacks, std::move(nameOpt));
         },
         // destroy
         [](void* consumer) {

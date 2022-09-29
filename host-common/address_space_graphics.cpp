@@ -623,9 +623,8 @@ AddressSpaceGraphicsContext::AddressSpaceGraphicsContext(
     }
 
     if (create.createRenderThread) {
-        mCurrentConsumer = mConsumerInterface.create(
-            mHostContext, nullptr, mConsumerCallbacks, create.contextId, create.capsetId,
-            std::move(nameOpt));
+      mCurrentConsumer = mConsumerInterface.create(
+          mHostContext, nullptr, mConsumerCallbacks, std::move(nameOpt));
     }
 }
 
@@ -657,7 +656,7 @@ void AddressSpaceGraphicsContext::perform(AddressSpaceDevicePingInfo* info) {
         info->size = (uint64_t)(mVersion > guestVersion ? guestVersion : mVersion);
         mVersion = (uint32_t)info->size;
         mCurrentConsumer = mConsumerInterface.create(
-            mHostContext, nullptr /* no load stream */, mConsumerCallbacks, 0, 0,
+            mHostContext, nullptr /* no load stream */, mConsumerCallbacks,
             std::nullopt);
 
         if (mIsVirtio) {
@@ -790,7 +789,7 @@ bool AddressSpaceGraphicsContext::load(base::Stream* stream) {
 
     if (consumerExists) {
         mCurrentConsumer = mConsumerInterface.create(
-            mHostContext, stream, mConsumerCallbacks, 0, 0, std::nullopt);
+            mHostContext, stream, mConsumerCallbacks, std::nullopt);
         mConsumerInterface.postLoad(mCurrentConsumer);
     }
 
