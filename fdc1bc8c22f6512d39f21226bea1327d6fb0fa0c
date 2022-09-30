@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c72219ee_c781dcfe",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-09-30T15:44:36Z",
+      "side": 1,
+      "message": "We pass around capsetId and contextId but don\u0027t seem to use them for anything. Please let me know if they are actually useful.",
+      "revId": "fdc1bc8c22f6512d39f21226bea1327d6fb0fa0c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
