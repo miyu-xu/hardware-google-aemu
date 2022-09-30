@@ -33,6 +33,23 @@
       "message": "These 2 parameters are introduced in https://r.android.com/2184007. I believe we are going to use them in the future, so I think we\u0027d better not remove them, but will defer the decision to Gurchetan who drafts the original CL.",
       "revId": "fdc1bc8c22f6512d39f21226bea1327d6fb0fa0c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d6dc7ab9_10afe9ca",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1101621
+      },
+      "writtenOn": "2022-09-30T18:38:20Z",
+      "side": 1,
+      "message": "Actually, I plan to use these variables.",
+      "revId": "fdc1bc8c22f6512d39f21226bea1327d6fb0fa0c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
