@@ -50,6 +50,24 @@
       "message": "Actually, I plan to use these variables.",
       "revId": "fdc1bc8c22f6512d39f21226bea1327d6fb0fa0c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "23a6dd22_b1dd078a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-09-30T18:39:09Z",
+      "side": 1,
+      "message": "Sounds good, thanks for confirming.",
+      "parentUuid": "d6dc7ab9_10afe9ca",
+      "revId": "fdc1bc8c22f6512d39f21226bea1327d6fb0fa0c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
