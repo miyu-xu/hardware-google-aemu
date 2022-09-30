@@ -16,6 +16,23 @@
       "message": "We pass around capsetId and contextId but don\u0027t seem to use them for anything. Please let me know if they are actually useful.",
       "revId": "fdc1bc8c22f6512d39f21226bea1327d6fb0fa0c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a6c5cd0d_2c467e7b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2022-09-30T17:48:56Z",
+      "side": 1,
+      "message": "These 2 parameters are introduced in https://r.android.com/2184007. I believe we are going to use them in the future, so I think we\u0027d better not remove them, but will defer the decision to Gurchetan who drafts the original CL.",
+      "revId": "fdc1bc8c22f6512d39f21226bea1327d6fb0fa0c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
