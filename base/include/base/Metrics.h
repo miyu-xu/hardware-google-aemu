@@ -52,9 +52,9 @@ struct EventHangMetadata {
           function(function),
           msg(msg),
           line(line),
+          threadId(getCurrentThreadId()),
           data(std::move(data)),
-          hangType(hangType),
-          threadId(getCurrentThreadId()) {}
+          hangType(hangType) {}
 
     EventHangMetadata()
         : EventHangMetadata(nullptr, nullptr, nullptr, 0, HangType::kRenderThread, nullptr) {}
