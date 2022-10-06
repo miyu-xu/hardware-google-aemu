@@ -13,7 +13,7 @@
 // limitations under the License.
 #pragma once
 
-#include "android/base/synchronization/MessageChannel.h"
+#include "aemu/base/synchronization/MessageChannel.h"
 
 // super minimal wrapper around MessageChannel to make it less verbose to
 // specify simple events and waiting on them

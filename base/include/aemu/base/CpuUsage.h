@@ -13,8 +13,8 @@
 // limitations under the License.
 #pragma once
 
-#include "android/base/Compiler.h"
-#include "android/base/CpuTime.h"
+#include "aemu/base/Compiler.h"
+#include "aemu/base/CpuTime.h"
 
 #include <functional>
 #include <memory>

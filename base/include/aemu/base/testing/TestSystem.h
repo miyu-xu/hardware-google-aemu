@@ -14,11 +14,11 @@
 
 #pragma once
 
-#include "android/base/Log.h"
-#include "android/base/files/PathUtils.h"
-#include "android/base/system/System.h"
-#include "android/base/testing/TestTempDir.h"
-#include "android/base/threads/Thread.h"
+#include "aemu/base/Log.h"
+#include "aemu/base/files/PathUtils.h"
+#include "aemu/base/system/System.h"
+#include "aemu/base/testing/TestTempDir.h"
+#include "aemu/base/threads/Thread.h"
 #include "android/utils/path.h"
 
 #include <string_view>

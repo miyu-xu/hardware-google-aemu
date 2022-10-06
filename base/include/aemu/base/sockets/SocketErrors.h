@@ -16,7 +16,7 @@
 #include <errno.h>
 
 #ifdef _WIN32
-#  include "android/base/sockets/Winsock.h"
+#  include "aemu/base/sockets/Winsock.h"
 
 #  ifndef EINTR
 #    define EINTR        10004

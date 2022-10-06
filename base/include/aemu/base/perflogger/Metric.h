@@ -13,7 +13,7 @@
 // limitations under the License.
 #pragma once
 
-#include "android/base/perflogger/Analyzer.h"
+#include "aemu/base/perflogger/Analyzer.h"
 
 #include <string>
 #include <unordered_map>

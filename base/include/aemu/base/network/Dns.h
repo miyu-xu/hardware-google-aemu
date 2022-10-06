@@ -14,9 +14,9 @@
 
 #pragma once
 
-#include "android/base/Compiler.h"
+#include "aemu/base/Compiler.h"
 
-#include "android/base/network/IpAddress.h"
+#include "aemu/base/network/IpAddress.h"
 
 #include <string_view>
 #include <vector>

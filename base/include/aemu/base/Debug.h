@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "android/base/system/System.h"
+#include "aemu/base/system/System.h"
 
 // A macro to define piece of code only for debugging. This is useful when
 // checks are much bigger than a single assert(), e.g.:

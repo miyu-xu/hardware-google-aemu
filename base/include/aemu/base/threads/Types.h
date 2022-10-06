@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "android/base/EnumFlags.h"
+#include "aemu/base/EnumFlags.h"
 
 #include <functional>
 #include <stdint.h>

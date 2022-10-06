@@ -13,7 +13,7 @@
 // these functions take const references to std::string_view to avoid
 // unnecessary copies.
 
-#include "android/base/StringFormat.h"
+#include "aemu/base/StringFormat.h"
 
 #include <string>
 #include <string_view>
