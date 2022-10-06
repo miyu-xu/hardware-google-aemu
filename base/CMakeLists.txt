@@ -127,7 +127,8 @@ if (ENABLE_VKCEREAL_TESTS)
             ring_buffer_unittest.cpp
             StringFormat_unittest.cpp
             SubAllocator_unittest.cpp
-            TypeTraits_unittest.cpp)
+            TypeTraits_unittest.cpp
+            WorkerThread_unittest.cpp)
     endif()
     add_executable(gfxstream-base_unittests ${aemu-base-test-srcs})
     target_link_libraries(
