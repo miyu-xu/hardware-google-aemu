@@ -88,11 +88,8 @@ public:
         return true;
     }
     bool isStarted() const { return mStarted; }
-    // Waits for all enqueue()'d items to finish.
+    // Waits for all enqueue()'d items to finish or the worker stops.
     void waitQueuedItems() {
-        if (!mStarted || mFinished)
-            return;
-
         // Enqueue an empty sync command.
         std::future<void> completeFuture = enqueueImpl(Command());
         completeFuture.wait();
@@ -100,7 +97,8 @@ public:
     // Waits for worker thread to complete.
     void join() { mThread.wait(); }
 
-    // Moves the |item| into internal queue for processing.
+    // Moves the |item| into internal queue for processing. If the worker has stopped, the returned
+    // future will also be ready no matter if the command is processed.
     std::future<void> enqueue(Item&& item) {
         return enqueueImpl(Command(std::move(item)));
     }
@@ -118,6 +116,12 @@ public:
     };
 
     std::future<void> enqueueImpl(Command command) {
+        // We don't enqueue any new items if mFinished is set to true.
+        if (!mStarted || mFinished) {
+            command.mCompletedPromise.set_value();
+            return command.mCompletedPromise.get_future();
+        }
+
         base::AutoLock lock(mLock);
         bool signal = mQueue.empty();
         std::future<void> res = command.mCompletedPromise.get_future();
@@ -140,7 +144,8 @@ public:
                 todo.swap(mQueue);
             }
 
-            for (Command& item : todo) {
+            for (auto i = todo.begin(); i != todo.end(); i++) {
+                Command& item = *i;
                 bool shouldStop = false;
                 if (item.mWorkItem) {
                     // Normal work item
@@ -151,13 +156,22 @@ public:
                 }
                 item.mCompletedPromise.set_value();
                 if (shouldStop) {
+                    // Set mFinished so that no new tasks will be enqueued.
+                    mFinished = true;
+                    // Signal pending tasks as if they are completed.
+                    for (auto j = i + 1; j != todo.end(); j++) {
+                        j->mCompletedPromise.set_value();
+                    }
+                    base::AutoLock lock(mLock);
+                    for (Command& item : mQueue) {
+                        item.mCompletedPromise.set_value();
+                    }
                     return;
                 }
             }
 
             todo.clear();
         }
-        mFinished = true;
     }
 
     Processor mProcessor;
@@ -167,7 +181,7 @@ public:
     base::ConditionVariable mCv;
 
     bool mStarted = false;
-    bool mFinished = false;
+    std::atomic_bool mFinished = false;
 };
 
 }  // namespace base

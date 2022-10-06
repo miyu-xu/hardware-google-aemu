@@ -54,4 +54,5 @@ set(aemu-base-test-srcs
     ring_buffer_unittest.cpp
     StringFormat_unittest.cpp
     SubAllocator_unittest.cpp
-    TypeTraits_unittest.cpp PARENT_SCOPE)
+    TypeTraits_unittest.cpp
+    WorkerThread_unittest.cpp PARENT_SCOPE)
