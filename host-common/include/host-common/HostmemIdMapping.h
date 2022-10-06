@@ -50,7 +50,8 @@ namespace emulation {
 
 struct VulkanInfo {
     uint32_t memoryIndex;
-    uint32_t physicalDeviceIndex;
+    uint8_t deviceUUID[16];
+    uint8_t driverUUID[16];
 };
 
 struct ManagedDescriptorInfo {
