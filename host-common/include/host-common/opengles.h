@@ -132,6 +132,9 @@ AEMU_EXPORT void android_finishOpenglesRenderer();
  */
 AEMU_EXPORT extern int  android_gles_fast_pipes;
 
+// Notify the renderer that a guest graphics process is created or destroyed.
+AEMU_EXPORT void android_onGraphicsProcessCreate(uint64_t puid);
+// TODO(kaiyili): rename this API to android_onGraphicsProcessDestroy
 AEMU_EXPORT void android_cleanupProcGLObjects(uint64_t puid);
 
 AEMU_EXPORT void android_waitForOpenglesProcessCleanup();
