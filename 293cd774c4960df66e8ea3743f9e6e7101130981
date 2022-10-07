@@ -1,0 +1,215 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3fc6f657_fc286e44",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-10-07T20:01:53Z",
+      "side": 1,
+      "message": "Sorry, I ended up doing a full review of this class instead of just the code you added. I think the WorkerThread class needs a bit of refactoring and is probably not super safe to use as it is. \n\nBut feel free to address those in a separate CL, or not at all.",
+      "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "71c5ded1_8de6e077",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-10-07T20:01:53Z",
+      "side": 1,
+      "message": "note that there\u0027s technically a little race condition here, if 2 threads call start() concurrently then the second one will set mFinished to true.\n\nProb not a big deal in practice since it\u0027s unlikely that any code would call start from multiple threads, but just pointing it out.\n\nFeel free to ignore it.",
+      "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eaa47b0a_755cf9e7",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-10-07T20:01:53Z",
+      "side": 1,
+      "message": "Also, I don\u0027t think this is perfectly correct since mStarted is a regular bool, not atomic bool. One thread could may not see the memory update to mStarted done from another thread.",
+      "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d6a4a0e0_fc2048cb",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-10-07T20:01:53Z",
+      "side": 1,
+      "message": "You might want to look into using  `std::packaged_task` here. https://en.cppreference.com/w/cpp/thread/packaged_task.\n\nI believe it could replace this struct.",
+      "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b44ea825_c2f312c5",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-10-07T20:01:53Z",
+      "side": 1,
+      "message": "again, this probably doesn\u0027t work well because mStarted isn\u0027t atomic",
+      "range": {
+        "startLine": 120,
+        "startChar": 13,
+        "endLine": 120,
+        "endChar": 22
+      },
+      "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f4ce484c_bf2ff9fa",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-10-07T20:01:53Z",
+      "side": 1,
+      "message": "wouldn\u0027t it be better to use  set_exception here? https://en.cppreference.com/w/cpp/thread/promise/set_exception",
+      "range": {
+        "startLine": 121,
+        "startChar": 38,
+        "endLine": 121,
+        "endChar": 47
+      },
+      "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aa04a636_16945f19",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-10-07T20:01:53Z",
+      "side": 1,
+      "message": "I believe there\u0027s a race condition here. It\u0027s possible for mFinished to become true right before this (but after it was checked on line 120). In this case we would still enqueue a command even though mFinished is true.",
+      "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4ab7bdc2_688eae16",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-10-07T20:01:53Z",
+      "side": 1,
+      "message": "Instead of only signaling if the queue was previously empty, I would suggest making this simpler and always signaling. The condition variable will handle the rest for you, if the thread was already processing tasks it will be a no-op.",
+      "range": {
+        "startLine": 129,
+        "startChar": 1,
+        "endLine": 131,
+        "endChar": 9
+      },
+      "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b9b4fd36_3669c27f",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-10-07T20:01:53Z",
+      "side": 1,
+      "message": "Note that this doesn\u0027t deal with spurrious wakes (ie: the condition variable may be notified even though the queue is still empty.",
+      "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "87b65c1d_2a117b23",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-10-07T20:01:53Z",
+      "side": 1,
+      "message": "I believe a better and simpler design would be to take the items one by one from the queue, instead of the whole queue at once. I believe any performance cost of locking the mutex a couple more times will be negligible compared to the gain in simplicity and readability.",
+      "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8ca8c521_36a8bbb5",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-10-07T20:01:53Z",
+      "side": 1,
+      "message": "same as above, wondering if we want set_exception here to notify the caller that the task wasn\u0027t completed?",
+      "range": {
+        "startLine": 163,
+        "startChar": 45,
+        "endLine": 163,
+        "endChar": 54
+      },
+      "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
