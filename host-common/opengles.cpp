@@ -547,6 +547,12 @@ const emugl::RendererPtr& android_getOpenglesRenderer() {
     return sRenderer;
 }
 
+void android_onGraphicsProcessCreate(uint64_t puid) {
+    if (sRenderer) {
+        sRenderer->onGraphicsProcessCreate(puid);
+    }
+}
+
 void android_cleanupProcGLObjects(uint64_t puid) {
     if (sRenderer) {
         sRenderer->cleanupProcGLObjects(puid);

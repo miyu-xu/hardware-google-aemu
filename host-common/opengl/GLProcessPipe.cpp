@@ -98,6 +98,7 @@ public:
         }
         AutoLock lock(sRegistry.lock);
         sRegistry.ids.insert(m_uniqueId);
+        android_onGraphicsProcessCreate(m_uniqueId);
     }
 
     ~GLProcessPipe() {
