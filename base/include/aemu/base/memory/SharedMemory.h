@@ -15,8 +15,9 @@
 
 #ifdef _WIN32
 #ifdef _MSC_VER
-#include "base\msvc.h"
 #include <windows.h>
+
+#include "aemu/base/msvc.h"
 #else
 #include <windows.h>
 #endif  // _MSC_VER
