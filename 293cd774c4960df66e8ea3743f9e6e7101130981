@@ -420,6 +420,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8ce2e4e9_8a799161",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-10-10T19:47:35Z",
+      "side": 1,
+      "message": "That works, but I wonder why you went with this approach? You could have avoided the extra locking by checking on mFinished instead (see my other comment for a possible approach)",
+      "parentUuid": "bcad6308_0a12c03d",
+      "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4ab7bdc2_688eae16",

@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e29274c8_45987ba5",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-10-10T19:47:35Z",
+      "side": 1,
+      "message": "Do we still need this variable? Can we just use mFinished instead?\n\nAnd if you do that, then you don\u0027t need extra locking for mFinished, and you can also simplify the entire loop (no need for the extra loop):\n\n```\n    for (Command\u0026 item : todo) {\n       if (mFinished) {\n           // Complete the item without processing it\n            item.mCompletedPromise.set_value();\n        } else {   \n            if (item.mWorkItem) {\n                // Normal work item\n                if (mProcessor(std::move(item.mWorkItem.value())) \u003d\u003d \n                    Result::Stop) {\n                     mFinished\u003d true;\n                }\n            }\n            item.mCompletedPromise.set_value();\n        }\n    }\n\n    todo.clear();\n\n```\n\nWDYT?",
+      "revId": "436185c7d9dff51ffc2cd06d9a540b3b905d17ab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
