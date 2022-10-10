@@ -101,7 +101,8 @@ if (BUILD_STANDALONE)
         PRIVATE
         include/host-common
         include/host-common/opengl
-        ${GFXSTREAM_REPO_ROOT}/include)
+        ${GFXSTREAM_REPO_ROOT}/include
+        ${GFXSTREAM_REPO_ROOT}/third-party/angle/include)
     target_link_libraries(
         gfxstream-host-common
         PUBLIC

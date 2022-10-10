@@ -16,9 +16,9 @@
 #include <sys/mman.h>
 #include <sys/stat.h>
 
-#include "base/EintrWrapper.h"
-#include "base/memory/SharedMemory.h"
-#include "base/files/PathUtils.h"
+#include "aemu/base/EintrWrapper.h"
+#include "aemu/base/memory/SharedMemory.h"
+#include "aemu/base/files/PathUtils.h"
 #ifndef _MSC_VER
 #include <unistd.h>
 #endif
