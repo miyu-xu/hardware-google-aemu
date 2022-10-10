@@ -89,6 +89,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a390d613_a4793139",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2022-10-10T18:42:46Z",
+      "side": 1,
+      "message": "Done. Use atomic_bool CAS to avoid such race condition.",
+      "parentUuid": "6f538d9b_a7510567",
+      "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "eaa47b0a_755cf9e7",
@@ -138,6 +156,24 @@
       "side": 1,
       "message": "SG",
       "parentUuid": "b14eb128_8c522537",
+      "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "062a037f_5d820ea6",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2022-10-10T18:42:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b40e89be_92ce1a8d",
       "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -208,6 +244,30 @@
       "writtenOn": "2022-10-07T20:01:53Z",
       "side": 1,
       "message": "again, this probably doesn\u0027t work well because mStarted isn\u0027t atomic",
+      "range": {
+        "startLine": 120,
+        "startChar": 13,
+        "endLine": 120,
+        "endChar": 22
+      },
+      "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ed235470_82b96b1d",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2022-10-10T18:42:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b44ea825_c2f312c5",
       "range": {
         "startLine": 120,
         "startChar": 13,
@@ -344,6 +404,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "bcad6308_0a12c03d",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2022-10-10T18:42:46Z",
+      "side": 1,
+      "message": "Change the scope of the lock to avoid the said race condition. WDYT?",
+      "parentUuid": "50391d8d_92b96af7",
+      "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4ab7bdc2_688eae16",
         "filename": "base/include/aemu/base/threads/WorkerThread.h",
         "patchSetId": 1
@@ -355,6 +433,30 @@
       "writtenOn": "2022-10-07T20:01:53Z",
       "side": 1,
       "message": "Instead of only signaling if the queue was previously empty, I would suggest making this simpler and always signaling. The condition variable will handle the rest for you, if the thread was already processing tasks it will be a no-op.",
+      "range": {
+        "startLine": 129,
+        "startChar": 1,
+        "endLine": 131,
+        "endChar": 9
+      },
+      "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "56382212_12870a97",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2022-10-10T18:42:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4ab7bdc2_688eae16",
       "range": {
         "startLine": 129,
         "startChar": 1,
