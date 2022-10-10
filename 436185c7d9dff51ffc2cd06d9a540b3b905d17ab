@@ -16,6 +16,24 @@
       "message": "Do we still need this variable? Can we just use mFinished instead?\n\nAnd if you do that, then you don\u0027t need extra locking for mFinished, and you can also simplify the entire loop (no need for the extra loop):\n\n```\n    for (Command\u0026 item : todo) {\n       if (mFinished) {\n           // Complete the item without processing it\n            item.mCompletedPromise.set_value();\n        } else {   \n            if (item.mWorkItem) {\n                // Normal work item\n                if (mProcessor(std::move(item.mWorkItem.value())) \u003d\u003d \n                    Result::Stop) {\n                     mFinished\u003d true;\n                }\n            }\n            item.mCompletedPromise.set_value();\n        }\n    }\n\n    todo.clear();\n\n```\n\nWDYT?",
       "revId": "436185c7d9dff51ffc2cd06d9a540b3b905d17ab",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cbd0aa56_b9b6d679",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2022-10-10T21:32:40Z",
+      "side": 1,
+      "message": "The idea behind PS2 is not to fix the issue described in the previous comment[1], because I believe that\u0027s not an issue: not considering the `start` function, `mFinished` will only be set to true on the worker thread, and given that we process `Command` one by one on the worker thread in the order they are enqueued, the first `Command` that makes `mProcessor` return `Stop` will effectively prevents any pending `Command`s from being actually processed. So \"3. The worker thread gets the task from the queue and starts processing it (line 147)\" won\u0027t happen if a previous `Command` makes `mProcessor` return `Stop`. It will be either line 163 or 167 in PS1 where we access this newly enqueued command after `mFinished` is set to `true`.\n\nHowever, the proposed approach and PS 1 suffer from such race condition:\n\n1. Thread 0 calls enqueue. Test `mFinished`, find that it\u0027s `false`.\n2. Thread 1, the worker thread, hits a command that returns `Stop` and set `mFinished` to `true`. We then drain both `todo` and `mQueue`, and return.\n3. Thread 0 proceed to push back the task to `mQueue`, ending up returning a `std::future` that will never be set to the ready status.\n\nTherefore, testing `mFinished` and enqueue to `mQueue`, and setting `mFinished` must be under the same critical section. Putting `mQueue` and `mFinished` under the same lock will make a stronger guarantee: after `mFinished` set to true, `mQueue` is empty.\n\nChanged existing logic to get rid of the seemingly redundant code to drain the `todo` task queue. However, I am in favor of keeping the `shouldStop` variable, so that we always write to the `mFinished` variable with the lock held and changing the state of `mQueue` at the same time. WDYT?\n\n[1] https://android-review.googlesource.com/c/platform/hardware/google/aemu/+/2243762/comment/aa04a636_16945f19",
+      "parentUuid": "e29274c8_45987ba5",
+      "revId": "436185c7d9dff51ffc2cd06d9a540b3b905d17ab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
