@@ -382,6 +382,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d4d8bfff_614a7a83",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-10-10T17:18:10Z",
+      "side": 1,
+      "message": "I\u0027m sorry I misread the code, this is correct.",
+      "parentUuid": "3b36b00c_3d77ad14",
+      "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "87b65c1d_2a117b23",
@@ -472,6 +490,30 @@
       "side": 1,
       "message": "Same as above: we don\u0027t want the caller have to deal with a `std::future` that can throw an exception when `get` or `wait` is called.",
       "parentUuid": "8ca8c521_36a8bbb5",
+      "range": {
+        "startLine": 163,
+        "startChar": 45,
+        "endLine": 163,
+        "endChar": 54
+      },
+      "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "84e29182_c016abc9",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-10-10T17:18:10Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "05b643b2_3181a44f",
       "range": {
         "startLine": 163,
         "startChar": 45,
