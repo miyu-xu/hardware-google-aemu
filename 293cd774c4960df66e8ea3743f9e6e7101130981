@@ -326,6 +326,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "50391d8d_92b96af7",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-10-10T17:27:02Z",
+      "side": 1,
+      "message": "I don\u0027t think the code currently does what you intend, though.\n\nExample:\n\n1. mFinished is set to true by some other thread after it\u0027s checked on line 120\n2. We enqueue a new task and signal the worker thread\n3. The worker thread gets the task from the queue and starts processing it (line 147)\n4. The task is processed as a normal work item. `shouldStop` is false at that point so we won\u0027t go into the `shouldStop` branch.\n\nOne way to fix would be to add `if(mFinished) return;` after we wake up from waiting (e.g. on line 144)",
+      "parentUuid": "ad663f1e_17169ba8",
+      "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4ab7bdc2_688eae16",
         "filename": "base/include/aemu/base/threads/WorkerThread.h",
         "patchSetId": 1
