@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d096eb16_d952a816",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-10-10T17:14:47Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "3fc6f657_fc286e44",
+      "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "71c5ded1_8de6e077",
@@ -49,6 +67,24 @@
       "side": 1,
       "message": "What do you think if I add a comment saying that calling `start` multiple times on a `WorkerThread` will cause an undefined behavior?",
       "parentUuid": "71c5ded1_8de6e077",
+      "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6f538d9b_a7510567",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-10-10T17:14:47Z",
+      "side": 1,
+      "message": "Sure that works",
+      "parentUuid": "608456b8_94cf001a",
       "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -90,6 +126,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b40e89be_92ce1a8d",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-10-10T17:14:47Z",
+      "side": 1,
+      "message": "SG",
+      "parentUuid": "b14eb128_8c522537",
+      "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d6a4a0e0_fc2048cb",
         "filename": "base/include/aemu/base/threads/WorkerThread.h",
         "patchSetId": 1
@@ -119,6 +173,24 @@
       "side": 1,
       "message": "There are 2 reasons we can\u0027t use `std::packaged_task`:\n\n1. MSVC\u0027s implementation of `std::packaged_task` is buggy, so we can\u0027t use move only `Item` type with MSVC\u0027s `std::packaged_task`. See https://developercommunity.visualstudio.com/t/unable-to-move-stdpackaged-task-into-any-stl-conta/108672. And we are using `WorkerThread` to dispatch move only `Item`. There is a workaround for this: we can always ask the caller to wrap the `Item` in a `std::shared_ptr` so that `Item` is always copyable. WDYT?\n\n2. We need the ability to set the returned `std::future` to be ready without having to process the `Item`, so that on exit, the caller won\u0027t end up with future that won\u0027t be ready forever. I am not sure how that could be achieved with `std::packaged_task`. We can share the reference to `mFinished` and let the functor passed to `std::packaged_task` to always test if `mFinished` is set and return early, but it seems that we are reinventing `std::promise` by using `std::packaged_task`.",
       "parentUuid": "d6a4a0e0_fc2048cb",
+      "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9235ebf2_be5aa551",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-10-10T17:14:47Z",
+      "side": 1,
+      "message": "I see. Maybe it makes sense to not use packaged_task then.",
+      "parentUuid": "fc495b56_c0f39b9e",
       "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -183,6 +255,30 @@
       "side": 1,
       "message": "IIUC, calling `set_exception` will cause the `get` and `wait` call on the relevant `std::future` to throw an exception. My design intention is to allow `enqueue` and `waitQueuedItems` to be called after the `WorkerThread` is destroyed, and won\u0027t crash the program. I don\u0027t think `set_exception` will help. WDYT?",
       "parentUuid": "f4ce484c_bf2ff9fa",
+      "range": {
+        "startLine": 121,
+        "startChar": 38,
+        "endLine": 121,
+        "endChar": 47
+      },
+      "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "269c216a_a64f8d72",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-10-10T17:14:47Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "e715eb8b_f2b79975",
       "range": {
         "startLine": 121,
         "startChar": 38,
@@ -317,6 +413,24 @@
       "side": 1,
       "message": "I don\u0027t think we need to do the refactor and I believe you overlook the potential performance cost.\n\n* For readability and maintainability: if we replace the swap to `std::vector` with popping and process the `Command` one by one, the only extra 2 lines we get rid of are the declaration of `todo` and the following `for` loop. Besides, chromium\u0027s class `DelayedTaskManager` with a similar function is using the same pattern: https://crsrc.org/c/base/task/thread_pool/delayed_task_manager.cc;l\u003d124, so I would assume this degree of complexity won\u0027t hurt maintainability badly.\n\n* Note that `mQueue` is a `std::vector`, so the extra cost to remove the first item from the `std::vector` is O(n). Therefore, the proposed solution doesn\u0027t only increases the time we try to lock and wait for the conditional variable, we need also to pay extra time in removing the item. I agree this can be solved by changing `mQueue` to a `std::list`.\n\nWDYT?",
       "parentUuid": "87b65c1d_2a117b23",
+      "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b19d4130_def198ff",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-10-10T17:14:47Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "af7254c9_c6e4c476",
       "revId": "293cd774c4960df66e8ea3743f9e6e7101130981",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
