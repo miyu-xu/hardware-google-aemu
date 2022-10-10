@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "27875609_45319560",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-10-10T21:47:48Z",
+      "side": 1,
+      "message": "nit: you can revert this change now I believe",
+      "range": {
+        "startLine": 148,
+        "startChar": 0,
+        "endLine": 149,
+        "endChar": 35
+      },
+      "revId": "4dcc701065a8a1781dd495a62b96be9140c0294e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

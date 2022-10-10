@@ -34,6 +34,24 @@
       "parentUuid": "e29274c8_45987ba5",
       "revId": "436185c7d9dff51ffc2cd06d9a540b3b905d17ab",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9f1cb73a_e406ed7c",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1891430
+      },
+      "writtenOn": "2022-10-10T21:47:48Z",
+      "side": 1,
+      "message": "Sounds good. The code looks much cleaner now, thanks.",
+      "parentUuid": "cbd0aa56_b9b6d679",
+      "revId": "436185c7d9dff51ffc2cd06d9a540b3b905d17ab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
