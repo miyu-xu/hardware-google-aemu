@@ -268,10 +268,6 @@ public:
     static std::vector<std::string> decompose(const std::string& path,
                                               HostType hostType);
 
-    template <class String>
-    static std::vector<String> decompose(const String& path,
-                                         HostType hostType);
-
     // Decompose |path| into individual components for the host platform.
     // See comments above for more details.
     static std::vector<std::string> decompose(std::string&& path) {
@@ -326,10 +322,6 @@ public:
                                   const std::string& path) {
         return relativeTo(base, path, HOST_TYPE);
     }
-    static std::string relativeTo(const char* base, const char* path, HostType hostType);
-    static std::string relativeTo(const char* base, const char* path) {
-        return relativeTo(base, path, HOST_TYPE);
-    }
 
     static Optional<std::string> pathWithoutDirs(const char* name);
     static Optional<std::string> pathToDir(const char* name);
@@ -343,6 +335,9 @@ public:
     // xx if it exists. Returns kNullopt if the environment variable is
     // not set or empty.
     static Optional<std::string> pathWithEnvSubstituted(std::vector<std::string> decomposedPath);
+
+    // Move a file. It works even when from and to are on different disks.
+    static bool move(const std::string& from, const std::string& to);
 
 #ifdef _WIN32
     static Win32UnicodeString asUnicodePath(const char* path) { return Win32UnicodeString(path); }
