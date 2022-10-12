@@ -358,7 +358,7 @@ public:
     // with setShellCommand().
     typedef bool(ShellCommand)(void* opaque,
                                const std::vector<std::string>& commandLine,
-                               System::Duration timeoutMs,
+                               int64_t timeoutMs,
                                System::ProcessExitCode* outExitCode,
                                System::Pid* outChildPid,
                                const std::string& outputFile);
@@ -372,7 +372,7 @@ public:
 
     bool runCommand(const std::vector<std::string>& commandLine,
                     RunOptions options,
-                    System::Duration timeoutMs,
+                    int64_t timeoutMs,
                     System::ProcessExitCode* outExitCode,
                     System::Pid* outChildPid,
                     const std::string& outputFile) override {
@@ -393,7 +393,7 @@ public:
 
     Optional<std::string> runCommandWithResult(
             const std::vector<std::string>& commandLine,
-            System::Duration timeoutMs = kInfinite,
+            int64_t timeoutMs = kInfinite,
             System::ProcessExitCode* outExitCode = nullptr) override {
 
         return {};
