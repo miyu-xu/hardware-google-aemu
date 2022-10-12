@@ -11,6 +11,7 @@ if (BUILD_STANDALONE)
         # Build everything by default
         set(aemu-base-srcs
             AlignedBuf.cpp
+            CLog.cpp
             CompressingStream.cpp
             CpuTime.cpp
             DecompressingStream.cpp
