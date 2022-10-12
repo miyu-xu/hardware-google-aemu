@@ -3,6 +3,7 @@
 #   - aemu-base-test-srcs: aemu-base test source files
 set(aemu-base-srcs
     AlignedBuf.cpp
+    CLog.cpp
     CompressingStream.cpp
     CpuTime.cpp
     DecompressingStream.cpp
