@@ -16,8 +16,8 @@
 #include <streambuf>
 #include <vector>  // for vector
 
-#include "android/base/synchronization/ConditionVariable.h"  // for Conditio...
-#include "android/base/synchronization/Lock.h"               // for Lock
+#include "aemu/base/synchronization/ConditionVariable.h"  // for Conditio...
+#include "aemu/base/synchronization/Lock.h"               // for Lock
 
 namespace android {
 namespace base {

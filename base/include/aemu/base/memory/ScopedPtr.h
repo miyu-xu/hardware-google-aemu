@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "android/base/TypeTraits.h"
+#include "aemu/base/TypeTraits.h"
 
 #include <memory>
 #include <type_traits>

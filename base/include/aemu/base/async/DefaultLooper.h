@@ -18,7 +18,7 @@
 #include <unordered_map>                // for unordered_map
 #include <unordered_set>                // for unordered_set
 
-#include "android/base/async/Looper.h"  // for Looper::ClockType, Looper
+#include "aemu/base/async/Looper.h"  // for Looper::ClockType, Looper
 
 namespace android {
 namespace base {

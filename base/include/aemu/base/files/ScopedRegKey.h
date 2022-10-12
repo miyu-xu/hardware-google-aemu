@@ -15,7 +15,7 @@
 #error "Only compile this file when targetting Windows!"
 #endif
 
-#include "android/base/Compiler.h"
+#include "aemu/base/Compiler.h"
 #include <algorithm>
 
 #define WIN32_LEAN_AND_MEAN 1

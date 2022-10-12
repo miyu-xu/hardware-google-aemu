@@ -11,8 +11,8 @@
 
 #pragma once
 
-#include "android/base/memory/ScopedPtr.h"
-#include "android/base/system/System.h"
+#include "aemu/base/memory/ScopedPtr.h"
+#include "aemu/base/system/System.h"
 
 #include <gtest/gtest.h>
 

@@ -8,9 +8,9 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-#include "android/base/logging/CLog.h"
-#include "android/base/Optional.h"
-#include "android/base/system/System.h"
+#include "aemu/base/logging/CLog.h"
+#include "aemu/base/Optional.h"
+#include "aemu/base/system/System.h"
 
 #include <Cocoa/Cocoa.h>
 #include <CoreFoundation/CoreFoundation.h>

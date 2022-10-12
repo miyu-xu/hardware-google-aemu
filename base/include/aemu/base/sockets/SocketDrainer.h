@@ -11,8 +11,8 @@
 
 #pragma once
 
-#include "android/base/Compiler.h"
-#include "android/base/async/Looper.h"
+#include "aemu/base/Compiler.h"
+#include "aemu/base/async/Looper.h"
 
 // The following functions are used to manage graceful close of sockets
 // as described by "The ultimate SO_LINGER page" [1], which requires

@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include "android/base/threads/Types.h"
-#include "android/base/TypeTraits.h"
+#include "aemu/base/threads/Types.h"
+#include "aemu/base/TypeTraits.h"
 
 #include <memory>
 

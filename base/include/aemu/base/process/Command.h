@@ -27,8 +27,8 @@
 #include <utility>
 #include <vector>
 
-#include "android/base/streams/RingStreambuf.h"
-#include "android/base/process/Process.h"
+#include "aemu/base/streams/RingStreambuf.h"
+#include "aemu/base/process/Process.h"
 
 namespace android {
 namespace base {

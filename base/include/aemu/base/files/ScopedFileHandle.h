@@ -15,7 +15,7 @@
 // nothing here
 #else  // _WIN32
 
-#include "android/base/Compiler.h"
+#include "aemu/base/Compiler.h"
 
 #define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>

@@ -13,7 +13,7 @@
 // limitations under the License.
 #pragma once
 
-#include "android/base/Allocator.h"
+#include "aemu/base/Allocator.h"
 
 #include <unordered_set>
 
