@@ -21,7 +21,7 @@ add_library(aemu_common INTERFACE)
 target_link_libraries(
     aemu_common
     INTERFACE
-    gfxstream-base
-    gfxstream-base.headers
-    gfxstream-host-common
-    gfxstream-host-common.headers)
+    aemu-base
+    aemu-base.headers
+    aemu-host-common
+    aemu-host-common.headers)
