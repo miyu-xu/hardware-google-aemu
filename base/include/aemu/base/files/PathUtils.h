@@ -15,7 +15,9 @@
 #pragma once
 
 #include <stddef.h>                   // for size_t
+#include <optional>
 #include <string>                     // for string, basic_string
+#include <string_view>
 #include <utility>                    // for move, forward
 #include <vector>                     // for vector
 
@@ -41,6 +43,59 @@
 
 namespace android {
 namespace base {
+
+// Helper to get a null-terminated const char* from a string_view.
+// Only allocates if the string_view is not null terminated.
+//
+// Usage:
+//
+//      std::string_view myString = ...;
+//      printf("Contents: %s\n", CStrWrapper(myString).c_str());
+//
+// c_str(...) constructs a temporary object that may allocate memory if the
+// StringView is not null termianted.  The lifetime of the temporary object will
+// be until the next sequence point (typically the next semicolon).  If the
+// value needs to exist for longer than that, cache the instance.
+//
+//      std::string_view myString = ...;
+//      auto myNullTerminatedString = CStrWrapper(myString).c_str();
+//      functionAcceptingConstCharPointer(myNullTerminatedString);
+//
+class CStrWrapper {
+public:
+    CStrWrapper(std::string_view stringView) : mStringView(stringView) {}
+
+    // Returns a null-terminated char*, potentially creating a copy to add a
+    // null terminator.
+    const char* get() {
+        if (mStringView.back() == '\0') {
+            return mStringView.data();
+        } else {
+            // Create the std::string copy on-demand.
+            if (!mStringCopy) {
+                mStringCopy.emplace(mStringView);
+            }
+
+            return mStringCopy->c_str();
+        }
+    }
+
+    // Alias for get
+    const char* c_str() {
+        return get();
+    }
+
+    // Enable casting to const char*
+    operator const char*() { return get(); }
+
+private:
+    const std::string_view mStringView;
+    std::optional<std::string> mStringCopy;
+};
+
+inline CStrWrapper c_str(std::string_view stringView) {
+    return CStrWrapper(stringView);
+}
 
 // Utility functions to manage file paths. None of these should touch the
 // file system. All methods must be static.
@@ -142,6 +197,14 @@ public:
         return isAbsolute(path, HOST_TYPE);
     }
 
+    // Return an extension part of the name/path (the part of the name after
+    // last dot, including the dot. E.g.:
+    //  "file.name" -> ".name"
+    //  "file" -> ""
+    //  "file." -> "."
+    //  "/full/path.png" -> ".png"
+    static std::string_view extension(const std::string& path,
+                                      HostType hostType = HOST_TYPE);
     // Split |path| into a directory name and a file name. |dirName| and
     // |baseName| are optional pointers to strings that will receive the
     // corresponding components on success. |hostType| is a host type.
@@ -200,8 +263,14 @@ public:
     // each one being a path component (prefix or subdirectory or file
     // name). Directory separators do not appear in components, except
     // for the root prefix, if any.
+    static std::vector<std::string_view> decompose(std::string_view path,
+                                                   HostType hostType);
     static std::vector<std::string> decompose(std::string&& path,
                                               HostType hostType);
+    static std::vector<std::string_view> decompose(const char* path,
+                                                   HostType hostType) {
+        return decompose(std::string_view(path), hostType);
+    }
     static std::vector<std::string> decompose(const std::string& path,
                                               HostType hostType);
 
@@ -211,10 +280,15 @@ public:
 
     // Decompose |path| into individual components for the host platform.
     // See comments above for more details.
+    static std::vector<std::string_view> decompose(std::string_view path) {
+        return decompose(path, HOST_TYPE);
+    }
     static std::vector<std::string> decompose(std::string&& path) {
         return decompose(std::move(path), HOST_TYPE);
     }
-
+    static std::vector<std::string_view> decompose(const char* path) {
+        return decompose(std::string_view(path));
+    }
     static std::vector<std::string> decompose(const std::string& path) {
         return decompose(path, HOST_TYPE);
     }
@@ -257,6 +331,13 @@ public:
     // AppData\Local\Android\Sdk.
     // If |base| is not a prefix of |path|, fails by returning
     // the original |path| unmodified.
+    static std::string relativeTo(const std::string& base,
+                                  const std::string& path,
+                                  HostType hostType);
+    static std::string relativeTo(const std::string& base,
+                                  const std::string& path) {
+        return relativeTo(base, path, HOST_TYPE);
+    }
     static std::string relativeTo(const char* base, const char* path, HostType hostType);
     static std::string relativeTo(const char* base, const char* path) {
         return relativeTo(base, path, HOST_TYPE);
@@ -289,8 +370,8 @@ static const PathUtils::HostType kHostType = PathUtils::HOST_TYPE;
 
 template <class... Paths>
 std::string pj(const std::string& path1,
-                  const std::string& path2,
-                  Paths&&... paths) {
+               const std::string& path2,
+               Paths&&... paths) {
     return PathUtils::join(path1,
                pj(path2, std::forward<Paths>(paths)...));
 }

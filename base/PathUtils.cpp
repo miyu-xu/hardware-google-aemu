@@ -99,6 +99,29 @@ bool PathUtils::isAbsolute(const char* path, HostType hostType) {
 }
 
 // static
+std::string_view PathUtils::extension(const std::string& path,
+                                      HostType hostType) {
+    std::string_view tmp = path;
+    using riter = std::reverse_iterator<std::string_view::const_iterator>;
+
+    for (auto it = riter(tmp.end()), itEnd = riter(tmp.begin()); it != itEnd;
+         ++it) {
+        if (*it == '.') {
+            // reverse iterator stores a base+1, so decrement it when returning
+            // MSVC doesn't have string_view constructor with iterators
+            return std::string_view(&*std::prev(it.base()), (it - riter(tmp.end()) + 1));
+        }
+        if (isDirSeparator(*it, hostType)) {
+            // no extension here - we've found the end of file name already
+            break;
+        }
+    }
+
+    // either there's no dot in the whole path, or we found directory separator
+    // first - anyway, there's no extension in this name
+    return "";
+}
+// static
 std::string PathUtils::removeTrailingDirSeparator(const char* path,
                                                  HostType hostType) {
     size_t pathLen = strlen(path);
