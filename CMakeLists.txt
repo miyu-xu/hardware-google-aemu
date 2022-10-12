@@ -48,6 +48,8 @@ ${AEMU_COMMON_REPO_ROOT}/build-config/${AEMU_COMMON_BUILD_CONFIG}")
     add_subdirectory(build-config/${AEMU_COMMON_BUILD_CONFIG})
 endif()
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-extern-c-compat -Wno-return-type-c-linkage")
+
 add_subdirectory(base)
 add_subdirectory(snapshot)
 add_subdirectory(host-common)
