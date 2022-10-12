@@ -39,8 +39,7 @@ target_link_libraries(
 target_include_directories(
     aemu-host-common.headers
     INTERFACE
-    include
-    ${GFXSTREAM_REPO_ROOT}/include)
+    include)
 
 if (BUILD_STANDALONE)
     add_library(
