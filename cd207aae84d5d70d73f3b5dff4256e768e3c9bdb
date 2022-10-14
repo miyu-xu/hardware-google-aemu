@@ -16,6 +16,24 @@
       "message": "Adding the new `std::string_view` function overload will cause link error, this patch will fix the link error:\n\n```\ndiff --git a/base/include/aemu/base/files/PathUtils.h b/base/include/aemu/base/files/PathUtils.h\nindex b3a354d..88b8759 100644\n--- a/base/include/aemu/base/files/PathUtils.h\n+++ b/base/include/aemu/base/files/PathUtils.h\n@@ -263,14 +263,8 @@ public:\n     // each one being a path component (prefix or subdirectory or file\n     // name). Directory separators do not appear in components, except\n     // for the root prefix, if any.\n-    static std::vector\u003cstd::string_view\u003e decompose(std::string_view path,\n-                                                   HostType hostType);\n     static std::vector\u003cstd::string\u003e decompose(std::string\u0026\u0026 path,\n                                               HostType hostType);\n-    static std::vector\u003cstd::string_view\u003e decompose(const char* path,\n-                                                   HostType hostType) {\n-        return decompose(std::string_view(path), hostType);\n-    }\n     static std::vector\u003cstd::string\u003e decompose(const std::string\u0026 path,\n                                               HostType hostType);\n\n@@ -280,15 +274,9 @@ public:\n\n     // Decompose |path| into individual components for the host platform.\n     // See comments above for more details.\n-    static std::vector\u003cstd::string_view\u003e decompose(std::string_view path) {\n-        return decompose(path, HOST_TYPE);\n-    }\n     static std::vector\u003cstd::string\u003e decompose(std::string\u0026\u0026 path) {\n         return decompose(std::move(path), HOST_TYPE);\n     }\n-    static std::vector\u003cstd::string_view\u003e decompose(const char* path) {\n-        return decompose(std::string_view(path));\n-    }\n     static std::vector\u003cstd::string\u003e decompose(const std::string\u0026 path) {\n         return decompose(path, HOST_TYPE);\n     }\n```\n\nWorking on a better solution.",
       "revId": "cd207aae84d5d70d73f3b5dff4256e768e3c9bdb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3221d247_78b325e3",
+        "filename": "base/include/aemu/base/files/PathUtils.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2022-10-14T02:30:28Z",
+      "side": 1,
+      "message": "You can go ahead and merge the patch if it\u0027s blocking you (I am in process of getting rid of it anyways). I am refactoring the qemu codebase to not use the string_view variant.",
+      "parentUuid": "d95477f7_7b34cecf",
+      "revId": "cd207aae84d5d70d73f3b5dff4256e768e3c9bdb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
