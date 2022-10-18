@@ -22,6 +22,30 @@
       },
       "revId": "2486f5b924fb3f431a400f58449fd951745f67e0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6c0e23f0_137ee5c6",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2022-10-18T16:56:41Z",
+      "side": 1,
+      "message": "According to the expected usage doc above, start() is expected to be called before enqueue(), which means this check actually fits the expected behavior. So the problem is the unittest (OnDemandTest.multiConstruct) is not written correctly.\n\nMaybe we should just call start() in the constructor and make start() private, since all other method calls depend on start() being called beforehand.",
+      "parentUuid": "401161eb_eef482b7",
+      "range": {
+        "startLine": 125,
+        "startChar": 12,
+        "endLine": 125,
+        "endChar": 21
+      },
+      "revId": "2486f5b924fb3f431a400f58449fd951745f67e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
