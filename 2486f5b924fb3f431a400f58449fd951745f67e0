@@ -46,6 +46,30 @@
       },
       "revId": "2486f5b924fb3f431a400f58449fd951745f67e0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "20376d49_70c5c115",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2022-10-18T20:26:55Z",
+      "side": 1,
+      "message": "\u003e is this intentional (this change is breaking a few qemu unittests)?\n\nYes, it is intentional. This prevents the `future` returned by `enqueue` from never being ready. I think the old behavior for calling `enqueue` before `start` is undefined, so we shouldn\u0027t rely on that.\n\n\u003e since all other method calls depend on start() being called beforehand.\n\nI am not against it, but we should remember there is an extra performance cost for cases where we never start the worker thread.",
+      "parentUuid": "6c0e23f0_137ee5c6",
+      "range": {
+        "startLine": 125,
+        "startChar": 12,
+        "endLine": 125,
+        "endChar": 21
+      },
+      "revId": "2486f5b924fb3f431a400f58449fd951745f67e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
