@@ -70,6 +70,30 @@
       },
       "revId": "2486f5b924fb3f431a400f58449fd951745f67e0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "977b9b90_b71c03a3",
+        "filename": "base/include/aemu/base/threads/WorkerThread.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2022-10-18T20:37:41Z",
+      "side": 1,
+      "message": "\u003e extra performance cost for cases where we never start the worker thread.\n\n\nAhh, since there are scenarios where we may not use it, then let\u0027s just leave it as is.",
+      "parentUuid": "20376d49_70c5c115",
+      "range": {
+        "startLine": 125,
+        "startChar": 12,
+        "endLine": 125,
+        "endChar": 21
+      },
+      "revId": "2486f5b924fb3f431a400f58449fd951745f67e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
