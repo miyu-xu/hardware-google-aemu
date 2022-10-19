@@ -26,7 +26,7 @@
 #include <string>
 #include <vector>
 
-#include "android/base/streams/RingStreambuf.h"
+#include "aemu/base/streams/RingStreambuf.h"
 
 namespace android {
 namespace base {

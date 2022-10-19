@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "android/base/system/System.h"
+#include "aemu/base/system/System.h"
 #include "android/utils/debug.h"
 #include <stdio.h>
 

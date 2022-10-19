@@ -16,6 +16,25 @@
 
 #include <inttypes.h>
 
+#if defined(AEMU_TRACING_SHARED) && defined(_MSC_VER)
+#if defined(TRACING_EXPORTS)
+#define TRACING_API __declspec(dllexport)
+#define TRACING_API_TEMPLATE_DECLARE
+#define TRACING_API_TEMPLATE_DEFINE __declspec(dllexport)
+#else
+#define TRACING_API __declspec(dllimport)
+#define TRACING_API_TEMPLATE_DECLARE
+#define TRACING_API_TEMPLATE_DEFINE __declspec(dllimport)
+#endif  // defined(TRACING_EXPORTS)
+#elif defined(AEMU_UI_SHARED)
+#define TRACING_API __attribute__((visibility("default")))
+#define TRACING_API_TEMPLATE_DECLARE __attribute__((visibility("default")))
+#define TRACING_API_TEMPLATE_DEFINE
+#else
+#define TRACING_API
+#define TRACING_API_TEMPLATE_DECLARE
+#define TRACING_API_TEMPLATE_DEFINE
+#endif
 // Library to perform tracing. Talks to platform-specific
 // tracing libraries.
 namespace android {
@@ -24,24 +43,24 @@ namespace base {
 // New tracing API that talks to an underlying tracing library, possibly perfetto.
 //
 // Sets up global state useful for tracing.
-void initializeTracing();
+TRACING_API void initializeTracing();
 
 // Enable/disable tracing
-void enableTracing();
-void disableTracing();
+TRACING_API void enableTracing();
+TRACING_API void disableTracing();
 
 // Set the time of traces on the host to be at this guest time.
 // Not needed if we assume timestamps can be transferrable (e.g.,
 // when RDTSC with raw passthrough is used)
-void setGuestTime(uint64_t guestTime);
+TRACING_API void setGuestTime(uint64_t guestTime);
 
 // Record a counter of some kind.
-void traceCounter(const char* tag, int64_t value);
+TRACING_API void traceCounter(const char* tag, int64_t value);
 
-void beginTrace(const char* name);
-void endTrace();
+TRACING_API void beginTrace(const char* name);
+TRACING_API void endTrace();
 
-class ScopedTrace {
+class TRACING_API ScopedTrace {
 public:
     ScopedTrace(const char* name);
     ~ScopedTrace();

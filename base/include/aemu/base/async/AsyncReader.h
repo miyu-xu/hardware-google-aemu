@@ -11,8 +11,8 @@
 
 #pragma once
 
-#include "android/base/async/AsyncStatus.h"
-#include "android/base/async/Looper.h"
+#include "aemu/base/async/AsyncStatus.h"
+#include "aemu/base/async/Looper.h"
 
 #include <stdint.h>
 

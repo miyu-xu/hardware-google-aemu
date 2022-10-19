@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "android/base/sockets/SocketUtils.h"
+#include "aemu/base/sockets/SocketUtils.h"
 
 #include <utility>
 

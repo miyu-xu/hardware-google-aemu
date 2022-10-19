@@ -14,10 +14,10 @@
 
 #pragma once
 
-#include "android/base/Compiler.h"
-#include "android/base/async/Looper.h"
-#include "android/base/threads/internal/ParallelTaskBase.h"
-#include "android/base/threads/Types.h"
+#include "aemu/base/Compiler.h"
+#include "aemu/base/async/Looper.h"
+#include "aemu/base/threads/internal/ParallelTaskBase.h"
+#include "aemu/base/threads/Types.h"
 
 #include <functional>
 #include <memory>

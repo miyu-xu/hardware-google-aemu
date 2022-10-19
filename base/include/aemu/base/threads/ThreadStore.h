@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "android/base/Compiler.h"
+#include "aemu/base/Compiler.h"
 
 #ifdef _WIN32
 #  define WIN32_LEAN_AND_MEAN 1

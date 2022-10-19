@@ -16,7 +16,7 @@
 
 #include <inttypes.h>  // for uint64_t
 
-#include "android/base/Compiler.h"
+#include "aemu/base/Compiler.h"
 
 namespace android {
 namespace base {

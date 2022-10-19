@@ -13,10 +13,10 @@
 // limitations under the License.
 #pragma once
 
-#include "android/base/Compiler.h"
+#include "aemu/base/Compiler.h"
 
-#include "android/base/files/PathUtils.h"
-#include "android/base/system/System.h"
+#include "aemu/base/files/PathUtils.h"
+#include "aemu/base/system/System.h"
 #include "android/utils/debug.h"
 
 #include <functional>

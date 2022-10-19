@@ -126,11 +126,15 @@ static int address_space_allocator_find_available_block_at_offset(
     uint64_t size_at_index = 0;
     int i;
 
-    address_space_assert(n_blocks >= 1);
+    if (n_blocks <= 0) {
+        return -1;
+    }
 
     for (i = 0; i < n_blocks; ++i, ++block) {
         uint64_t this_size = block->size;
-        address_space_assert(this_size > 0);
+        if (this_size <= 0) {
+            return -1;
+        }
 
         if (this_size >= size_at_least && block->available &&
             offset >= block->offset &&
@@ -240,6 +244,16 @@ address_space_allocator_split_block_at_offset(
     address_space_assert(i >= 0);
     address_space_assert(i < allocator->size);
     address_space_assert(size < allocator->blocks[i].size);
+    address_space_assert(offset >= allocator->blocks[i].offset);
+    if (offset == allocator->blocks[i].offset) {
+        // special case, return the current block (after spliting its tail).
+        if (size < allocator->blocks[i].size) {
+            // split the tail if necessary
+            address_space_allocator_split_block_at_offset(allocator, i,
+                    allocator->blocks[i].size - size, offset + size);
+        }
+        return &allocator->blocks[i];
+    }
 
     need_extra_block =
         (allocator->blocks[i].size - size - (offset - allocator->blocks[i].offset)) != 0;

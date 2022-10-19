@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 #pragma once
-#include "android/base/Log.h"
-#include "android/base/async/AsyncSocketAdapter.h"
-#include "android/base/async/AsyncWriter.h"
-#include "android/base/async/Looper.h"
-#include "android/base/containers/BufferQueue.h"
-#include "android/base/sockets/SocketUtils.h"
-#include "android/base/synchronization/Lock.h"
-#include "android/base/threads/FunctorThread.h"
-#include "android/base/sockets/ScopedSocket.h"
+#include "aemu/base/Log.h"
+#include "aemu/base/async/AsyncSocketAdapter.h"
+#include "aemu/base/async/AsyncWriter.h"
+#include "aemu/base/async/Looper.h"
+#include "aemu/base/containers/BufferQueue.h"
+#include "aemu/base/sockets/SocketUtils.h"
+#include "aemu/base/synchronization/Lock.h"
+#include "aemu/base/threads/FunctorThread.h"
+#include "aemu/base/sockets/ScopedSocket.h"
 
 namespace android {
 namespace base {

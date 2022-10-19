@@ -100,10 +100,10 @@ int SharedMemory::openInternal(int oflag, int mode, bool doMapping) {
         // Make sure the file can hold at least mSize bytes..
         struct stat stat;
         if (!fstat(mFd, &stat) && stat.st_size < mSize) {
-            ftruncate(mFd, mSize);
+            err = ftruncate(mFd, mSize);
         }
     }
-    if (mFd == -1) {
+    if (mFd == -1 || err) {
         err = -errno;
         close();
         return err;

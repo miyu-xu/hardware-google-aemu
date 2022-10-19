@@ -80,19 +80,19 @@ public:
 
     // Starts the worker thread.
     bool start() {
-        mStarted = true;
+        bool expectedStarted = false;
+        if (!mStarted.compare_exchange_strong(expectedStarted, true)) {
+            return true;
+        }
         if (!mThread.start()) {
-            mFinished = true;
+            AutoLock lock(mLock);
+            setFinishedAndDrainTasks();
             return false;
         }
         return true;
     }
-    bool isStarted() const { return mStarted; }
-    // Waits for all enqueue()'d items to finish.
+    // Waits for all enqueue()'d items to finish or the worker stops.
     void waitQueuedItems() {
-        if (!mStarted || mFinished)
-            return;
-
         // Enqueue an empty sync command.
         std::future<void> completeFuture = enqueueImpl(Command());
         completeFuture.wait();
@@ -100,7 +100,9 @@ public:
     // Waits for worker thread to complete.
     void join() { mThread.wait(); }
 
-    // Moves the |item| into internal queue for processing.
+    // Moves the |item| into internal queue for processing. If the command is enqueued after the
+    // stop command is enqueued or before start() returns, the returned future will also be ready
+    // without processing the command.
     std::future<void> enqueue(Item&& item) {
         return enqueueImpl(Command(std::move(item)));
     }
@@ -119,12 +121,15 @@ public:
 
     std::future<void> enqueueImpl(Command command) {
         base::AutoLock lock(mLock);
-        bool signal = mQueue.empty();
+        // We don't enqueue any new items if mFinished is set to true.
+        if (!mStarted || mFinished) {
+            command.mCompletedPromise.set_value();
+            return command.mCompletedPromise.get_future();
+        }
+
         std::future<void> res = command.mCompletedPromise.get_future();
         mQueue.emplace_back(std::move(command));
-        if (signal) {
-            mCv.signalAndUnlock(&lock);
-        }
+        mCv.signalAndUnlock(&lock);
         return res;
     }
 
@@ -140,24 +145,32 @@ public:
                 todo.swap(mQueue);
             }
 
+            bool shouldStop = false;
             for (Command& item : todo) {
-                bool shouldStop = false;
-                if (item.mWorkItem) {
+                if (!shouldStop && item.mWorkItem) {
                     // Normal work item
-                    if (mProcessor(std::move(item.mWorkItem.value())) ==
-                        Result::Stop) {
-                        shouldStop = true;
-                    }
+                    shouldStop = mProcessor(std::move(item.mWorkItem.value())) == Result::Stop;
                 }
                 item.mCompletedPromise.set_value();
-                if (shouldStop) {
-                    return;
-                }
+            }
+            if (shouldStop) {
+                setFinishedAndDrainTasks();
+                return;
             }
 
             todo.clear();
         }
+    }
+
+    void setFinishedAndDrainTasks() {
+        base::AutoLock lock(mLock);
+        // Set mFinished so that no new tasks will be enqueued.
         mFinished = true;
+        // Signal pending tasks as if they are completed.
+        for (Command& item : mQueue) {
+            item.mCompletedPromise.set_value();
+        }
+        return;
     }
 
     Processor mProcessor;
@@ -166,7 +179,8 @@ public:
     base::Lock mLock;
     base::ConditionVariable mCv;
 
-    bool mStarted = false;
+    std::atomic_bool mStarted = false;
+    // Must be accessd after grabbing the lock.
     bool mFinished = false;
 };
 
