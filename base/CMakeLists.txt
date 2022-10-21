@@ -60,6 +60,8 @@ if (BUILD_STANDALONE)
 
     if (WIN32)
         set(aemu-base-platform-deps Shlwapi)
+    elseif (QNX)
+        set(aemu-base-platform-deps dl)
     else()
         set(aemu-base-platform-deps dl rt)
     endif()
