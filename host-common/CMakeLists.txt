@@ -34,6 +34,7 @@ target_link_libraries(
     aemu-host-common.headers
     INTERFACE
     gfxstream-snapshot.headers
+    gfxstream_vulkan_headers
     renderdoc)
 target_include_directories(
     aemu-host-common.headers

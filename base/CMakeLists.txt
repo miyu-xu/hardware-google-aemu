@@ -102,13 +102,6 @@ endif()
 add_library(
     aemu-base-testing-support
     testing/file_io.cpp)
-target_include_directories(
-    aemu-base-testing-support
-    PRIVATE
-    ${AEMU_COMMON_REPO_ROOT}/include
-    PUBLIC
-    ${AEMU_COMMON_REPO_ROOT}
-    ${AEMU_COMMON_REPO_ROOT}/base/testing)
 target_link_libraries(
     aemu-base-testing-support
     PRIVATE

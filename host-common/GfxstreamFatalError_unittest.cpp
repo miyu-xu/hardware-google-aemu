@@ -16,7 +16,7 @@
 
 #include "host-common/GfxstreamFatalError.h"
 
-#include "base/testing/TestUtils.h"
+#include "aemu/base/testing/TestUtils.h"
 
 namespace emugl {
 namespace {
