@@ -34,6 +34,24 @@
       "parentUuid": "80323cf0_790370a6",
       "revId": "b50ca45d8befa23f4184deb70835225bb0c7038a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9bd6adb8_6a273d0b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2022-10-24T21:33:31Z",
+      "side": 1,
+      "message": "ACK. Most likely fix is to move vulkan-cereal/include headers into a separate repo (gfxstream-protocols?).",
+      "parentUuid": "7deec506_bbc2716a",
+      "revId": "b50ca45d8befa23f4184deb70835225bb0c7038a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
