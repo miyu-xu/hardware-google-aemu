@@ -52,6 +52,24 @@
       "parentUuid": "7deec506_bbc2716a",
       "revId": "b50ca45d8befa23f4184deb70835225bb0c7038a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b7bd21d4_28e5d1b5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1101621
+      },
+      "writtenOn": "2022-10-24T21:46:58Z",
+      "side": 1,
+      "message": "For the outside looking in, perhaps the cleanest method is to put implementations that rely upon gfxstream headers/state in vulkan-cereal?\n\nFor example, `MediaHostRenderer.cpp`, `opengles.cpp` all depend on the state defined in vulkan-cereal.  It would be easier to make modifications long-term if both the headers/implementations resided in the same repository.",
+      "parentUuid": "9bd6adb8_6a273d0b",
+      "revId": "b50ca45d8befa23f4184deb70835225bb0c7038a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
