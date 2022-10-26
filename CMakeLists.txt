@@ -8,9 +8,12 @@ project(AEMUCommon
         LANGUAGES CXX C)
 
 set(AEMU_COMMON_REPO_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
+
 # TODO(joshuaduong): There are still some header dependencies in vulkan-cereal/include. Need to
 # decouple this if possible.
-set(GFXSTREAM_REPO_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../../device/generic/vulkan-cereal)
+if(NOT GFXSTREAM_REPO_ROOT)
+    set(GFXSTREAM_REPO_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../../device/generic/vulkan-cereal)
+endif()
 
 option(AEMU_COMMON_GEN_PKGCONFIG
        "Generate install files used by pkg-config."

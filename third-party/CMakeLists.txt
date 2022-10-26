@@ -1,10 +1,4 @@
 # Build only support in Android
-if(NOT TARGET gfxstream_vulkan_headers)
-    set(GFXSTREAM_PROTOCOLS_PATH ${PROJECT_SOURCE_DIR}/../../../external/gfxstream-protocols)
-    if(EXISTS ${GFXSTREAM_PROTOCOLS_PATH})
-        add_subdirectory(${GFXSTREAM_PROTOCOLS_PATH} gfxstream-protocols)
-    endif()
-endif()
 
 # TODO(joshuaduong): Should copy/move these third-party dependencies from vulkan-cereal to here.
 set(VULKAN_CEREAL_PATH ${PROJECT_SOURCE_DIR}/../../../device/generic/vulkan-cereal)
