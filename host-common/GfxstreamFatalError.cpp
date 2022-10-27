@@ -3,6 +3,8 @@
 #include <cstdlib>
 #include <ostream>
 
+#include <unwindstack/AndroidUnwinder.h>
+
 #include "aemu/base/Metrics.h"
 #include "host-common/logging.h"
 
@@ -31,6 +33,18 @@ AbortMessage::AbortMessage(const char *file, const char *function, int line, Fat
 
 AbortMessage::~AbortMessage() {
     OutputLog(stderr, 'F', mFile, mLine, 0, mOss.str().c_str());
+
+    unwindstack::AndroidLocalUnwinder unwinder;
+    unwindstack::AndroidUnwinderData unwinderData;
+    if (!unwinder.Unwind(unwinderData)) {
+        OutputLog(stderr, 'F', mFile, mLine, 0, "LocalUnwinder backtrace unavailable.");
+    } else {
+        for (const auto& frame : unwinderData.frames) {
+            const std::string frameString = unwinder.FormatFrame(frame);
+            OutputLog(stderr, 'F', mFile, mLine, 0, "%s", frameString.c_str());
+        }
+    }
+
     fflush(stderr);
     CreateMetricsLogger()->logMetricEvent(GfxstreamVkAbort{.file = mFile,
                                                            .function = mFunction,
