@@ -17,6 +17,7 @@
 #pragma once
 
 #include <stdbool.h>
+#include <string>
 
 #include "aemu/base/c_header.h"
 
@@ -48,5 +49,7 @@ void feature_set_if_not_overridden_or_guest_disabled(Feature feature, bool enabl
 // asyncUpdateServerFeaturePatterns. See FeatureControl.h
 // for more info. To be called only once on startup.
 void feature_update_from_server();
+
+std::string feature_name(Feature feature);
 
 ANDROID_END_HEADER
