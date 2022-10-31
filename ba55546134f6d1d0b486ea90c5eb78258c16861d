@@ -16,6 +16,24 @@
       "message": "This change makes the downstream variant of `GfxApiLogger` not able to compile. If we are making this change, it means that we can\u0027t use any Vulkan headers in this repo, is that expected?",
       "revId": "ba55546134f6d1d0b486ea90c5eb78258c16861d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "954793f4_aa3425fd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1101621
+      },
+      "writtenOn": "2022-10-31T15:47:08Z",
+      "side": 1,
+      "message": "Long-term, I think that makes sense.  `base` is where common system related utils, threading etc. should be.\n\n`GfxApiLogger` and vulkan headers should probably be in vulkan-cereal/gfxstream-protocols.  I think the reason they aren\u0027t is just that\u0027s how the cookie crumbled rather than conscious design decisions.",
+      "parentUuid": "cdb3679b_3bb86e5a",
+      "revId": "ba55546134f6d1d0b486ea90c5eb78258c16861d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
