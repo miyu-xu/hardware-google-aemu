@@ -5,8 +5,14 @@ add_library(aemu-base.headers INTERFACE)
 # TODO: Remove this once host-common/logging.h is moved into base.
 target_link_libraries(aemu-base.headers INTERFACE aemu-host-common.headers)
 target_include_directories(aemu-base.headers INTERFACE include)
+
 if(WIN32)
     target_compile_definitions(aemu-base.headers INTERFACE WIN32_LEAN_AND_MEAN)
+endif()
+
+if(ENABLE_CLANG_THREAD_SAFETY_CHECKS)
+    target_compile_definitions(aemu-base.headers INTERFACE -D_LIBCPP_ENABLE_THREAD_SAFETY_ANNOTATIONS)
+    target_compile_options(aemu-base.headers INTERFACE -Wthread-safety)
 endif()
 
 if (BUILD_STANDALONE)
