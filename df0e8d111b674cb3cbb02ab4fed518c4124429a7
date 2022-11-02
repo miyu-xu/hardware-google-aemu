@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "959f12ba_5e94848c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2022-11-02T21:11:09Z",
+      "side": 1,
+      "message": "A follow up of https://android-review.googlesource.com/c/platform/hardware/google/aemu/+/2269050/comments/cdb3679b_3bb86e5a.",
+      "revId": "df0e8d111b674cb3cbb02ab4fed518c4124429a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
