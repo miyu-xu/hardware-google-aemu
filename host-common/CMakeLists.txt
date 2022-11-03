@@ -99,7 +99,7 @@ if (BUILD_STANDALONE)
         include/host-common
         include/host-common/opengl
         ${GFXSTREAM_REPO_ROOT}/include
-        ${ANGLE_REPO_ROOT}/include)
+        ${GFXSTREAM_REPO_ROOT}/../../../external/angle/include)
     target_link_libraries(
         aemu-host-common
         PUBLIC
