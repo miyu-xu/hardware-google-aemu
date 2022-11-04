@@ -219,7 +219,7 @@ class MetricsLoggerImpl : public MetricsLogger {
         std::visit(MetricTypeVisitor(), eventType);
     }
 
-    void setCrashAnnotation(const char* key, const char* value) {
+    void setCrashAnnotation(const char* key, const char* value) override {
         if (MetricsLogger::set_crash_annotation_callback) {
             MetricsLogger::set_crash_annotation_callback(key, value);
         }
