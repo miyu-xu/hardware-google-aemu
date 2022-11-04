@@ -43,7 +43,7 @@ cc_library_static {
         "Thread_pthread.cpp",
     ],
     whole_static_libs: ["perfetto-tracing-only"],
-    static_libs: ["gfxstream_lz4"],
+    shared_libs: ["liblz4"],
     export_header_lib_headers: ["gfxstream_renderdoc_headers"]
 }
 
