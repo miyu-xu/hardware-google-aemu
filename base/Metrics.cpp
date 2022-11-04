@@ -36,6 +36,8 @@ constexpr int64_t kEmulatorGraphicsUnHangSyncThread = 10027;
 constexpr int64_t kEmulatorGraphicsBadPacketLength = 10031;
 constexpr int64_t kEmulatorGraphicsDuplicateSequenceNum = 10032;
 constexpr int64_t kEmulatorGraphicsVulkanOutOfMemory = 10033;
+constexpr int64_t kEmulatorGraphicsHangOther = 10034;
+constexpr int64_t kEmulatorGraphicsUnHangOther = 10035;
 
 void (*MetricsLogger::add_instant_event_callback)(int64_t event_code) = nullptr;
 void (*MetricsLogger::add_instant_event_with_descriptor_callback)(int64_t event_code,
@@ -121,7 +123,8 @@ struct MetricTypeVisitor {
                     break;
                 }
                 case EventHangMetadata::HangType::kOther: {
-                    // We don't collect metrics for this type of hang.
+                    MetricsLogger::add_instant_event_with_metric_callback(
+                        kEmulatorGraphicsHangOther, hangEvent.otherHungTasks);
                     break;
                 }
             }
@@ -159,7 +162,8 @@ struct MetricTypeVisitor {
                     break;
                 }
                 case EventHangMetadata::HangType::kOther: {
-                    // We don't collect metrics for this type of hang.
+                    MetricsLogger::add_instant_event_with_metric_callback(
+                        kEmulatorGraphicsUnHangOther, unHangEvent.hung_ms);
                     break;
                 }
             }
