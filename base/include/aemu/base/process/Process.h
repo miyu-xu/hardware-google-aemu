@@ -86,6 +86,9 @@ public:
     // Retrieve the object from the given pid id.
     static std::unique_ptr<Process> fromPid(Pid pid);
 
+    // Retrieve process with "name" in the process.
+    static std::vector<std::unique_ptr<Process>> fromName(std::string name);
+
     // Retrieve myself.
     static std::unique_ptr<Process> me();
 
