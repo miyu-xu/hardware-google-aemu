@@ -43,6 +43,9 @@ public:
     // error.
     virtual ssize_t write(const void* buffer, size_t size) = 0;
 
+    virtual int getVersion(const char* name) { return 0; }
+    virtual void putVersion(const char* name, int version) { ; }
+
     // Write a single byte |value| into the stream. Ignore errors.
     void putByte(uint8_t value);
 
