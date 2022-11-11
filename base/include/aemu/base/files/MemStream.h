@@ -41,6 +41,10 @@ public:
     ssize_t read(void* buffer, size_t size) override;
     ssize_t write(const void* buffer, size_t size) override;
 
+    // protobuf support
+    void setProtobuf(const char* name, void* pb);
+    void* getProtobuf(const char* name) override;
+
     // Snapshot support.
     void save(Stream* stream) const;
     void load(Stream* stream);
@@ -54,6 +58,7 @@ private:
 
     Buffer mData;
     int mReadPos = 0;
+    void* mPb = nullptr;
 };
 
 }  // namespace base
