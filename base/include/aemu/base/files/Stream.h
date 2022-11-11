@@ -43,6 +43,11 @@ public:
     // error.
     virtual ssize_t write(const void* buffer, size_t size) = 0;
 
+    virtual void* promoteToProtobuf(const char* name) {
+        (void)name;
+        return nullptr;
+    }
+
     // Write a single byte |value| into the stream. Ignore errors.
     void putByte(uint8_t value);
 
