@@ -9,11 +9,6 @@ project(AEMUCommon
 
 set(AEMU_COMMON_REPO_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 
-# TODO(joshuaduong): There are still some header dependencies in vulkan-cereal/include. Need to
-# decouple this if possible.
-if(NOT GFXSTREAM_REPO_ROOT)
-    set(GFXSTREAM_REPO_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../../device/generic/vulkan-cereal)
-endif()
 if(NOT ANGLE_REPO_ROOT)
     set(ANGLE_REPO_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../../external/angle)
 endif()
@@ -68,13 +63,15 @@ target_link_libraries(
     aemu-host-common.headers)
 
 if(AEMU_COMMON_GEN_PKGCONFIG)
+    include(GNUInstallDirs)
     set(INSTALL_PC_FILES
         aemu_base
         logging_base
         aemu_host_common
-        aemu_base_testing_support
-        aemu_host_common_testing_support
         gfxstream_snapshot)
+    if(ENABLE_VKCEREAL_TESTS)
+        list(APPEND INSTALL_PC_FILES aemu_base_testing_support aemu_host_common_testing_support)
+    endif()
     foreach(PC_FILE IN LISTS INSTALL_PC_FILES)
         configure_file(CMake/${PC_FILE}.pc.in ${PC_FILE}.pc @ONLY)
         install(
@@ -89,13 +86,15 @@ if(AEMU_COMMON_GEN_PKGCONFIG)
             FILES_MATCHING
             PATTERN "*.h")
     install(DIRECTORY snapshot/include/snapshot DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-    install(TARGETS
-            aemu-base
-            aemu-host-common
-            gfxstream-snapshot
-            logging-base
-            aemu-base-testing-support
-            aemu-host-common-testing-support
+    set(INSTALL_TARGETS
+        aemu-base
+        aemu-host-common
+        gfxstream-snapshot
+        logging-base)
+    if(ENABLE_VKCEREAL_TESTS)
+        list(APPEND INSTALL_TARGETS aemu-base-testing-support aemu-host-common-testing-support)
+    endif()
+    install(TARGETS ${INSTALL_TARGETS}
             LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
             INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 endif()
