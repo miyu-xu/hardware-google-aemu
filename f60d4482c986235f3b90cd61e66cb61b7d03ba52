@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e9d4bebf_96ac3f9d",
+        "filename": "base/include/aemu/base/Metrics.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1899526
+      },
+      "writtenOn": "2022-11-14T21:37:30Z",
+      "side": 0,
+      "message": "I don\u0027t think generoc string fields will ultimately be where these metrics go. I do think it may make sense though to rework the format of these metrics. I\u0027ve discussed with srichman and baxe maybe improving these in the future, perhaps by moving hang type to an enum on the proto message or reworking hangs into aggregated metrics.",
+      "revId": "f60d4482c986235f3b90cd61e66cb61b7d03ba52",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
