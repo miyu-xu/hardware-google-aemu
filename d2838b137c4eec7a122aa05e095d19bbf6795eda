@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c635d8a9_536bf671",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1046320
+      },
+      "writtenOn": "2022-11-16T18:07:09Z",
+      "side": 1,
+      "message": "PTAL, fixed build failure",
+      "revId": "d2838b137c4eec7a122aa05e095d19bbf6795eda",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
