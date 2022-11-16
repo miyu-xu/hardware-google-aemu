@@ -37,6 +37,10 @@ ssize_t MemStream::read(void* buffer, size_t size) {
     return sizeToRead;
 }
 
+void* MemStream::getProtobuf() { return mPb; }
+
+void MemStream::setProtobuf(void* pb) { mPb = pb; }
+
 ssize_t MemStream::write(const void* buffer, size_t size) {
     mData.insert(mData.end(), (const char*)buffer, (const char*)buffer + size);
     return size;
