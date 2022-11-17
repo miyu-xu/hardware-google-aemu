@@ -100,18 +100,18 @@ else()
     set(aemu-base-platform-test-srcs "")
 endif()
 
-if (ENABLE_VKCEREAL_TESTS)
-    # Tests
-    add_library(
-        aemu-base-testing-support
-        testing/file_io.cpp)
-    target_link_libraries(
-        aemu-base-testing-support
-        PRIVATE
-        aemu-base.headers
-        gtest
-        gmock)
+# Tests
+add_library(
+    aemu-base-testing-support
+    testing/file_io.cpp)
+target_link_libraries(
+    aemu-base-testing-support
+    PRIVATE
+    aemu-base.headers
+    gtest
+    gmock)
 
+if (ENABLE_VKCEREAL_TESTS)
     if (NOT DEFINED aemu-base-test-srcs)
         set(aemu-base-test-srcs
             AlignedBuf_unittest.cpp

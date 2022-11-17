@@ -16,23 +16,13 @@
 
 #pragma once
 
-#include <cstdint>
+#include "render-utils/render_api_types.h"
 
 #ifdef _MSC_VER
 #  define EMUGL_COMMON_API __declspec(dllexport)
 #else
 # define EMUGL_COMMON_API
 #endif
-
-// Function type that describes functions for
-// accessing Goldfish DMA regions at a specified offset.
-typedef void* (*emugl_dma_get_host_addr_t)(uint64_t);
-typedef void (*emugl_dma_unlock_t)(uint64_t);
-
-typedef struct {
-    emugl_dma_get_host_addr_t get_host_addr;
-    emugl_dma_unlock_t unlock;
-} emugl_dma_ops;
 
 namespace emugl {
 

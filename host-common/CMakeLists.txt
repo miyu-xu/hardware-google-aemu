@@ -1,3 +1,15 @@
+if (APPLE)
+    set(aemu-host-common-opengles-platform-sources
+        opengl/macTouchOpenGL.m
+        opengl/NativeGpuInfo_darwin.cpp)
+elseif (WIN32)
+    set(aemu-host-common-opengles-platform-sources
+        opengl/NativeGpuInfo_windows.cpp)
+else()
+    set(aemu-host-common-opengles-platform-sources
+        opengl/NativeGpuInfo_linux.cpp)
+endif()
+
 # TODO(gregschlom) move this to base
 add_library(logging-base
     STATIC
@@ -7,7 +19,8 @@ add_library(logging-base
 target_include_directories(
     logging-base
     PRIVATE
-    include/host-common)
+    include/host-common
+    ${GFXSTREAM_REPO_ROOT}/include)
 target_link_libraries(
     logging-base
     PUBLIC
@@ -62,13 +75,31 @@ if (BUILD_STANDALONE)
         address_space_host_media.cpp
 
         hw-config.cpp
+
+        # general opengles host stuff, incl process pipe
+        # and opengl es pipe
+        opengles.cpp
+        opengl/EmuglBackendList.cpp
+        # opengl/EmuglBackendList_unittest.cpp
+        opengl/emugl_config.cpp
+        # opengl/emugl_config_unittest.cpp
+        opengl/GLProcessPipe.cpp
+        opengl/GpuFrameBridge.cpp
+        # opengl/GpuFrameBridge_unittest.cpp
+        opengl/gpuinfo.cpp
+        # opengl/gpuinfo_unittest.cpp
+        opengl/logger.cpp
+        opengl/OpenglEsPipe.cpp
+        ${aemu-host-common-opengles-platform-sources}
         )
 
     target_include_directories(
         aemu-host-common
         PRIVATE
         include/host-common
-        ${AEMU_COMMON_REPO_ROOT}/../../../external/angle/include)
+        include/host-common/opengl
+        ${GFXSTREAM_REPO_ROOT}/include
+        ${GFXSTREAM_REPO_ROOT}/../../../external/angle/include)
     target_link_libraries(
         aemu-host-common
         PUBLIC
@@ -94,28 +125,28 @@ target_link_libraries(
     PRIVATE
     aemu-host-common.product-feature-override)
 
-if (ENABLE_VKCEREAL_TESTS)
-    # Tests
-    add_library(
-        aemu-host-common-testing-support
-        testing/HostAddressSpace.cpp
-        testing/MockGraphicsAgentFactory.cpp
-        testing/MockAndroidEmulatorWindowAgent.cpp
-        testing/MockAndroidMultiDisplayAgent.cpp
-        testing/MockAndroidVmOperations.cpp)
-    target_include_directories(
-        aemu-host-common-testing-support
-        PUBLIC
-        ${AEMU_COMMON_REPO_ROOT})
-    target_link_libraries(
-        aemu-host-common-testing-support
-        PUBLIC
-        PRIVATE
-        aemu-base.headers
-        aemu-host-common.headers
-        gtest
-        gmock)
+# Tests
+add_library(
+    aemu-host-common-testing-support
+    testing/HostAddressSpace.cpp
+    testing/MockGraphicsAgentFactory.cpp
+    testing/MockAndroidEmulatorWindowAgent.cpp
+    testing/MockAndroidMultiDisplayAgent.cpp
+    testing/MockAndroidVmOperations.cpp)
+target_include_directories(
+    aemu-host-common-testing-support
+    PUBLIC
+    ${AEMU_COMMON_REPO_ROOT})
+target_link_libraries(
+    aemu-host-common-testing-support
+    PUBLIC
+    PRIVATE
+    aemu-base.headers
+    aemu-host-common.headers
+    gtest
+    gmock)
 
+if (ENABLE_VKCEREAL_TESTS)
     add_executable(
         aemu-host-common_unittests
         address_space_graphics_unittests.cpp
@@ -129,7 +160,8 @@ if (ENABLE_VKCEREAL_TESTS)
     target_include_directories(
         aemu-host-common_unittests
         PRIVATE
-        ${AEMU_COMMON_REPO_ROOT})
+        ${AEMU_COMMON_REPO_ROOT}
+        ${GFXSTREAM_REPO_ROOT}/include)
 
     target_link_libraries(
         aemu-host-common_unittests

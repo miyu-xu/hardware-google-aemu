@@ -14,8 +14,9 @@
 
 #pragma once
 
-#include "host-common/multi_display_agent.h"
-#include "host-common/window_agent.h"
+#include "multi_display_agent.h"
+#include "window_agent.h"
+#include "opengl/emugl_config.h"
 
 #ifdef _MSC_VER
 # ifdef BUILDING_EMUGL_COMMON_SHARED
@@ -41,6 +42,7 @@ namespace base {
 
 class CpuUsage;
 class MemoryTracker;
+class GLObjectCounter;
 
 } // namespace base
 } // namespace android
@@ -50,6 +52,23 @@ namespace emugl {
     // Set and get API version of system image.
     EMUGL_COMMON_API void setAvdInfo(bool isPhone, int apiLevel);
     EMUGL_COMMON_API void getAvdInfo(bool* isPhone, int* apiLevel);
+
+    // Set/get GLES major/minor version.
+    EMUGL_COMMON_API void setGlesVersion(int maj, int min);
+    EMUGL_COMMON_API void getGlesVersion(int* maj, int* min);
+
+    // Set/get renderer
+    EMUGL_COMMON_API void setRenderer(SelectedRenderer renderer);
+    EMUGL_COMMON_API SelectedRenderer getRenderer();
+
+    // Extension string query
+    EMUGL_COMMON_API bool hasExtension(const char* extensionsStr,
+                      const char* wantedExtension);
+
+    // GL object counter get/set
+    EMUGL_COMMON_API void setGLObjectCounter(
+            android::base::GLObjectCounter* counter);
+    EMUGL_COMMON_API android::base::GLObjectCounter* getGLObjectCounter();
 
     // CPU usage get/set.
     EMUGL_COMMON_API void setCpuUsage(android::base::CpuUsage* usage);
