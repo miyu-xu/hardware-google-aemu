@@ -66,8 +66,10 @@ if (BUILD_STANDALONE)
         set(aemu-base-platform-deps Shlwapi)
     elseif (QNX)
         set(aemu-base-platform-deps dl)
-    else()
+    elseif(LINUX)
         set(aemu-base-platform-deps dl rt)
+    elseif(APPLE)
+        set(aemu-base-platform-deps "-framework Foundation" "-framework AppKit" "-framework IOKit")
     endif()
 
     target_link_libraries(
