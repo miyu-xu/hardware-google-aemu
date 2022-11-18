@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7e7c0cd7_bc62badc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2022-11-18T17:32:46Z",
+      "side": 1,
+      "message": "Nice!",
+      "revId": "e368f6c5f78554683d5d3ed339bb5d1345440c10",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "175fab51_17f142ec",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2022-11-18T17:32:46Z",
+      "side": 1,
+      "message": "Should we make this the default for debug builds?",
+      "revId": "e368f6c5f78554683d5d3ed339bb5d1345440c10",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d6d3d2f1_2c4a7531",
+        "filename": "base/include/aemu/base/ThreadAnnotations.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2022-11-18T17:32:46Z",
+      "side": 1,
+      "message": "2022",
+      "revId": "e368f6c5f78554683d5d3ed339bb5d1345440c10",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "810a5b2f_733c805d",
+        "filename": "base/include/aemu/base/ThreadAnnotations.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2022-11-18T17:32:46Z",
+      "side": 1,
+      "message": "Do we have to add these ourselves in the right places in the code base? If so you might want to share your findings with the team so we all know how we can use this :-)",
+      "revId": "e368f6c5f78554683d5d3ed339bb5d1345440c10",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
