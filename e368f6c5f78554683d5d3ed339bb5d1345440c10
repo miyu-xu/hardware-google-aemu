@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a3f16c23_a0e6dc40",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2022-11-21T19:01:48Z",
+      "side": 1,
+      "message": "The annotations reveals some potential race conditions as errors right now, so let\u0027s keep it off by default until we fix all the errors.",
+      "parentUuid": "175fab51_17f142ec",
+      "revId": "e368f6c5f78554683d5d3ed339bb5d1345440c10",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d6d3d2f1_2c4a7531",
@@ -52,6 +70,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "037eebb8_06a5d0de",
+        "filename": "base/include/aemu/base/ThreadAnnotations.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2022-11-21T19:01:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d6d3d2f1_2c4a7531",
+      "revId": "e368f6c5f78554683d5d3ed339bb5d1345440c10",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "810a5b2f_733c805d",
@@ -65,6 +101,24 @@
       "writtenOn": "2022-11-18T17:32:46Z",
       "side": 1,
       "message": "Do we have to add these ourselves in the right places in the code base? If so you might want to share your findings with the team so we all know how we can use this :-)",
+      "revId": "e368f6c5f78554683d5d3ed339bb5d1345440c10",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "70e5aa6a_6642baa4",
+        "filename": "base/include/aemu/base/ThreadAnnotations.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2022-11-21T19:01:48Z",
+      "side": 1,
+      "message": "You only need to add these annnotations if you implement a locking API. As a user of a locking API, you don\u0027t need to add anything.",
+      "parentUuid": "810a5b2f_733c805d",
       "revId": "e368f6c5f78554683d5d3ed339bb5d1345440c10",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
