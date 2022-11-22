@@ -24,6 +24,9 @@ endif()
 option(AEMU_COMMON_GEN_PKGCONFIG
        "Generate install files used by pkg-config."
        OFF)
+option(ENABLE_CLANG_THREAD_SAFETY_CHECKS
+       "Enable clang thread-safety checks (-Wthread-safety)."
+       OFF)
 
 if (WIN32)
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Zi")
