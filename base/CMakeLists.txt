@@ -98,6 +98,9 @@ if (BUILD_STANDALONE)
         target_compile_options(
             aemu-base PRIVATE -fvisibility=default)
     endif()
+    if(AEMU_COMMON_USE_PERFETTO)
+        target_compile_definitions(aemu-base PRIVATE "USE_PERFETTO_TRACING")
+    endif()
 endif()
 
 if (APPLE)
