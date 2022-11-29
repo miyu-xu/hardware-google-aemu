@@ -42,7 +42,8 @@ cc_library_static {
         "Tracing.cpp",
         "Thread_pthread.cpp",
     ],
-    export_header_lib_headers: ["gfxstream_renderdoc_headers"]
+    export_header_lib_headers: ["gfxstream_renderdoc_headers"],
+    static_libs: ["liblz4"],
 }
 
 // Run with `atest --host gfxstream_base_tests`
