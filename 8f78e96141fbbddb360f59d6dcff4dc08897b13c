@@ -16,6 +16,23 @@
       "message": "LGTM, thanks!",
       "revId": "8f78e96141fbbddb360f59d6dcff4dc08897b13c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7ef1cf88_77b0d555",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2022-11-29T22:47:22Z",
+      "side": 1,
+      "message": "Build failure on the emulator-windows_x64 on aosp-emu-master-dev target is a known issue: b/260751358",
+      "revId": "8f78e96141fbbddb360f59d6dcff4dc08897b13c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
