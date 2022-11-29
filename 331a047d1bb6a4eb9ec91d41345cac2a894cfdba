@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "444cf0e5_7690bb56",
+        "filename": "base/CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1883347
+      },
+      "writtenOn": "2022-11-29T06:42:32Z",
+      "side": 1,
+      "message": "Shouldn\u0027t it be removed as well?",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 33
+      },
+      "revId": "331a047d1bb6a4eb9ec91d41345cac2a894cfdba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
