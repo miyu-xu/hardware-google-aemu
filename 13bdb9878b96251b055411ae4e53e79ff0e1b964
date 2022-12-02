@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "21530be4_7cf9059d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2022-12-02T20:01:02Z",
+      "side": 1,
+      "message": "LGTM to me, but defer to Joshua to decide if we need to cherry-pick this change to external/qemu as well.",
+      "revId": "13bdb9878b96251b055411ae4e53e79ff0e1b964",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
