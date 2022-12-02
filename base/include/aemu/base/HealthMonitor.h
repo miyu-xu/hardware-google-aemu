@@ -38,8 +38,8 @@
 using android::base::EventHangMetadata;
 using android::base::getCurrentThreadId;
 
-#define WATCHDOG_BUILDER(healthMonitor, msg)                                                       \
-    ::emugl::HealthWatchdogBuilder<std::decay_t<decltype(healthMonitor)>>(healthMonitor, __FILE__, \
+#define WATCHDOG_BUILDER(healthMonitorPtr, msg)                                                       \
+    ::emugl::HealthWatchdogBuilder<std::decay_t<decltype(*healthMonitorPtr)>>(healthMonitorPtr, __FILE__, \
                                                                           __func__, msg, __LINE__)
 
 namespace emugl {
@@ -258,7 +258,7 @@ class HealthWatchdog {
 template <class HealthMonitorT>
 class HealthWatchdogBuilder {
    public:
-    HealthWatchdogBuilder(HealthMonitorT& healthMonitor, const char* fileName,
+    HealthWatchdogBuilder(HealthMonitorT* healthMonitor, const char* fileName,
                           const char* functionName, const char* message, uint32_t line)
         : mHealthMonitor(healthMonitor),
           mMetadata(std::make_unique<EventHangMetadata>(
@@ -269,41 +269,48 @@ class HealthWatchdogBuilder {
     DISALLOW_COPY_ASSIGN_AND_MOVE(HealthWatchdogBuilder);
 
     HealthWatchdogBuilder& setHangType(EventHangMetadata::HangType hangType) {
-        mMetadata->hangType = hangType;
+        if (mHealthMonitor) mMetadata->hangType = hangType;
         return *this;
     }
     HealthWatchdogBuilder& setTimeoutMs(uint32_t timeoutMs) {
-        mTimeoutMs = timeoutMs;
+        if (mHealthMonitor) mTimeoutMs = timeoutMs;
         return *this;
     }
     // F should be a callable that returns a std::unique_ptr<EventHangMetadata::HangAnnotations>. We
     // use template instead of std::function here to avoid extra copy.
     template <class F>
     HealthWatchdogBuilder& setOnHangCallback(F&& callback) {
-        mOnHangCallback =
-            std::function<std::unique_ptr<HangAnnotations>()>(std::forward<F>(callback));
+        if (mHealthMonitor) {
+            mOnHangCallback =
+                std::function<std::unique_ptr<HangAnnotations>()>(std::forward<F>(callback));
+        }
         return *this;
     }
 
     HealthWatchdogBuilder& setAnnotations(std::unique_ptr<HangAnnotations> annotations) {
-        mMetadata->data = std::move(annotations);
+        if (mHealthMonitor) mMetadata->data = std::move(annotations);
         return *this;
     }
 
     std::unique_ptr<HealthWatchdog<HealthMonitorT>> build() {
+        if (!mHealthMonitor) {
+            return nullptr;
+        }
         // We are allocating on the heap, so there is a performance hit. However we also allocate
         // EventHangMetadata on the heap, so this should be Ok. If we see performance issues with
         // these allocations, for HealthWatchdog, we can always use placement new + noop deleter to
         // avoid heap allocation for HealthWatchdog.
         return std::make_unique<HealthWatchdog<HealthMonitorT>>(
-            mHealthMonitor, std::move(mMetadata), std::move(mOnHangCallback), mTimeoutMs);
+            *mHealthMonitor, std::move(mMetadata), std::move(mOnHangCallback), mTimeoutMs);
     }
 
    private:
-    HealthMonitorT& mHealthMonitor;
+    HealthMonitorT* mHealthMonitor;
     std::unique_ptr<EventHangMetadata> mMetadata;
     uint32_t mTimeoutMs;
     std::optional<std::function<std::unique_ptr<HangAnnotations>()>> mOnHangCallback;
 };
+
+std::unique_ptr<HealthMonitor<>> CreateHealthMonitor(MetricsLogger& metricsLogger, uint64_t heartbeatInterval = kDefaultIntervalMs);
 
 }  // namespace emugl

@@ -15,6 +15,8 @@ if(ENABLE_CLANG_THREAD_SAFETY_CHECKS)
     target_compile_options(aemu-base.headers INTERFACE -Wthread-safety)
 endif()
 
+# add_compile_definitions(ENABLE_HEALTH_MONITOR) This works
+
 if (BUILD_STANDALONE)
     if (NOT DEFINED aemu-base-srcs)
         # Build everything by default
@@ -68,6 +70,7 @@ if (BUILD_STANDALONE)
     endif()
 
     add_library(aemu-base ${aemu-base-srcs})
+    target_compile_definitions(aemu-base PRIVATE -DENABLE_HEALTH_MONITOR=1)
 
     if (WIN32)
         set(aemu-base-platform-deps Shlwapi)
