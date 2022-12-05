@@ -63,3 +63,14 @@ cc_test_host {
         unit_test: true,
     },
 }
+
+cc_test_library {
+    name: "gfxstream_base_test_support",
+    defaults: [ "gfxstream_defaults" ],
+    srcs: [
+        "testing/file_io.cpp",
+    ],
+    static_libs: [
+        "gfxstream_base",
+    ],
+}
