@@ -19,6 +19,7 @@
 #include "android/crashreport/crash-handler.h"
 #include "host-common/android_pipe_device.h"
 #include "host-common/AndroidPipe.h"
+#include "host-common/crash-handler.h"
 #include "host-common/testing/TestVmLock.h"
 #include "host-common/VmLock.h"
 
