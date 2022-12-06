@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "60829516_be5d7b86",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1899526
+      },
+      "writtenOn": "2022-12-06T21:54:41Z",
+      "side": 1,
+      "message": "Please review in vulkan-cereal (go/oag/2328814) and hardware/google/aemu (go/oag/2328815) as other CLs will derive from those two.",
+      "revId": "caddff7d34a9252e203375c0111871e6ee38e0c8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
