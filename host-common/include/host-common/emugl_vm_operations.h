@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include "host-common/vm_operations.h"
+
 #ifdef _MSC_VER
 # ifdef BUILDING_EMUGL_COMMON_SHARED
 #  define EMUGL_COMMON_API __declspec(dllexport)
