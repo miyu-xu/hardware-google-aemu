@@ -14,11 +14,12 @@
 #pragma once
 
 #include "aemu/base/c_header.h"
-#include "aemu/base/StringFormat.h"
 
 #include <stdarg.h>
 
 #ifdef __cplusplus
+#include "aemu/base/StringFormat.h"
+
 #include <utility>
 #include <stdio.h>
 #else
