@@ -16,6 +16,40 @@
       "message": "Please review in vulkan-cereal (go/oag/2328814) and hardware/google/aemu (go/oag/2328815) as other CLs will derive from those two.",
       "revId": "caddff7d34a9252e203375c0111871e6ee38e0c8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "515ca5f2_0ea3067d",
+        "filename": "base/HealthMonitor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2022-12-08T19:57:35Z",
+      "side": 1,
+      "message": "I personally think it\u0027s better to let the caller/service container, `FrameBuffer`, to decide whether to create a concrete `HealthMonitor` or not, because that will make `FrameBuffer` have control over the entire creation of `HealthMonitor`. But I don\u0027t feel strong on that.",
+      "revId": "caddff7d34a9252e203375c0111871e6ee38e0c8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c50405aa_1e57c11c",
+        "filename": "base/HealthMonitor_unittest.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 606,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2022-12-08T19:57:35Z",
+      "side": 1,
+      "message": "Can we add some minimal test cases for `WATCHDOG_BUILDER(nullptr, ...`?",
+      "revId": "caddff7d34a9252e203375c0111871e6ee38e0c8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
