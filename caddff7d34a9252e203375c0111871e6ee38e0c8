@@ -50,6 +50,23 @@
       "message": "Can we add some minimal test cases for `WATCHDOG_BUILDER(nullptr, ...`?",
       "revId": "caddff7d34a9252e203375c0111871e6ee38e0c8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a16ccb6f_044c0123",
+        "filename": "base/include/aemu/base/HealthMonitor.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 295,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2022-12-08T20:06:14Z",
+      "side": 1,
+      "message": "I personally don\u0027t like `build` returning a nullable pointer, because that forces the user to do one more check before using the watchdog. And as you have found, that will add many if\u0027s.\n\nA more usable way is to return a `StubHealthWatchdog` that does nothing but replicate the interface of `HealthWatchdog`. But given the history that not many one uses the watchdog, I don\u0027t feel strong on it.",
+      "revId": "caddff7d34a9252e203375c0111871e6ee38e0c8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
