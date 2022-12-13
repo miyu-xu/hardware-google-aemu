@@ -54,6 +54,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "82910774_f4369d65",
+        "filename": "base/HealthMonitor_unittest.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 606,
+      "author": {
+        "id": 1899526
+      },
+      "writtenOn": "2022-12-13T19:42:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c50405aa_1e57c11c",
+      "revId": "caddff7d34a9252e203375c0111871e6ee38e0c8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "a16ccb6f_044c0123",
         "filename": "base/include/aemu/base/HealthMonitor.h",
         "patchSetId": 3
@@ -83,6 +101,24 @@
       "side": 1,
       "message": "Another way is to allow `HealthWatchdog` to accept a `nullptr`, and do nothing on all interfaces.",
       "parentUuid": "a16ccb6f_044c0123",
+      "revId": "caddff7d34a9252e203375c0111871e6ee38e0c8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1910beed_f29d7a5a",
+        "filename": "base/include/aemu/base/HealthMonitor.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 295,
+      "author": {
+        "id": 1899526
+      },
+      "writtenOn": "2022-12-13T19:42:57Z",
+      "side": 1,
+      "message": "I revised `HealthWatchdog` to accept a `nullptr`. We still need a check when calling `release()` + `stopMonitoringTask`, but I think that\u0027s fine since, like you said, it\u0027s not extensively used, and I want to keep the simplicity of having a `nullptr` `HealthMonitor` for noww",
+      "parentUuid": "7d89c685_d2171d65",
       "revId": "caddff7d34a9252e203375c0111871e6ee38e0c8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
