@@ -118,7 +118,6 @@ intptr_t HealthMonitor<Clock>::main() {
     while (keepMonitoring) {
         std::vector<std::promise<void>> pollPromises;
         std::unordered_set<Id> tasksToRemove;
-        int newHungTasks = mHungTasks;
         {
             AutoLock lock(mLock);
             if (mEventQueue.empty()) {
@@ -192,7 +191,7 @@ intptr_t HealthMonitor<Clock>::main() {
                                updateTaskParent(events, task, event.timeOccurred);
 
                                // Mark it for deletion, but retain it until the end of
-                               // the health check concurrent tasks hung
+                               // the health check to check concurrent tasks hung
                                tasksToRemove.insert(event.id);
                            },
                            [&keepMonitoring](typename MonitoredEventType::EndMonitoring& event) {
@@ -204,6 +203,8 @@ intptr_t HealthMonitor<Clock>::main() {
                        *event);
         }
 
+        int newHungTasks = mHungTasks;
+
         // Sort by what times out first. Identical timestamps are possible
         std::multimap<Timestamp, uint64_t> sortedTasks;
         for (auto& [_, task] : mMonitoredTasks) {
@@ -212,8 +213,8 @@ intptr_t HealthMonitor<Clock>::main() {
 
         for (auto& [_, task_id] : sortedTasks) {
             auto& task = mMonitoredTasks[task_id];
-            if (task.timeoutTimestamp < now) {
-                // Newly hung task
+            if (task.timeoutTimestamp < now && tasksToRemove.find(task_id) == tasksToRemove.end()) {
+                // Newly hung task which is still in progress
                 if (!task.hungTimestamp.has_value()) {
                     // Copy over additional annotations captured at hangTime
                     if (task.onHangAnnotationsCallback) {
@@ -227,7 +228,7 @@ intptr_t HealthMonitor<Clock>::main() {
                     newHungTasks++;
                 }
             } else {
-                // Task resumes
+                // Task resumes or ends
                 if (task.hungTimestamp.has_value()) {
                     newHungTasks--;
                     auto hangTime = duration_cast<std::chrono::milliseconds>(
@@ -241,6 +242,7 @@ intptr_t HealthMonitor<Clock>::main() {
                     task.hungTimestamp = std::nullopt;
                 }
             }
+
             if (tasksToRemove.find(task_id) != tasksToRemove.end()) {
                 mMonitoredTasks.erase(task_id);
             }
