@@ -54,6 +54,15 @@ using HangAnnotations = EventHangMetadata::HangAnnotations;
 
 static uint64_t kDefaultIntervalMs = 1'000;
 static uint64_t kDefaultTimeoutMs = 5'000;
+
+// Watermark values
+static uint64_t kDefaultEventsProcessWatermarkMs = 10;
+static uint64_t kDefaultWaitTimeWatermarkMs = 1'010;
+static size_t kDefaultEventQueueWatermark = 10;
+static size_t kDefaultTasksMonitoredWatermark = 5;
+
+static size_t kDefaultMaxEventsPerInterval =
+    5'000'000;  // Arbitrarily large, but we should limit this
 static std::chrono::nanoseconds kTimeEpsilon(1);
 
 // HealthMonitor provides the ability to register arbitrary start/touch/stop events associated
@@ -70,7 +79,8 @@ class HealthMonitor : public android::base::Thread {
     // Constructor
     // `heatbeatIntervalMs` is the interval, in milleseconds, that the thread will sleep for
     // in between health checks.
-    HealthMonitor(MetricsLogger& metricsLogger, uint64_t heartbeatInterval = kDefaultIntervalMs);
+    HealthMonitor(MetricsLogger& metricsLogger, uint64_t heartbeatInterval = kDefaultIntervalMs,
+                  size_t maxEventsPerInverval = kDefaultMaxEventsPerInterval);
 
     // Destructor
     // Enqueues an event to end monitoring and waits on thread to process remaining queued events.
@@ -156,6 +166,8 @@ class HealthMonitor : public android::base::Thread {
     // poll event has been processed.
     std::future<void> poll();
 
+    void setEventQueueMax(size_t newMax) { mMaxEventsPerInterval = newMax; }
+
     // Immutable. Multi-thread access is safe.
     const Duration mInterval;
 
@@ -169,6 +181,8 @@ class HealthMonitor : public android::base::Thread {
     Lock mLock;
     Id mNextId = 0;
     std::queue<std::unique_ptr<MonitoredEvent>> mEventQueue;
+    uint64_t mDroppedEvents = 0;
+    size_t mMaxEventsPerInterval;
 };
 
 // This class provides an RAII mechanism for monitoring a task.
