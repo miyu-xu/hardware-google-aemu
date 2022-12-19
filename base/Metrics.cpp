@@ -19,6 +19,7 @@
 #include <sstream>
 #include <variant>
 
+#include "aemu/base/RateLimiter.h"
 #include "host-common/logging.h"
 
 namespace android {
@@ -38,8 +39,6 @@ constexpr int64_t kEmulatorGraphicsDuplicateSequenceNum = 10032;
 constexpr int64_t kEmulatorGraphicsVulkanOutOfMemory = 10033;
 constexpr int64_t kEmulatorGraphicsHangOther = 10034;
 constexpr int64_t kEmulatorGraphicsUnHangOther = 10035;
-
-constexpr int64_t kHangDepthMetricLimit = 10;
 
 void (*MetricsLogger::add_instant_event_callback)(int64_t event_code) = nullptr;
 void (*MetricsLogger::add_instant_event_with_descriptor_callback)(int64_t event_code,
@@ -112,8 +111,7 @@ struct MetricTypeVisitor {
 
         ERR("Logging hang event. Number of tasks already hung: %d", hangEvent.otherHungTasks);
         logEventHangMetadata(hangEvent.metadata);
-        if (MetricsLogger::add_instant_event_with_metric_callback &&
-            hangEvent.otherHungTasks <= kHangDepthMetricLimit) {
+        if (MetricsLogger::add_instant_event_with_metric_callback) {
             switch (hangEvent.metadata->hangType) {
                 case EventHangMetadata::HangType::kRenderThread: {
                     MetricsLogger::add_instant_event_with_metric_callback(
@@ -152,8 +150,7 @@ struct MetricTypeVisitor {
     void operator()(const MetricEventUnHang unHangEvent) const {
         ERR("Logging unhang event. Hang time: %d ms", unHangEvent.hung_ms);
         logEventHangMetadata(unHangEvent.metadata);
-        if (MetricsLogger::add_instant_event_with_metric_callback &&
-            unHangEvent.otherHungTasks <= kHangDepthMetricLimit) {
+        if (MetricsLogger::add_instant_event_with_metric_callback) {
             switch (unHangEvent.metadata->hangType) {
                 case EventHangMetadata::HangType::kRenderThread: {
                     MetricsLogger::add_instant_event_with_metric_callback(
@@ -223,7 +220,16 @@ struct MetricTypeVisitor {
 
 // MetricsLoggerImpl
 class MetricsLoggerImpl : public MetricsLogger {
+   public:
+    MetricsLoggerImpl()
+        : mHangRateLimiter("GraphicsHang", kPerMinuteRateLimit),
+          mUnHangRateLimiter("GraphicsUnHang", kPerMinuteRateLimit) {}
+
     void logMetricEvent(MetricEventType eventType) override {
+        if ((std::holds_alternative<MetricEventHang>(eventType) && !mHangRateLimiter.use()) ||
+            (std::holds_alternative<MetricEventUnHang>(eventType) && !mUnHangRateLimiter.use())) {
+            return;
+        }
         std::visit(MetricTypeVisitor(), eventType);
     }
 
@@ -232,6 +238,11 @@ class MetricsLoggerImpl : public MetricsLogger {
             MetricsLogger::set_crash_annotation_callback(key, value);
         }
     }
+
+   private:
+    static constexpr int64_t kPerMinuteRateLimit = 10;
+    RateLimiter mHangRateLimiter;
+    RateLimiter mUnHangRateLimiter;
 };
 
 std::unique_ptr<MetricsLogger> CreateMetricsLogger() {
