@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b41a4242_c53296e3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1899526
+      },
+      "writtenOn": "2022-12-20T16:32:51Z",
+      "side": 1,
+      "message": "After review, I intend to \"cherry-pick\" this and https://android-review.git.corp.google.com/c/platform/hardware/google/aemu/+/2364481 to the guest as well.",
+      "revId": "b9bbf0292f24853022feef014adb2338dbd04d5f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
