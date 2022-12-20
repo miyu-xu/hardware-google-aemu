@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e068f5a3_94ecd0d7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1899526
+      },
+      "writtenOn": "2022-12-20T16:32:46Z",
+      "side": 1,
+      "message": "This aligns the host side rate limiting with the guest side logic introduced in https://googleplex-android-review.git.corp.google.com/c/device/generic/goldfish-opengl/+/20666799 and is nearly identical to that change.",
+      "revId": "dbecf3ff9d87a26594908a6e68b1001b2d052679",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
