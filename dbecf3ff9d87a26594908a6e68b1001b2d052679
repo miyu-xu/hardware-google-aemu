@@ -16,6 +16,23 @@
       "message": "This aligns the host side rate limiting with the guest side logic introduced in https://googleplex-android-review.git.corp.google.com/c/device/generic/goldfish-opengl/+/20666799 and is nearly identical to that change.",
       "revId": "dbecf3ff9d87a26594908a6e68b1001b2d052679",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "06878938_9e4c583e",
+        "filename": "base/include/aemu/base/RateLimiter.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2023-01-03T23:31:54Z",
+      "side": 1,
+      "message": "Use `std::move(eventName)` here, or change the type of the `eventName` parameter to `const char*`.",
+      "revId": "dbecf3ff9d87a26594908a6e68b1001b2d052679",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
