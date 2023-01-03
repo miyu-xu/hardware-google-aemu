@@ -16,6 +16,40 @@
       "message": "After review, I intend to \"cherry-pick\" this and https://android-review.git.corp.google.com/c/platform/hardware/google/aemu/+/2364481 to the guest as well.",
       "revId": "b9bbf0292f24853022feef014adb2338dbd04d5f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "293ccba1_83808bfd",
+        "filename": "base/HealthMonitor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2023-01-03T23:20:33Z",
+      "side": 1,
+      "message": "We won\u0027t catch the following \"hang\":\nstart\ntimeout threshold passed\nend\npoll\n\nHowever, this is not an actual hang, because we recover from it at last. Can we add a comment somewhere to denote that it is possible that it is not guaranteed that we report a task that exceeds the timeout but finally recovers.",
+      "revId": "b9bbf0292f24853022feef014adb2338dbd04d5f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d340bdcd_a7e43c0f",
+        "filename": "base/HealthMonitor_unittest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 486,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2023-01-03T23:20:33Z",
+      "side": 1,
+      "message": "I am afraid that we should not check the `taskId` field, because how the id is generated shouldn\u0027t be tested. `Times(1)` should be sufficient.",
+      "revId": "b9bbf0292f24853022feef014adb2338dbd04d5f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
