@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b9df9021_c0361ee0",
+        "filename": "base/HealthMonitor_unittest.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 531,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2023-01-03T22:26:01Z",
+      "side": 1,
+      "message": "It seems to me that this test relies on how the test id is generated, which I don\u0027t think is good. Can we just write the test like this?\n\n```\nMockFunction\u003cvoid(int)\u003e checkpoint;\n{\n    InSequence s;\n    EXPECT_CALL(logger, logMetricEvent(VariantWith\u003cMetricEventHang\u003e(_))).Times(1);\n    EXPECT_CALL(checkpoint, Call(0));\n    EXPECT_CALL(logger, logMetricEvent(VariantWith\u003cMetricEventHang\u003e(_))).Times(1);\n    EXPECT_CALL(checkpoint, Call(1));\n    ...\n}\nauto id0 \u003d healthMonitor.startMonitoringTask(std::make_unique\u003cEventHangMetadata\u003e());\nauto id1 \u003d healthMonitor.startMonitoringTask(std::make_unique\u003cEventHangMetadata\u003e());\ncheckpoint.Call(0);\nstep(1);\nauto id2 \u003d healthMonitor.startMonitoringTask(std::make_unique\u003cEventHangMetadata\u003e());\nstep(defaultHangThresholdS * 2);\ncheckpoint.Call(1);\nhealthMonitor.stopMonitoringTask(id0);\nhealthMonitor.stopMonitoringTask(id1);\ncheckpoint.Call(2);\nstep(1);\nhealthMonitor.stopMonitoringTask(id2);\n```",
+      "range": {
+        "startLine": 531,
+        "startChar": 93,
+        "endLine": 531,
+        "endChar": 94
+      },
+      "revId": "5ab2f8ecb18bd88baec45e26e5834ee502672a63",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
