@@ -33,6 +33,24 @@
       "message": "Use `std::move(eventName)` here, or change the type of the `eventName` parameter to `const char*`.",
       "revId": "dbecf3ff9d87a26594908a6e68b1001b2d052679",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e1f67be0_839f0e33",
+        "filename": "base/include/aemu/base/RateLimiter.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1899526
+      },
+      "writtenOn": "2023-01-04T20:45:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "06878938_9e4c583e",
+      "revId": "dbecf3ff9d87a26594908a6e68b1001b2d052679",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
