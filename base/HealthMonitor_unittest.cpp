@@ -80,6 +80,8 @@ class HealthMonitorTest : public Test {
 
     int SToMs(int seconds) { return seconds * 1'000; }
 
+    void poll() { healthMonitor.poll().wait(); }
+
     int defaultHangThresholdS = 5;
     MockLogger logger;
     HealthMonitor<TestClock> healthMonitor;
@@ -467,6 +469,38 @@ TEST_F(HealthMonitorTest, siblingsHangParentStillHealthy) {
     step(defaultHangThresholdS - 1);
     healthMonitor.stopMonitoringTask(secondChild);
     healthMonitor.stopMonitoringTask(parent);
+}
+
+TEST_F(HealthMonitorTest, taskEndProcessedMuchLater) {
+    {
+        InSequence s;
+        EXPECT_CALL(logger, logMetricEvent(_)).Times(0);
+    }
+    auto taskId = healthMonitor.startMonitoringTask(std::make_unique<EventHangMetadata>());
+    step(1);
+    healthMonitor.stopMonitoringTask(taskId);
+    TestClock::advance(defaultHangThresholdS * 2);
+    poll();
+}
+
+TEST_F(HealthMonitorTest, hungTaskEndProcessedMuchLater) {
+    int expectedHangDurationS = 5;
+    {
+        InSequence s;
+        EXPECT_CALL(logger, logMetricEvent(VariantWith<MetricEventHang>(_))).Times(1);
+        EXPECT_CALL(
+            logger,
+            logMetricEvent(VariantWith<MetricEventUnHang>(AllOf(
+                Field(&MetricEventUnHang::taskId, 0),
+                Field(&MetricEventUnHang::hung_ms, AllOf(Ge(SToMs(expectedHangDurationS - 1)),
+                                                         Le(SToMs(expectedHangDurationS + 1))))))))
+            .Times(1);
+    }
+    auto taskId = healthMonitor.startMonitoringTask(std::make_unique<EventHangMetadata>());
+    step(defaultHangThresholdS + expectedHangDurationS);
+    healthMonitor.stopMonitoringTask(taskId);
+    TestClock::advance(defaultHangThresholdS * 2);
+    poll();
 }
 
 class MockHealthMonitor {
