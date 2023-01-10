@@ -78,6 +78,8 @@ class HealthMonitorTest : public Test {
         }
     }
 
+    void setEventQueueMax(size_t newMax) { healthMonitor.setEventQueueMax(newMax); }
+
     int SToMs(int seconds) { return seconds * 1'000; }
 
     void poll() { healthMonitor.poll().wait(); }
@@ -501,6 +503,47 @@ TEST_F(HealthMonitorTest, hungTaskEndProcessedMuchLater) {
     healthMonitor.stopMonitoringTask(taskId);
     TestClock::advance(defaultHangThresholdS * 2);
     poll();
+}
+
+TEST_F(HealthMonitorTest, eventQueueMaxExceeded) {
+    setEventQueueMax(1);
+    int expectedHangDurationS = 5;
+    {
+        InSequence s;
+        EXPECT_CALL(logger, logMetricEvent(VariantWith<MetricEventHang>(_))).Times(1);
+        EXPECT_CALL(logger, logMetricEvent(VariantWith<MetricEventUnHang>(_))).Times(1);
+    }
+
+    auto id0 = healthMonitor.startMonitoringTask(std::make_unique<EventHangMetadata>());
+    auto id1 = healthMonitor.startMonitoringTask(std::make_unique<EventHangMetadata>());
+    step(defaultHangThresholdS + expectedHangDurationS);
+    healthMonitor.stopMonitoringTask(id0);
+    healthMonitor.stopMonitoringTask(id1);
+}
+
+TEST_F(HealthMonitorTest, resetDroppedEvents) {
+    MockFunction<void(int)> checkpoint;
+    setEventQueueMax(1);
+    {
+        InSequence s;
+        EXPECT_CALL(logger, logMetricEvent(VariantWith<MetricEventHang>(_))).Times(2);
+        EXPECT_CALL(checkpoint, Call(0));
+        EXPECT_CALL(logger, logMetricEvent(VariantWith<MetricEventUnHang>(_))).Times(1);
+        EXPECT_CALL(checkpoint, Call(1));
+        EXPECT_CALL(logger, logMetricEvent(VariantWith<MetricEventUnHang>(_))).Times(1);
+    }
+
+    auto id0 = healthMonitor.startMonitoringTask(std::make_unique<EventHangMetadata>());
+    auto id1 = healthMonitor.startMonitoringTask(std::make_unique<EventHangMetadata>());
+    step(1);
+    auto id2 = healthMonitor.startMonitoringTask(std::make_unique<EventHangMetadata>());
+    step(defaultHangThresholdS * 2);
+    checkpoint.Call(0);
+    healthMonitor.stopMonitoringTask(id0);
+    healthMonitor.stopMonitoringTask(id1);
+    step(1);
+    checkpoint.Call(1);
+    healthMonitor.stopMonitoringTask(id2);
 }
 
 class MockHealthMonitor {
