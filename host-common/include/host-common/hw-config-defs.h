@@ -130,6 +130,20 @@ HWCFG_BOOL(
   "Whether there is an accelerometer in the device.")
 
 HWCFG_BOOL(
+  hw_accelerometer_uncalibrated,
+  "hw.accelerometer_uncalibrated",
+  "yes",
+  "Uncalibrated accelerometer",
+  "Whether there is an uncalibrated accelerometer in the device.")
+
+HWCFG_BOOL(
+  hw_accelerometer_limited_axes_uncalibrated,
+  "hw.accelerometer_limited_axes_uncalibrated",
+  "yes",
+  "Uncalibrated accelerometer with limited axes",
+  "Whether there is an uncalibrated accelerometer with limited axes in the device.")
+
+HWCFG_BOOL(
   hw_gyroscope,
   "hw.gyroscope",
   "yes",
