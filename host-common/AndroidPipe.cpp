@@ -613,17 +613,17 @@ void android_pipe_reset_services() {
     AndroidPipe::Service::resetAll();
 }
 
-void* android_pipe_guest_open(void* hwpipe, void(*check_pipe_name)(const char*)) {
+void* android_pipe_guest_open(void* hwpipe) {
     CHECK_VM_STATE_LOCK();
     DD("%s: Creating new connector pipe for hwpipe=%p", __FUNCTION__, hwpipe);
-    return android::sGlobals()->connectorService.create2(hwpipe, nullptr, (AndroidPipeFlags)0, check_pipe_name);
+    return android::sGlobals()->connectorService.create(hwpipe, nullptr, (AndroidPipeFlags)0);
 }
 
-void* android_pipe_guest_open_with_flags(void* hwpipe, uint32_t flags, void(*check_pipe_name)(const char*)) {
+void* android_pipe_guest_open_with_flags(void* hwpipe, uint32_t flags) {
     CHECK_VM_STATE_LOCK();
     DD("%s: Creating new connector pipe for hwpipe=%p", __FUNCTION__, hwpipe);
     auto pipe =
-        android::sGlobals()->connectorService.create2(hwpipe, nullptr, (AndroidPipeFlags)flags, check_pipe_name);
+        android::sGlobals()->connectorService.create(hwpipe, nullptr, (AndroidPipeFlags)flags);
     pipe->setFlags((AndroidPipeFlags)flags);
     return pipe;
 }
