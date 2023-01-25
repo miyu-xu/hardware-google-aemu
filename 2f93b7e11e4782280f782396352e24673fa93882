@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ccdbe538_e72c31c7",
+        "filename": "host-common/AndroidPipe.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 313,
+      "author": {
+        "id": 1561731
+      },
+      "writtenOn": "2023-01-25T18:02:28Z",
+      "side": 1,
+      "message": "The presubmit failures seem to be hitting this. It looks like this file is missing some of the changes from https://android-review.git.corp.google.com/c/platform/external/qemu/+/2400877/1/android/emu/hardware/src/android/emulation/AndroidPipe.cpp",
+      "range": {
+        "startLine": 313,
+        "startChar": 8,
+        "endLine": 313,
+        "endChar": 18
+      },
+      "revId": "2f93b7e11e4782280f782396352e24673fa93882",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
