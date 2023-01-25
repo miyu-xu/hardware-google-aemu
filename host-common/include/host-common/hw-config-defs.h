@@ -136,7 +136,7 @@ HWCFG_BOOL(
   hw_accelerometer_uncalibrated,
   "hw.accelerometer_uncalibrated",
   "yes",
-  "Uncalibrated accelerometer",
+  "AccelerometerUncalibrated",
   "Whether there is an uncalibrated accelerometer in the device.")
 
 HWCFG_BOOL(
@@ -992,6 +992,20 @@ HWCFG_BOOL(
   "no",
   "use QCOW2 format for userdata-qemu.img",
   "If set, AVD will use qcow2 for userdata-qemu.img instead of the ext4")
+
+HWCFG_STRING(
+  firstboot_downloaded_path,
+  "firstboot.downloaded.path",
+  "",
+  "Path to downloaded snapshot dir",
+  "")
+
+HWCFG_STRING(
+  firstboot_local_path,
+  "firstboot.local.path",
+  "",
+  "Path to local snapshot dir",
+  "")
 
 HWCFG_BOOL(
   firstboot_bootFromDownloadableSnapshot,
