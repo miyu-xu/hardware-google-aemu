@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bee97a20_6e773e57",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1043473
+      },
+      "writtenOn": "2023-01-26T01:43:27Z",
+      "side": 1,
+      "message": "Only a removal of incorrect license metadata.",
+      "revId": "55860d8f3a99be5357d6f2d9511e0e913236da46",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
