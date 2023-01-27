@@ -1042,6 +1042,13 @@ HWCFG_STRING(
   "avd home that was used during the construction of this hardware.ini",
   "This can be used by post processing tools to migrate snapshots")
 
+HWCFG_STRING(
+  requires_emulator_version,
+  "requires.emulator.version",
+  "",
+  "avd requires the version of emulator to boot properly from snapshot",
+  "This is often set by avd manager in studio when creating avd")
+
 #undef HWCFG_INT
 #undef HWCFG_STRING
 #undef HWCFG_BOOL
