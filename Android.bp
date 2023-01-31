@@ -1,0 +1,14 @@
+cc_library_headers {
+    name: "aemu_common_headers",
+    host_supported: true,
+    export_include_dirs: [
+        ".",
+        "base/include",
+        "host-common/include",
+        "snapshot/include",
+    ],
+    apex_available: [
+        "//apex_available:platform",
+        "com.android.virt",
+    ],
+}
