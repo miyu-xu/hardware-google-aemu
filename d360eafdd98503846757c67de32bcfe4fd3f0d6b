@@ -16,6 +16,24 @@
       "message": "Why did the value change?\nIs it likely to cause a missmatch?\n\nShould we update other occurences in https://cs.android.com/search?q\u003dSTREAM_FENCE_HANDLE_TYPE_OPAQUE_FD\u0026sq\u003d ?",
       "revId": "d360eafdd98503846757c67de32bcfe4fd3f0d6b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "caf32835_34254fda",
+        "filename": "host-common/include/host-common/HostmemIdMapping.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1994565
+      },
+      "writtenOn": "2023-04-14T13:07:48Z",
+      "side": 1,
+      "message": "The related change is reviewed in https://android-review.git.corp.google.com/c/device/generic/vulkan-cereal/+/2537070/2\n\nThen could we capture why it is a good idea in the cl description? Thanks.",
+      "parentUuid": "723bfa93_3bedab80",
+      "revId": "d360eafdd98503846757c67de32bcfe4fd3f0d6b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
