@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "723bfa93_3bedab80",
+        "filename": "host-common/include/host-common/HostmemIdMapping.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1994565
+      },
+      "writtenOn": "2023-04-14T12:51:12Z",
+      "side": 1,
+      "message": "Why did the value change?\nIs it likely to cause a missmatch?\n\nShould we update other occurences in https://cs.android.com/search?q\u003dSTREAM_FENCE_HANDLE_TYPE_OPAQUE_FD\u0026sq\u003d ?",
+      "revId": "d360eafdd98503846757c67de32bcfe4fd3f0d6b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
