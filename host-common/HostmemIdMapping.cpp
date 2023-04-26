@@ -62,8 +62,12 @@ void HostmemIdMapping::remove(Id id) {
     mEntries.erase(id);
 }
 
-void HostmemIdMapping::addMapping(Id id, const struct MemEntry *entry) {
+void HostmemIdMapping::addMapping(uint32_t ctx_id, Id id, const struct MemEntry *entry) {
     HostmemIdMapping::Entry hostmem_entry;
+    // HACK
+    uint64_t context_id = ctx_id << 31;
+    id = id | (context_id);
+    // END HACK
     hostmem_entry.id = id;
     hostmem_entry.hva = entry->hva;
     hostmem_entry.size = entry->size;
@@ -71,7 +75,7 @@ void HostmemIdMapping::addMapping(Id id, const struct MemEntry *entry) {
     mEntries.set(id, hostmem_entry);
 }
 
-void HostmemIdMapping::addDescriptorInfo(Id id, ManagedDescriptor descriptor,
+void HostmemIdMapping::addDescriptorInfo(uint32_t ctx_id, Id id, ManagedDescriptor descriptor,
                                          uint32_t handleType, uint32_t caching,
                                          std::optional<VulkanInfo> vulkanInfoOpt) {
     struct ManagedDescriptorInfo info =
@@ -82,11 +86,18 @@ void HostmemIdMapping::addDescriptorInfo(Id id, ManagedDescriptor descriptor,
             .vulkanInfoOpt = std::move(vulkanInfoOpt),
         };
 
-
+    // HACK
+    uint64_t context_id = ctx_id << 31;
+    id = id | (context_id);
+    // END HACK
     mDescriptorInfos.insert(std::make_pair(id, std::move(info)));
 }
 
-std::optional<ManagedDescriptorInfo> HostmemIdMapping::removeDescriptorInfo(Id id) {
+std::optional<ManagedDescriptorInfo> HostmemIdMapping::removeDescriptorInfo(uint32_t ctx_id, Id id) {
+    // HACK
+    uint64_t context_id = ctx_id << 31;
+    id = id | (context_id);
+    // END HACK
     auto found = mDescriptorInfos.find(id);
     if (found != mDescriptorInfos.end()) {
         std::optional<ManagedDescriptorInfo> ret = std::move(found->second);
@@ -97,7 +108,11 @@ std::optional<ManagedDescriptorInfo> HostmemIdMapping::removeDescriptorInfo(Id i
     return std::nullopt;
 }
 
-HostmemIdMapping::Entry HostmemIdMapping::get(Id id) const {
+HostmemIdMapping::Entry HostmemIdMapping::get(uint32_t ctx_id, Id id) const {
+    // HACK
+    uint64_t context_id = ctx_id << 31;
+    id = id | (context_id);
+    // END HACK
     const HostmemIdMapping::Entry badEntry {
         kInvalidHostmemId, 0, 0,
     };
@@ -132,7 +147,7 @@ void android_emulation_hostmem_unregister(uint64_t id) {
 
 HostmemEntry android_emulation_hostmem_get_info(uint64_t id) {
     return static_cast<HostmemEntry>(
-        android::emulation::HostmemIdMapping::get()->get(id));
+        android::emulation::HostmemIdMapping::get()->get(0, id));
 }
 
 } // extern "C"
