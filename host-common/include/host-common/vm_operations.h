@@ -20,33 +20,8 @@
 #include <stdint.h>
 #include <inttypes.h>
 
-// Caching types
-#define MAP_CACHE_MASK      0x0f
-#define MAP_CACHE_NONE      0x00
-#define MAP_CACHE_CACHED    0x01
-#define MAP_CACHE_UNCACHED  0x02
-#define MAP_CACHE_WC        0x03
-
 ANDROID_BEGIN_HEADER
 // This file includes interfaces to VMMs.
-
-// A struct describing the information about host memory associated
-// with a host memory id. Used with virtio-gpu-next.
-struct HostmemEntry {
-    uint64_t id;
-    void* hva;
-    uint64_t size;
-    uint32_t caching;
-};
-
-// Called by hostmemRegister(..)
-struct MemEntry {
-    void* hva;
-    uint64_t size;
-    uint32_t register_fixed;
-    uint64_t fixed_id;
-    uint32_t caching;
-};
 
 // A callback to consume a single line of output (including newline).
 // |opque| is a handle to a context object. Functions that use this callback
@@ -240,10 +215,6 @@ typedef struct QAndroidVmOperations {
     // Retrieve the state of whether snapshotting is skipped.
     bool (*isSnapshotSaveSkipped)(void);
 
-    // Create/register/getinfo for host memory Id's
-    uint64_t (*hostmemRegister)(const struct MemEntry *entry);
-    void (*hostmemUnregister)(uint64_t id);
-    struct HostmemEntry (*hostmemGetInfo)(uint64_t id);
     EmuRunState (*getRunState)();
 
     // virtio display

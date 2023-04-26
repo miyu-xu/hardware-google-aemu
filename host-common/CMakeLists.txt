@@ -125,7 +125,6 @@ if (ENABLE_VKCEREAL_TESTS)
         address_space_host_memory_allocator_unittests.cpp
         address_space_shared_slots_host_memory_allocator_unittests.cpp
         HostAddressSpace_unittest.cpp
-        HostmemIdMapping_unittest.cpp
         logging_unittest.cpp
         GfxstreamFatalError_unittest.cpp)
 

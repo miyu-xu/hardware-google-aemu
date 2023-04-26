@@ -177,14 +177,6 @@ public:
         return contextDesc.device_context.get();
     }
 
-    uint64_t hostmemRegister(const struct MemEntry *entry) {
-        return sVmOps->hostmemRegister(entry);
-    }
-
-    void hostmemUnregister(uint64_t id) {
-        sVmOps->hostmemUnregister(id);
-    }
-
     void save(Stream* stream) const {
         // Pre-save
         for (const auto &kv : mContexts) {
@@ -480,14 +472,6 @@ static void sAddressSpaceDeviceClear() {
     sAddressSpaceDeviceState()->clear();
 }
 
-static uint64_t sAddressSpaceDeviceHostmemRegister(const struct MemEntry *entry) {
-    return sAddressSpaceDeviceState()->hostmemRegister(entry);
-}
-
-static void sAddressSpaceDeviceHostmemUnregister(uint64_t id) {
-    sAddressSpaceDeviceState()->hostmemUnregister(id);
-}
-
 static void sAddressSpaceDevicePingAtHva(uint32_t handle, void* hva) {
     sAddressSpaceDeviceState()->pingAtHva(
         handle, (AddressSpaceDevicePingInfo*)hva);
@@ -521,8 +505,6 @@ static struct address_space_device_control_ops sAddressSpaceDeviceOps = {
     &sAddressSpaceDeviceGetHostPtr,                    // get_host_ptr
     &sAddressSpaceHandleToContext,                     // handle_to_context
     &sAddressSpaceDeviceClear,                         // clear
-    &sAddressSpaceDeviceHostmemRegister,               // hostmem register
-    &sAddressSpaceDeviceHostmemUnregister,             // hostmem unregister
     &sAddressSpaceDevicePingAtHva,                     // ping_at_hva
     &sAddressSpaceDeviceRegisterDeallocationCallback,  // register_deallocation_callback
     &sAddressSpaceDeviceRunDeallocationCallbacks,      // run_deallocation_callbacks

@@ -13,17 +13,16 @@
 // limitations under the License.
 #pragma once
 
-#include "aemu/base/Compiler.h"
-#include "aemu/base/containers/StaticMap.h"
-#include "aemu/base/export.h"
-#include "aemu/base/ManagedDescriptor.hpp"
-#include "vm_operations.h"
+#include <inttypes.h>
 
 #include <atomic>
-
-#include <inttypes.h>
-#include <unordered_map>
 #include <optional>
+#include <unordered_map>
+#include <utility>
+
+#include "aemu/base/Compiler.h"
+#include "aemu/base/ManagedDescriptor.hpp"
+#include "aemu/base/export.h"
 
 // A global mapping from opaque host memory IDs to host virtual
 // addresses/sizes.  This is so that the guest doesn't have to know the host
@@ -40,6 +39,13 @@ using android::base::ManagedDescriptor;
 namespace android {
 namespace emulation {
 
+// Caching types
+#define MAP_CACHE_MASK 0x0f
+#define MAP_CACHE_NONE 0x00
+#define MAP_CACHE_CACHED 0x01
+#define MAP_CACHE_UNCACHED 0x02
+#define MAP_CACHE_WC 0x03
+
 #define STREAM_MEM_HANDLE_TYPE_OPAQUE_FD 0x1
 #define STREAM_MEM_HANDLE_TYPE_DMABUF 0x2
 #define STREAM_MEM_HANDLE_TYPE_OPAQUE_WIN32 0x3
@@ -49,6 +55,13 @@ namespace emulation {
 #define STREAM_FENCE_HANDLE_TYPE_SYNC_FD 0x7
 #define STREAM_FENCE_HANDLE_TYPE_OPAQUE_WIN32 0x8
 #define STREAM_FENCE_HANDLE_TYPE_ZIRCON 0x9
+
+// A struct describing the information about host memory associated
+// with a host memory id. Used with virtio-gpu-next.
+struct HostMemInfo {
+    void* addr;
+    uint32_t caching;
+};
 
 struct VulkanInfo {
     uint32_t memoryIndex;
@@ -67,50 +80,36 @@ class HostmemIdMapping {
 public:
     HostmemIdMapping() = default;
 
-    AEMU_EXPORT static HostmemIdMapping* get();
+    static HostmemIdMapping* get();
 
-    using Id = uint64_t;
-    using Entry = HostmemEntry;
+    void addMapping(uint32_t ctx_id, uint64_t blobId, void* addr, uint32_t caching);
+    std::optional<HostMemInfo> removeMapping(uint32_t ctx_id, uint64_t blobId);
 
-    static const Id kInvalidHostmemId;
+    void addDescriptorInfo(uint32_t ctx_id, uint64_t blobId, ManagedDescriptor descriptor,
+                           uint32_t handleType, uint32_t caching,
+                           std::optional<VulkanInfo> vulkanInfoOpt);
+    std::optional<ManagedDescriptorInfo> removeDescriptorInfo(uint32_t ctx_id, uint64_t blobId);
 
-    // Returns kInvalidHostmemId if hva or size is 0.
-    AEMU_EXPORT Id add(const struct MemEntry *entry);
+   private:
+    // Only for pairs of std::hash-able types for simplicity.
+    // You can of course template this struct to allow other hash functions
+    struct pair_hash {
+        template <class T1, class T2>
+        std::size_t operator()(const std::pair<T1, T2>& p) const {
+            auto h1 = std::hash<T1>{}(p.first);
+            auto h2 = std::hash<T2>{}(p.second);
 
-    // No-op if kInvalidHostmemId or a nonexistent entry
-    // is referenced.
-    AEMU_EXPORT void remove(Id id);
+            // Mainly for demonstration purposes, i.e. works but is overly simple
+            // In the real world, use sth. like boost.hash_combine
+            return h1 ^ h2;
+        }
+    };
 
-    void addMapping(Id id, const struct MemEntry *entry);
-    void addDescriptorInfo(Id id, ManagedDescriptor descriptor, uint32_t handleType,
-                           uint32_t caching, std::optional<VulkanInfo> vulkanInfoOpt);
-
-    std::optional<ManagedDescriptorInfo> removeDescriptorInfo(Id id);
-
-    // If id == kInvalidHostmemId or not found in map,
-    // returns entry with id == kInvalidHostmemId,
-    // hva == 0, and size == 0.
-    AEMU_EXPORT Entry get(Id id) const;
-
-    // Restores to starting state where there are no entries.
-    AEMU_EXPORT void clear();
-
-private:
-    std::atomic<Id> mCurrentId {1};
-    base::StaticMap<Id, Entry> mEntries;
-    std::unordered_map<Id, ManagedDescriptor> mDescriptors;
-    std::unordered_map<Id, ManagedDescriptorInfo> mDescriptorInfos;
+    std::unordered_map<std::pair<uint32_t, uint64_t>, HostMemInfo, pair_hash> mHostMemInfos;
+    std::unordered_map<std::pair<uint32_t, uint64_t>, ManagedDescriptorInfo, pair_hash>
+        mDescriptorInfos;
     DISALLOW_COPY_ASSIGN_AND_MOVE(HostmemIdMapping);
 };
 
 } // namespace android
-} // namespace emulation
-
-// C interface for use with vm operations
-extern "C" {
-
-AEMU_EXPORT uint64_t android_emulation_hostmem_register(const struct MemEntry *entry);
-AEMU_EXPORT void android_emulation_hostmem_unregister(uint64_t id);
-AEMU_EXPORT HostmemEntry android_emulation_hostmem_get_info(uint64_t id);
-
-} // extern "C"
+}  // namespace android

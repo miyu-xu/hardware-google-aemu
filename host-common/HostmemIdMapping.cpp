@@ -20,11 +20,6 @@ using android::base::ManagedDescriptor;
 namespace android {
 namespace emulation {
 
-using Id = uint64_t;
-
-// static
-const Id HostmemIdMapping::kInvalidHostmemId = 0;
-
 static HostmemIdMapping* sMapping() {
     static HostmemIdMapping* s = new HostmemIdMapping;
     return s;
@@ -35,44 +30,31 @@ HostmemIdMapping* HostmemIdMapping::get() {
     return sMapping();
 }
 
-// TODO: Add registerHostmemFixed version that takes a predetermined id,
-// for snapshots
-Id HostmemIdMapping::add(const struct MemEntry *entry) {
-    if (entry->hva == 0 || entry->size == 0) return kInvalidHostmemId;
+void HostmemIdMapping::addMapping(uint32_t ctxId, uint64_t blobId, void* addr, uint32_t caching) {
+    struct HostMemInfo info = {
+        .addr = addr,
+        .caching = caching,
+    };
 
-    Id wantedId;
+    auto key = std::make_pair(ctxId, blobId);
+    mHostMemInfos.insert(std::make_pair(key, std::move(info)));
+}
 
-    if (entry->register_fixed) {
-        wantedId = entry->fixed_id;
-        mCurrentId = wantedId + 1;
-    } else {
-        wantedId = mCurrentId++;
+std::optional<HostMemInfo> HostmemIdMapping::removeMapping(uint32_t ctxId, uint64_t blobId) {
+    auto key = std::make_pair(ctxId, blobId);
+    auto found = mHostMemInfos.find(key);
+    if (found != mHostMemInfos.end()) {
+        std::optional<HostMemInfo> ret = std::move(found->second);
+        mHostMemInfos.erase(found);
+        return ret;
     }
 
-    HostmemIdMapping::Entry hostmem_entry;
-    hostmem_entry.id = wantedId;
-    hostmem_entry.hva = entry->hva;
-    hostmem_entry.size = entry->size;
-    hostmem_entry.caching = entry->caching;
-    mEntries.set(wantedId, hostmem_entry);
-    return wantedId;
+    return std::nullopt;
 }
 
-void HostmemIdMapping::remove(Id id) {
-    mEntries.erase(id);
-}
-
-void HostmemIdMapping::addMapping(Id id, const struct MemEntry *entry) {
-    HostmemIdMapping::Entry hostmem_entry;
-    hostmem_entry.id = id;
-    hostmem_entry.hva = entry->hva;
-    hostmem_entry.size = entry->size;
-    hostmem_entry.caching = entry->caching;
-    mEntries.set(id, hostmem_entry);
-}
-
-void HostmemIdMapping::addDescriptorInfo(Id id, ManagedDescriptor descriptor,
-                                         uint32_t handleType, uint32_t caching,
+void HostmemIdMapping::addDescriptorInfo(uint32_t ctxId, uint64_t blobId,
+                                         ManagedDescriptor descriptor, uint32_t handleType,
+                                         uint32_t caching,
                                          std::optional<VulkanInfo> vulkanInfoOpt) {
     struct ManagedDescriptorInfo info =
         {
@@ -82,12 +64,14 @@ void HostmemIdMapping::addDescriptorInfo(Id id, ManagedDescriptor descriptor,
             .vulkanInfoOpt = std::move(vulkanInfoOpt),
         };
 
-
-    mDescriptorInfos.insert(std::make_pair(id, std::move(info)));
+    auto key = std::make_pair(ctxId, blobId);
+    mDescriptorInfos.insert(std::make_pair(key, std::move(info)));
 }
 
-std::optional<ManagedDescriptorInfo> HostmemIdMapping::removeDescriptorInfo(Id id) {
-    auto found = mDescriptorInfos.find(id);
+std::optional<ManagedDescriptorInfo> HostmemIdMapping::removeDescriptorInfo(uint32_t ctxId,
+                                                                            uint64_t blobId) {
+    auto key = std::make_pair(ctxId, blobId);
+    auto found = mDescriptorInfos.find(key);
     if (found != mDescriptorInfos.end()) {
         std::optional<ManagedDescriptorInfo> ret = std::move(found->second);
         mDescriptorInfos.erase(found);
@@ -97,42 +81,5 @@ std::optional<ManagedDescriptorInfo> HostmemIdMapping::removeDescriptorInfo(Id i
     return std::nullopt;
 }
 
-HostmemIdMapping::Entry HostmemIdMapping::get(Id id) const {
-    const HostmemIdMapping::Entry badEntry {
-        kInvalidHostmemId, 0, 0,
-    };
-
-    if (kInvalidHostmemId == id) return badEntry;
-
-    auto entry = mEntries.get(id);
-
-    if (!entry) return badEntry;
-
-    return *entry;
-}
-
-void HostmemIdMapping::clear() {
-    mEntries.clear();
-}
-
 } // namespace android
-} // namespace emulation
-
-// C interface for use with vm operations
-extern "C" {
-
-uint64_t android_emulation_hostmem_register(const struct MemEntry *entry) {
-    return static_cast<uint64_t>(
-        android::emulation::HostmemIdMapping::get()->add(entry));
-}
-
-void android_emulation_hostmem_unregister(uint64_t id) {
-    android::emulation::HostmemIdMapping::get()->remove(id);
-}
-
-HostmemEntry android_emulation_hostmem_get_info(uint64_t id) {
-    return static_cast<HostmemEntry>(
-        android::emulation::HostmemIdMapping::get()->get(id));
-}
-
-} // extern "C"
+}  // namespace android

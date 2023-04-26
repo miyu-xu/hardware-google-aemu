@@ -43,9 +43,6 @@ typedef int (*address_space_device_remove_memory_mapping_t)(uint64_t gpa, void *
 typedef void* (*address_space_device_get_host_ptr_t)(uint64_t gpa);
 typedef void* (*address_space_device_handle_to_context_t)(uint32_t handle);
 typedef void (*address_space_device_clear_t)(void);
-// virtio-gpu-next
-typedef uint64_t (*address_space_device_hostmem_register_t)(const struct MemEntry *entry);
-typedef void (*address_space_device_hostmem_unregister_t)(uint64_t id);
 typedef void (*address_space_device_ping_at_hva_t)(uint32_t handle, void* hva);
 // deallocation callbacks
 typedef void (*address_space_device_deallocation_callback_t)(void* context, uint64_t gpa);
@@ -63,8 +60,6 @@ struct address_space_device_control_ops {
     address_space_device_get_host_ptr_t get_host_ptr;
     address_space_device_handle_to_context_t handle_to_context;
     address_space_device_clear_t clear;
-    address_space_device_hostmem_register_t hostmem_register;
-    address_space_device_hostmem_unregister_t hostmem_unregister;
     address_space_device_ping_at_hva_t ping_at_hva;
     address_space_device_register_deallocation_callback_t register_deallocation_callback;
     address_space_device_run_deallocation_callbacks_t run_deallocation_callbacks;
@@ -88,7 +83,7 @@ struct AddressSpaceHwFuncs {
      * or when loading a snapshot while the emulator is running.
      * Returns 0 if successful, -errno otherwise. */
     int (*freeSharedHostRegion)(uint64_t offset);
-    
+
     /* Versions of the above but when the state is already locked. */
     int (*allocSharedHostRegionLocked)(uint64_t page_aligned_size, uint64_t* offset);
     int (*freeSharedHostRegionLocked)(uint64_t offset);

@@ -434,15 +434,6 @@ private:
                     block.external = true;
                 } else {
                     buf = aligned_buf_alloc(ADDRESS_SPACE_GRAPHICS_PAGE_SIZE, create.size);
-
-                    struct MemEntry entry = { 0 };
-                    entry.hva = buf;
-                    entry.size = create.size;
-                    entry.register_fixed = create.hostmemRegisterFixed;
-                    entry.fixed_id = create.hostmemId ? create.hostmemId : 0;
-                    entry.caching = MAP_CACHE_CACHED;
-
-                    create.hostmemId = mControlOps->hostmem_register(&entry);
                 }
 
                 block.buffer = (char*)buf;
@@ -511,10 +502,7 @@ private:
     }
 
     void destroyBlockLocked(Block& block) {
-
-        if (block.usesVirtioGpuHostmem && !block.external) {
-            mControlOps->hostmem_unregister(block.hostmemId);
-        } else if (!block.external) {
+        if (!block.external) {
             mControlOps->remove_memory_mapping(
                 get_address_space_device_hw_funcs()->getPhysAddrStartLocked() +
                     block.offsetIntoPhys,
