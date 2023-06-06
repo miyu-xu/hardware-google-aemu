@@ -39,6 +39,9 @@ cc_library_static {
         "Thread_pthread.cpp",
     ],
     export_header_lib_headers: ["gfxstream_renderdoc_headers"],
+    export_include_dirs: [
+        "include",
+    ],
     static_libs: ["liblz4"],
 }
 
