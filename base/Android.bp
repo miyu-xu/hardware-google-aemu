@@ -10,6 +10,7 @@ package {
 cc_library_static {
     name: "gfxstream_base",
     defaults: ["gfxstream_defaults"],
+    vendor_available: true,
     header_libs: ["gfxstream_renderdoc_headers"],
     srcs: [
         "AlignedBuf.cpp",
