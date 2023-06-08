@@ -700,6 +700,13 @@ HWCFG_STRING(
   "")
 
 HWCFG_STRING(
+  hw_sensor_device_state_list,
+  "hw.sensor.device_state_list",
+  "",
+  "list of supported device states by index. 0: closed, 1: half-open, 2: open, 3: rear display state",
+  "")
+
+HWCFG_STRING(
   hw_sensor_posture_list,
   "hw.sensor.posture_list",
   "",
