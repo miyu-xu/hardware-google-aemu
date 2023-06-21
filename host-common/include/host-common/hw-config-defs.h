@@ -665,6 +665,13 @@ HWCFG_INT(
   "")
 
 HWCFG_INT(
+  hw_sensor_hinge_angle0,
+  "hw.sensor.hinge.angle0",
+  0,
+  "Provides hinge angle 0 value.",
+  "")
+
+HWCFG_INT(
   hw_sensor_hinge_type,
   "hw.sensor.hinge.type",
   0,
