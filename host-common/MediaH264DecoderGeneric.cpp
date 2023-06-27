@@ -56,6 +56,11 @@ namespace {
 
 bool canUseCudaDecoder() {
 #ifndef __APPLE__
+    // enable cuda by default, unless it is explicitly disallowed
+    const bool is_cuda_disabled = (android::base::System::getEnvironmentVariable(
+                            "ANDROID_EMU_MEDIA_DECODER_CUDA") == "0");
+    if (is_cuda_disabled) return false;
+
     if (MediaCudaDriverHelper::initCudaDrivers()) {
         H264_DPRINT("Using Cuvid decoder on Linux/Windows");
         return true;
@@ -69,8 +74,14 @@ bool canUseCudaDecoder() {
 #endif
 }
 
-bool canDecodeToGpuTexture() {
+bool canDecodeToGpuTexture(int w, int h) {
     if (emuglConfig_get_current_renderer() == SELECTED_RENDERER_HOST) {
+        int64_t ww = w;
+        int64_t hh = h;
+        constexpr int ONE_MILLION_PIXELS = 1000 * 1000;
+        if (ww * hh <= ONE_MILLION_PIXELS) {
+            return false;
+        }
         return true;
     } else {
         return false;
@@ -83,7 +94,6 @@ MediaH264DecoderGeneric::MediaH264DecoderGeneric(uint64_t id,
     : mId(id), mParser(parser) {
     H264_DPRINT("allocated MediaH264DecoderGeneric %p with version %d", this,
                 (int)mParser.version());
-    mUseGpuTexture = canDecodeToGpuTexture();
 }
 
 MediaH264DecoderGeneric::~MediaH264DecoderGeneric() {
@@ -119,6 +129,8 @@ void MediaH264DecoderGeneric::initH264ContextInternal(unsigned int width,
     mOutputHeight = outHeight;
     mOutPixFmt = outPixFmt;
 
+    mUseGpuTexture = canDecodeToGpuTexture(width, height);
+
 #ifndef __APPLE__
     if (canUseCudaDecoder() && mParser.version() >= 200) {
         MediaCudaVideoHelper::OutputTreatmentMode oMode =
@@ -146,11 +158,24 @@ void MediaH264DecoderGeneric::initH264ContextInternal(unsigned int width,
         }
     }
 #else
-    //TODO: once all the CTS passed with VTB, remove this
-    const bool is_vtb_allowed = android::base::System::getEnvironmentVariable(
-                            "ANDROID_EMU_MEDIA_DECODER_VTB") == "1";
+    // enable vtb by default, unless it is explicitly disallowed (for test purpose)
+    const bool is_vtb_allowed = !(android::base::System::getEnvironmentVariable(
+                            "ANDROID_EMU_MEDIA_DECODER_VTB") == "0");
 
     if (is_vtb_allowed) {
+        if (width < 256 || height < 256) {
+            // when it is small size, just copy memory
+            // instead of texture transfer which has accuracy
+            // issue with small sizes b/191768035
+            mUseGpuTexture = false;
+            H264_DPRINT("OSX: gpu texture mode is turned off for w %" PRIu32 " h %" PRIu32,
+                    width, height);
+        }
+#ifdef __x86_64__
+        // b/210512774
+        // texture copy breaks on Intel Monterey
+        mUseGpuTexture = false;
+#endif
         MediaVideoToolBoxVideoHelper::FrameStorageMode fMode =
             (mParser.version() >= 200 && mUseGpuTexture)
                     ? MediaVideoToolBoxVideoHelper::FrameStorageMode::
@@ -266,6 +291,7 @@ void MediaH264DecoderGeneric::try_decode(const uint8_t* data,
         }
     }
 
+    mTrialPeriod = false;
     createAndInitSoftVideoHelper();
     mVideoHelper = std::move(mSwVideoHelper);
 
@@ -280,7 +306,6 @@ void MediaH264DecoderGeneric::try_decode(const uint8_t* data,
     mVideoHelper->setSaveDecodedFrames();
 
     mVideoHelper->decode(data, len, pts);
-    mTrialPeriod = false;
 }
 
 void MediaH264DecoderGeneric::fetchAllFrames() {
@@ -335,9 +360,17 @@ void MediaH264DecoderGeneric::getImage(void* ptr) {
         return;
     }
 
+    // update color aspects
+    if (mMetadataPtr && pFrame->color.range != 0) {
+        if (3 - pFrame->color.range != mMetadataPtr->range) {
+            mMetadataPtr->range = 3 - pFrame->color.range;
+        }
+    }
+
     bool needToCopyToGuest = true;
     if (mParser.version() == 200) {
-        if (mUseGpuTexture && pFrame->texture[0] > 0 && pFrame->texture[1] > 0) {
+        if (mUseGpuTexture && pFrame->texture[0] > 0 &&
+            pFrame->texture[1] > 0) {
             H264_DPRINT(
                     "calling rendering to host side color buffer with id %d "
                     "tex %d tex %d",
@@ -345,14 +378,15 @@ void MediaH264DecoderGeneric::getImage(void* ptr) {
                     pFrame->texture[1]);
             mRenderer.renderToHostColorBufferWithTextures(
                     param.hostColorBufferId, pFrame->width, pFrame->height,
-                    TextureFrame{pFrame->texture[0], pFrame->texture[1]});
+                    TextureFrame{pFrame->texture[0], pFrame->texture[1]},
+                    mMetadataPtr.get());
         } else {
             H264_DPRINT(
                     "calling rendering to host side color buffer with id %d",
                     param.hostColorBufferId);
             mRenderer.renderToHostColorBuffer(param.hostColorBufferId,
                                               pFrame->width, pFrame->height,
-                                              pFrame->data.data());
+                                              pFrame->data.data(), mMetadataPtr.get());
         }
         needToCopyToGuest = false;
     }
@@ -376,6 +410,35 @@ void MediaH264DecoderGeneric::getImage(void* ptr) {
     H264_DPRINT("Copying completed pts %lld w %d h %d ow %d oh %d",
                 (long long)*retPts, (int)*retWidth, (int)*retHeight,
                 (int)mOutputWidth, (int)mOutputHeight);
+}
+
+void MediaH264DecoderGeneric::sendMetadata(void* ptr) {
+    H264_DPRINT("%s %d sendMetadata %p\n", __func__, __LINE__, ptr);
+    MetadataParam param{};
+    mParser.parseMetadataParams(ptr, param);
+
+    bool isValid = false;
+    if (param.range == 2 && param.primaries == 4 && param.transfer == 3) {
+        isValid = true;
+    } else if (param.range == 1 && param.primaries == 4 &&
+               param.transfer == 3) {
+        isValid = true;
+    } else if (param.range == 2 && param.primaries == 1 &&
+               param.transfer == 3) {
+        isValid = true;
+    }
+
+    if (!isValid) {
+        H264_DPRINT("%s %d invalid values in sendMetadata %p, ignore.\n",
+                    __func__, __LINE__, ptr);
+        return;
+    }
+
+    mMetadataPtr.reset(new MetadataParam(param));
+
+    H264_DPRINT("%s %d range %d primaries %d transfer %d\n", __func__, __LINE__,
+                (int)(mMetadataPtr->range), (int)(mMetadataPtr->primaries),
+                (int)(mMetadataPtr->transfer));
 }
 
 void MediaH264DecoderGeneric::save(base::Stream* stream) const {
