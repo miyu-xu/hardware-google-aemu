@@ -25,6 +25,27 @@ target_include_directories(
     INTERFACE
     include)
 
+if (BUILD_HOST_COMMON_SUBSET)
+    add_library(
+        aemu-host-common-subset
+        STATIC
+        ${aemu-host-common-srcs}
+    )
+    target_include_directories(
+        aemu-host-common-subset
+        PRIVATE
+        include/host-common
+        ${AEMU_COMMON_REPO_ROOT}/../../../external/angle/include)
+    target_link_libraries(
+        aemu-host-common-subset
+        PUBLIC
+        aemu-base.headers
+        aemu-host-common.headers
+        PRIVATE
+        logging-base
+    )
+endif()
+
 if (BUILD_STANDALONE)
     add_library(
         aemu-host-common
