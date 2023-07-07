@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7c6f0582_73d9ba24",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1340579
+      },
+      "writtenOn": "2023-07-07T14:44:51Z",
+      "side": 1,
+      "message": "FYI: Looks like this broke the M1 build: https://b.corp.google.com/issues/290351207",
+      "revId": "d286c94ae00fd60a622f4b19fbe98c82e947b34e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
