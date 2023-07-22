@@ -155,6 +155,7 @@ private:
                          bool* enabled);
     int getNumberActiveMultiDisplaysLocked();
 
+    void performRotationLocked(int rot);
     std::map<uint32_t, MultiDisplayInfo> parseConfig();
     bool hotPlugDisplayEnabled();
 };
