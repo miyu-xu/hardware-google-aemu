@@ -142,6 +142,8 @@ private:
     std::map<uint32_t, MultiDisplayInfo> mMultiDisplay;
     android::base::Lock mLock;
 
+    std::vector<uint32_t> mLayoutOrder;
+
     void recomputeLayoutLocked();
     void getCombinedDisplaySizeLocked(uint32_t* w, uint32_t* h);
     bool getMultiDisplay(uint32_t id,
@@ -155,6 +157,7 @@ private:
                          bool* enabled);
     int getNumberActiveMultiDisplaysLocked();
 
+    void performRotationLocked(int rot);
     std::map<uint32_t, MultiDisplayInfo> parseConfig();
     bool hotPlugDisplayEnabled();
 };
