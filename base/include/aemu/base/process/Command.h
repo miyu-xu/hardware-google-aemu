@@ -67,6 +67,12 @@ public:
     // Adds a list of arguments to the existing arguments
     Command& args(const CommandArguments& args);
 
+    // Adds an environment variable
+    Command& env(const std::string& key, const std::string& val);
+
+    // Adds a series of environment variables to this command
+    Command& env(CommandEnvironment& env);
+
     // Launch the command as a deamon, you will not be able
     // to read stderr/stdout, the process will not bet terminated
     // when the created process goes out of scope.
@@ -95,6 +101,7 @@ private:
     static ProcessFactory sTestFactory;
 
     CommandArguments mArgs;
+    CommandEnvironment mEnv;
     bool mDeamon{false};
     bool mCaptureOutput{false};
     bool mInherit{false};
