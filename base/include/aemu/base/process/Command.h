@@ -36,6 +36,7 @@ namespace base {
 using android::base::streams::RingStreambuf;
 using BufferDefinition = std::pair<size_t, std::chrono::milliseconds>;
 using CommandArguments = std::vector<std::string>;
+using OSEnvironment = std::unordered_map<std::string, std::string>;
 
 // A Command that you can execute and observe.
 class Command {
@@ -67,16 +68,26 @@ public:
     // Adds a list of arguments to the existing arguments
     Command& args(const CommandArguments& args);
 
+    // Adds an environment variable
+    Command& env(const std::string& key, const std::string& val);
+
+    // Adds a series of environment variables to this command
+    Command& env(OSEnvironment& env);
+
     // Launch the command as a deamon, you will not be able
     // to read stderr/stdout, the process will not bet terminated
     // when the created process goes out of scope.
     Command& asDeamon();
 
     // Call this if you wish to inherit all the file handles
+    // and environment variables.
     Command& inherit();
 
     // Launch the process
     std::unique_ptr<ObservableProcess> execute();
+
+    // Returns the current environment variables
+    static OSEnvironment currentEnv();
 
     // Create a new process
     static Command create(CommandArguments programWithArgs);
@@ -95,6 +106,7 @@ private:
     static ProcessFactory sTestFactory;
 
     CommandArguments mArgs;
+    OSEnvironment mEnv;
     bool mDeamon{false};
     bool mCaptureOutput{false};
     bool mInherit{false};

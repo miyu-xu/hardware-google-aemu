@@ -24,6 +24,7 @@
 #include <mutex>
 #include <optional>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "aemu/base/streams/RingStreambuf.h"
@@ -36,6 +37,7 @@ class Command;
 
 using android::base::streams::RingStreambuf;
 using CommandArguments = std::vector<std::string>;
+using OSEnvironment = std::unordered_map<std::string, std::string>;
 using Pid = int;
 using ProcessExitCode = int;
 
@@ -183,6 +185,7 @@ protected:
     // Subclasses should implement this to actually launch the process,
     // return std::nullopt in case of failure
     virtual std::optional<Pid> createProcess(const CommandArguments& args,
+                                             OSEnvironment& env,
                                              bool captureOutput) = 0;
 
     // Create the overseer used to observe the process state.
