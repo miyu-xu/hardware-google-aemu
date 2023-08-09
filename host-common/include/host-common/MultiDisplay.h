@@ -123,6 +123,7 @@ public:
     void onSave(base::Stream* stream);
     void onLoad(base::Stream* stream);
     void performRotation(int rot);
+    void performSwap(int rot);
 
     bool notifyDisplayChanges();
 
@@ -138,6 +139,7 @@ private:
     const QAndroidRecordScreenAgent* mRecordAgent;
     const QAndroidVmOperations* mVmAgent;
     bool mGuestMode;
+    void performRotationLocked(int rot);
     int32_t  mRotation { 0 };
     std::map<uint32_t, MultiDisplayInfo> mMultiDisplay;
     android::base::Lock mLock;
