@@ -123,6 +123,7 @@ public:
     void onSave(base::Stream* stream);
     void onLoad(base::Stream* stream);
     void performRotation(int rot);
+    void performSwap(int rot);
 
     bool notifyDisplayChanges();
 
