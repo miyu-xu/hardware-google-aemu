@@ -125,6 +125,10 @@ public:
     void onLoad(base::Stream* stream);
     void performRotation(int rot);
 
+    // move the enabled display to the bottom-left, according
+    // to the rotation state
+    void reLayoutFoldable(bool isFolded);
+
     bool notifyDisplayChanges();
 
     // 0 for default Android display
