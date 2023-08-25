@@ -73,6 +73,7 @@ typedef struct QAndroidMultiDisplayAgent {
     bool (*isMultiDisplayWindow)();
     void (*performRotation)(int rot);
     bool (*isPixelFold)();
+    bool (*isFolded)();
 } QAndroidMultiDisplayAgent;
 
 

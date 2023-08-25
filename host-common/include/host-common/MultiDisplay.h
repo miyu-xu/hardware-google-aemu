@@ -120,6 +120,7 @@ public:
     void getCombinedDisplaySize(uint32_t* w, uint32_t* h);
     bool isMultiDisplayWindow();
     bool isPixelFold();
+    bool isFolded();
     void loadConfig();
     void onSave(base::Stream* stream);
     void onLoad(base::Stream* stream);
