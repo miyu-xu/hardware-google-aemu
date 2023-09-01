@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5ada6951_0f49f83e",
+        "filename": "host-common/GfxstreamFatalError.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1087303
+      },
+      "writtenOn": "2023-09-01T22:38:38Z",
+      "side": 1,
+      "message": "@joshuaduong@google.com do we have any compile time or runtime flag to make it emulator only?",
+      "range": {
+        "startLine": 41,
+        "startChar": 4,
+        "endLine": 41,
+        "endChar": 12
+      },
+      "revId": "9e423eefdb01706fe4bfd500d51e5a2973bef653",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
