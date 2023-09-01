@@ -38,7 +38,9 @@ AbortMessage::~AbortMessage() {
                                                            .line = mLine,
                                                            .abort_reason = mReason.getAbortCode()});
 
-    die();
+    // b/308685543
+    // dEQP-VK.pipeline.monolithic.creation_cache_control.graphics_pipelines* crashes
+    //die();
 }
 
 void setDieFunction(std::optional<std::function<void()>> newDie) { customDieFunction = newDie; }
