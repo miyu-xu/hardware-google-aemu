@@ -38,7 +38,7 @@ AbortMessage::~AbortMessage() {
                                                            .line = mLine,
                                                            .abort_reason = mReason.getAbortCode()});
 
-    die();
+    //die();
 }
 
 void setDieFunction(std::optional<std::function<void()>> newDie) { customDieFunction = newDie; }
