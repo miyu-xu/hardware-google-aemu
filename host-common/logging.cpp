@@ -1,3 +1,5 @@
+#define _POSIX_THREAD_SAFE_FUNCTIONS  // For mingw localtime_r().
+
 #include "logging.h"
 
 #include <chrono>
@@ -78,11 +80,7 @@ void OutputLog(FILE* stream, char severity, const char* file, unsigned int line,
 
     // Break down the timestamp into the individual time parts
     std::tm ts_parts = {};
-#if defined(_WIN32)
-    localtime_s(&ts_parts, &timestamp_s);
-#else
     localtime_r(&timestamp_s, &ts_parts);
-#endif
 
     // Get the microseconds part of the timestamp since it's not available in the tm struct
     int64_t microseconds = timestamp_us % 1000000;
