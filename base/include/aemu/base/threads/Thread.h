@@ -109,6 +109,8 @@ public:
     // thread that's ready to run.
     static void yield();
 
+    std::optional<std::string> mNameOpt = std::nullopt;
+
 private:
 #ifdef _WIN32
     static DWORD WINAPI thread_main(void* arg);
@@ -127,7 +129,6 @@ private:
     bool mStarted = false;
     // Access guarded by |mLock|.
     bool mFinished = false;
-    std::optional<std::string> mNameOpt = std::nullopt;
 #ifndef _WIN32
     // Posix-only, remember if we've joined our non-detached thread already.
     bool mJoined = false;
