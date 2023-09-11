@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3391b95a_2c98439c",
+        "filename": "base/include/aemu/base/threads/Thread.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2023-09-11T17:40:04Z",
+      "side": 1,
+      "message": "Optional: if we don\u0027t think the child class will need to override this field, can we just create a protected getter.",
+      "revId": "e0a7019da8cf4f2cc8e590636be5be6e6dd3af8e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
