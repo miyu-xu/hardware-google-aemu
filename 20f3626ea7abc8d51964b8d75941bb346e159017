@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3f1f5cef_1404240c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1101621
+      },
+      "writtenOn": "2023-09-18T20:45:45Z",
+      "side": 1,
+      "message": "Verified via ATBD:\n\nhttps://android-build.googleplex.com/builds/abtd/run/L60000000963080862",
+      "revId": "20f3626ea7abc8d51964b8d75941bb346e159017",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
