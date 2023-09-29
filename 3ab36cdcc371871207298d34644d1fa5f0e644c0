@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c11350f6_2fdd03e4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1101621
+      },
+      "writtenOn": "2023-09-29T00:40:59Z",
+      "side": 1,
+      "message": "```\n...22) bld | \u001b[33;20mC:/buildbot/src/android/emu-master-dev/external/qemu/android/android-emu-base/android/base/synchronization/Lock_unittest.cpp(151,9): error: use of undeclared identifier \u0027SeqLock\u0027\u001b[0m\n00:38:21(07:19.79) bld | \u001b[33;20mSeqLock::ScopedWrite write(\u0026sl);\u001b[0m\n00:38:21(07:19.79) bld | \u001b[33;20m^\u001b[0m\n...8:21(07:19.79) bld | \u001b[33;20mC:/buildbot/src/android/emu-master-dev/external/qemu/android/android-emu-base/android/base/synchronization/Lock_unittest.cpp(164,5): error: unknown type name \u0027SeqLock\u0027\u001b[0m\n00:38:21(07:19.79) bld | \u001b[33;20mSeqLock* sl;\u001b[0m\n00:38:21(07:19.79) bld | \u001b[33;20m^\u001b[0m\n...8:21(07:19.79) bld | \u001b[33;20mC:/buildbot/src/android/emu-master-dev/external/qemu/android/android-emu-base/android/base/synchronization/Lock_unittest.cpp(174,5): error: unknown type name \u0027SeqLock\u0027\u001b[0m\n```\n\nShould be fine deleting unittest too",
+      "revId": "3ab36cdcc371871207298d34644d1fa5f0e644c0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
