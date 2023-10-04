@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5b44c87d_bc9c9aab",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1373493
+      },
+      "writtenOn": "2023-10-04T21:51:47Z",
+      "side": 1,
+      "message": "Pending legal review.",
+      "revId": "31d017e4657ee6ac387517be2dc636146a5ee457",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
