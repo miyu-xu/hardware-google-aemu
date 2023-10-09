@@ -58,6 +58,7 @@ int SharedMemory::open(AccessMode access) {
 
 void SharedMemory::close(bool forceDestroy) {
     if (mAddr != unmappedMemory()) {
+        fprintf(stderr, "%s %d 0x%p size 0x%lx\n", __func__, __LINE__, mAddr, mSize);
         munmap(mAddr, mSize);
         mAddr = unmappedMemory();
     }
