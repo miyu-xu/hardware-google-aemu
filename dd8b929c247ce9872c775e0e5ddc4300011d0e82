@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0600041a_522cbac9",
+        "filename": "host-common/include/host-common/hw-config-defs.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1373493
+      },
+      "writtenOn": "2023-10-17T17:04:21Z",
+      "side": 1,
+      "message": "should this be updated as well to emit the license header on regen?",
+      "range": {
+        "startLine": 16,
+        "startChar": 3,
+        "endLine": 16,
+        "endChar": 74
+      },
+      "revId": "dd8b929c247ce9872c775e0e5ddc4300011d0e82",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
