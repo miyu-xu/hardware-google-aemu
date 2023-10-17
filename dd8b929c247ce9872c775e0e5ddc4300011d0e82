@@ -22,6 +22,30 @@
       },
       "revId": "dd8b929c247ce9872c775e0e5ddc4300011d0e82",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7cbffad3_75ce1a2c",
+        "filename": "host-common/include/host-common/hw-config-defs.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1101621
+      },
+      "writtenOn": "2023-10-17T17:18:06Z",
+      "side": 1,
+      "message": "Perhaps not worth the trouble at the moment.  This file is very emulator specific, and perhaps the best course of action is to move into the emulator.\n\nIt depends on the long-term vision for the emulator/aemu (b:300166662), which remains TBD.",
+      "parentUuid": "0600041a_522cbac9",
+      "range": {
+        "startLine": 16,
+        "startChar": 3,
+        "endLine": 16,
+        "endChar": 74
+      },
+      "revId": "dd8b929c247ce9872c775e0e5ddc4300011d0e82",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
