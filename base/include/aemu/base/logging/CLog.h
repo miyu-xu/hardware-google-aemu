@@ -21,6 +21,16 @@
 #include <stdio.h>
 #include "aemu/base/logging/LogSeverity.h"
 
+#ifdef _MSC_VER
+# ifdef LOGGING_API_SHARED
+#  define LOGGING_API __declspec(dllexport)
+# else
+#  define LOGGING_API __declspec(dllimport)
+#endif
+#else
+# define LOGGING_API
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -34,12 +44,12 @@ typedef enum {
 
 
 // Enable/disable verbose logs from the base/* family.
-extern void base_enable_verbose_logs();
-extern void base_disable_verbose_logs();
+LOGGING_API void base_enable_verbose_logs();
+LOGGING_API void base_disable_verbose_logs();
 
 // Configure the logging framework.
-extern void base_configure_logs(LoggingFlags flags);
-extern void __emu_log_print(LogSeverity prio,
+LOGGING_API void base_configure_logs(LoggingFlags flags);
+LOGGING_API void __emu_log_print(LogSeverity prio,
                             const char* file,
                             int line,
                             const char* fmt,
