@@ -22,21 +22,18 @@ namespace emugl {
 namespace {
 
 TEST(GFXSTREAM_ABORT, MessageIsWellFormatted) {
-    GTEST_SKIP() << "b/308688261";
     EXPECT_DEATH(
         { GFXSTREAM_ABORT(FatalError(ABORT_REASON_OTHER)) << "I'm dying!"; },
         MatchesStdRegex(R"re(F\d\d\d\d .*\] FATAL in \S+, err code: 4300000000: I'm dying!\n)re"));
 }
 
 TEST(GFXSTREAM_ABORT, WithVkResult) {
-    GTEST_SKIP() << "b/308688261";
     VkResult VK_ERROR_FRAGMENTATION = -1000161000;
     EXPECT_DEATH({ GFXSTREAM_ABORT(FatalError(VK_ERROR_FRAGMENTATION)) << "so fragmented"; },
                  "err code: -1000161000: so fragmented");
 }
 
 TEST(GFXSTREAM_ABORT, WithCustomizedDeathFunction) {
-    GTEST_SKIP() << "b/308688261";
     emugl::setDieFunction([] { exit(42); });
     EXPECT_EXIT(GFXSTREAM_ABORT(FatalError(ABORT_REASON_OTHER));, testing::ExitedWithCode(42), "");
     setDieFunction(std::nullopt);

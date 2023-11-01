@@ -46,7 +46,7 @@ class AbortMessage {
    public:
     AbortMessage(const char* file, const char* function, int line, FatalError reason);
 
-    ~AbortMessage();
+    [[noreturn]] ~AbortMessage();
 
     std::ostream& stream() { return mOss; }
 
