@@ -52,7 +52,11 @@ AbortMessage::~AbortMessage() {
                                                            .line = mLine,
                                                            .abort_reason = mReason.getAbortCode()});
 
-    die();
+    // TODO: change it to be controlled by a feature flag.
+    // Currently feature control has circular dependency.
+#ifndef AEMU_BUILD
+        die();
+#endif
 }
 
 void setDieFunction(std::optional<std::function<void()>> newDie) { customDieFunction = newDie; }
