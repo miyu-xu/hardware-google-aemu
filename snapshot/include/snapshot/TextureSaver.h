@@ -84,7 +84,7 @@ private:
         };
 
         int64_t startPosInFile;
-        int32_t version = 2;
+        int32_t version = 1;
         std::vector<Texture> textures;
     };
 

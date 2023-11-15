@@ -16,15 +16,12 @@
 
 #include "snapshot/TextureSaver.h"
 
-#include "aemu/base/files/CompressingStream.h"
 #include "aemu/base/system/System.h"
 
 #include <algorithm>
 #include <cassert>
 #include <iterator>
 #include <utility>
-
-using android::base::CompressingStream;
 
 namespace android {
 namespace snapshot {
@@ -51,9 +48,7 @@ void TextureSaver::saveTexture(uint32_t texId, const saver_t& saver) {
                             return tex.texId == texId;
                         }));
     mIndex.textures.push_back({texId, ftello64(mStream.get())});
-
-    CompressingStream stream(mStream);
-    saver(&stream, &mBuffer);
+    saver(&mStream, &mBuffer);
 }
 
 void TextureSaver::done() {

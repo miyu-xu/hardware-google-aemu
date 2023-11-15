@@ -27,9 +27,6 @@ set(aemu-base-srcs
     SubAllocator.cpp
     System.cpp
     Tracing.cpp)
-if(AEMU_BASE_USE_LZ4)
-    list(APPEND aemu-base-srcs CompressingStream.cpp DecompressingStream.cpp)
-endif()
 
 set(aemu-base-posix-srcs
     SharedMemory_posix.cpp

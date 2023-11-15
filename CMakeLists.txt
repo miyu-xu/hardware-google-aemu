@@ -38,7 +38,6 @@ option(ENABLE_CLANG_THREAD_SAFETY_CHECKS
        "Enable clang thread-safety checks (-Wthread-safety)."
        OFF)
 option(AEMU_COMMON_USE_PERFETTO "Use perfotto for tracing." OFF)
-option(AEMU_BASE_USE_LZ4 "The lz4 dependency is provided, and compile the compressing stream." OFF)
 
 if (WIN32)
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Zi")

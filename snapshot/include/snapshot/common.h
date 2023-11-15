@@ -38,7 +38,6 @@ namespace android {
 namespace snapshot {
 
 class ITextureSaver;
-class TextureSaver;
 class ITextureLoader;
 class TextureLoader;
 using ITextureSaverPtr = std::shared_ptr<ITextureSaver>;

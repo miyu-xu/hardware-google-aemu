@@ -17,11 +17,8 @@
 #include "snapshot/TextureLoader.h"
 
 #include "aemu/base/EintrWrapper.h"
-#include "aemu/base/files/DecompressingStream.h"
 
 #include <assert.h>
-
-using android::base::DecompressingStream;
 
 namespace android {
 namespace snapshot {
@@ -47,15 +44,7 @@ void TextureLoader::loadTexture(uint32_t texId, const loader_t& loader) {
     android::base::AutoLock scopedLock(mLock);
     assert(mIndex.count(texId));
     HANDLE_EINTR(fseeko64(mStream.get(), mIndex[texId], SEEK_SET));
-    switch (mVersion) {
-        case 1:
-            loader(&mStream);
-            break;
-        case 2: {
-            DecompressingStream stream(mStream);
-            loader(&stream);
-        }
-    }
+    loader(&mStream);
     if (ferror(mStream.get())) {
         mHasError = true;
     }
@@ -73,7 +62,7 @@ bool TextureLoader::readIndex() {
     auto indexPos = mStream.getBe64();
     HANDLE_EINTR(fseeko64(mStream.get(), static_cast<int64_t>(indexPos), SEEK_SET));
     mVersion = mStream.getBe32();
-    if (mVersion < 1 || mVersion > 2) {
+    if (mVersion != 1) {
         return false;
     }
     uint32_t texCount = mStream.getBe32();
