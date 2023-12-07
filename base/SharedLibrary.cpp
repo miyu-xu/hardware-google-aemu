@@ -271,7 +271,7 @@ SharedLibrary::SharedLibrary(HandleType lib) : mLib(lib) {}
 
 SharedLibrary::~SharedLibrary() {
     if (mLib) {
-        dlclose(mLib);
+        //dlclose(mLib);
     }
 }
 
