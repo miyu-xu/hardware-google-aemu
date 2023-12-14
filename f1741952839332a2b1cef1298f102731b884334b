@@ -45,6 +45,30 @@
       },
       "revId": "f1741952839332a2b1cef1298f102731b884334b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6518d8e2_13a9da93",
+        "filename": "base/include/aemu/base/logging/LogFormatter.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2023-12-14T20:25:17Z",
+      "side": 1,
+      "message": "Oh yes! Will fix.",
+      "parentUuid": "f607517a_82638d5a",
+      "range": {
+        "startLine": 37,
+        "startChar": 56,
+        "endLine": 37,
+        "endChar": 66
+      },
+      "revId": "f1741952839332a2b1cef1298f102731b884334b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
