@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1c1de718_5c39d0dc",
+        "filename": "base/include/aemu/base/logging/CLog.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2023-12-14T19:20:52Z",
+      "side": 1,
+      "message": "fancy...",
+      "range": {
+        "startLine": 40,
+        "startChar": 4,
+        "endLine": 40,
+        "endChar": 41
+      },
+      "revId": "f1741952839332a2b1cef1298f102731b884334b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f607517a_82638d5a",
+        "filename": "base/include/aemu/base/logging/LogFormatter.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2023-12-14T19:20:52Z",
+      "side": 1,
+      "message": "can we use `const std::string\u0026` here and below?",
+      "range": {
+        "startLine": 37,
+        "startChar": 56,
+        "endLine": 37,
+        "endChar": 66
+      },
+      "revId": "f1741952839332a2b1cef1298f102731b884334b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
