@@ -107,7 +107,6 @@ uint64_t AddressSpaceHostMemoryAllocatorContext::unallocate(AddressSpaceDevicePi
     } else {
         return -1;
     }
-    return 0;
 }
 
 AddressSpaceDeviceType AddressSpaceHostMemoryAllocatorContext::getDeviceType() const {
@@ -162,6 +161,7 @@ void AddressSpaceHostMemoryAllocatorContext::clear() {
                              phys_addr, host_ptr, size);
         }
     }
+    m_paddr2ptr.clear();
 }
 
 }  // namespace emulation
