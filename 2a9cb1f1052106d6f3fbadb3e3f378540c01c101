@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6effc4a2_1806d6d0",
+        "filename": "host-common/address_space_host_memory_allocator.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1046320
+      },
+      "writtenOn": "2024-01-24T01:12:38Z",
+      "side": 1,
+      "message": "nit: use align as well",
+      "range": {
+        "startLine": 62,
+        "startChar": 19,
+        "endLine": 62,
+        "endChar": 31
+      },
+      "revId": "2a9cb1f1052106d6f3fbadb3e3f378540c01c101",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
