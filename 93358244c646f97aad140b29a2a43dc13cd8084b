@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fdafa241_99925ffb",
+        "filename": "host-common/BUILD",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1087303
+      },
+      "writtenOn": "2024-01-26T23:33:28Z",
+      "side": 1,
+      "message": "remove?",
+      "range": {
+        "startLine": 62,
+        "startChar": 4,
+        "endLine": 62,
+        "endChar": 41
+      },
+      "revId": "93358244c646f97aad140b29a2a43dc13cd8084b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
