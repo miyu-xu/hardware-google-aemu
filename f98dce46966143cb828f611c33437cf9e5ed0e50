@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e6254b77_aa01bb9b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1964400
+      },
+      "writtenOn": "2024-02-10T01:08:48Z",
+      "side": 1,
+      "message": "Part of the b/314184534 and the decision to merge the advancedFeatures.ini file and the Canary version.",
+      "revId": "f98dce46966143cb828f611c33437cf9e5ed0e50",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
