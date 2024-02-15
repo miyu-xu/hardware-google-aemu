@@ -18,12 +18,14 @@
 
 #include "interface.h"
 
+#include "aemu/base/files/Stream.h"
+
 #include <memory>
 #include <string>
 #include <stdint.h>
 
 struct SnapshotRamBlock {
-    const char* id;
+    std::string id;
     int64_t startOffset;
     uint8_t* hostPtr;
     int64_t totalSize;
@@ -44,6 +46,16 @@ class TextureLoader;
 using ITextureSaverPtr = std::shared_ptr<ITextureSaver>;
 using ITextureLoaderPtr = std::shared_ptr<ITextureLoader>;
 using ITextureLoaderWPtr = std::weak_ptr<ITextureLoader>;
+
+struct SnapshotSaveStream {
+    android::base::Stream* stream = nullptr;
+    ITextureSaverPtr textureSaver;
+};
+
+struct SnapshotLoadStream {
+    android::base::Stream* stream = nullptr;
+    ITextureLoaderPtr textureLoader;
+};
 
 // Taken from exec.c, these #defines
 // are for the |flags| field in SnapshotRamBlock.

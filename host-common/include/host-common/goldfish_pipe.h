@@ -71,7 +71,7 @@ typedef struct GoldfishHwPipe GoldfishHwPipe;
  * the virtual device. */
 typedef struct GoldfishHostPipe GoldfishHostPipe;
 
-typedef struct {
+typedef struct GoldfishPipeServiceOps {
     // Open a new pipe. |hw_pipe| is a unique pointer value identifying the
     // hardware-side view of the pipe, and will be passed to the
     // goldfish_pipe_xxx() functions below. This returns a new host-specific
@@ -123,6 +123,9 @@ typedef struct {
                       GoldfishPipeBuffer *buffers,
                       int num_buffers);
 
+    // Blocking call that waits until guest is able to receive data through |host_pipe|.
+    void (*wait_guest_recv)(GoldfishHostPipe* host_pipe);
+
     // Called when the guest tries to send data to the host through
     // |host_pipe|. This will try to copy data from the memory ranges
     // decribed by the array |buffers| or |num_buffers| items.
@@ -131,6 +134,9 @@ typedef struct {
     int (*guest_send)(GoldfishHostPipe **host_pipe,
                       const GoldfishPipeBuffer *buffers,
                       int num_buffers);
+
+    // Blocking call that waits until guest is able to send data through |host_pipe|.
+    void (*wait_guest_send)(GoldfishHostPipe* host_pipe);
 
     // Called when the guest wants to be waked on specific events.
     // identified by the |wake_flags| bitmask. The host should call
