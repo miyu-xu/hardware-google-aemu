@@ -123,13 +123,13 @@ void splitTokens(const std::string& input,
         out->push_back(s);
     };
     out->clear();
-    split(input, splitBy, removeWhiteSpace);
+    split<std::string>(input, std::string(splitBy), removeWhiteSpace);
 }
 
 std::vector<std::string> Split(const std::string& s,
                                const std::string& delimiters) {
     if (delimiters.empty()) {
-        return {}
+        return {};
     }
 
     std::vector<std::string> result;
