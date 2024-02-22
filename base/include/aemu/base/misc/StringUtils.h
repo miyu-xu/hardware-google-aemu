@@ -97,15 +97,6 @@ void split(String str, String splitBy, std::function<void(const String&)> func) 
     }
 }
 
-// Tokenlize a string using |splitBy| as a delimiter.
-// |splitBy| must be a nonempty string well, or it's a no-op.
-// Whitespace is removed.
-// Note: make sure out is an empty vector. It will be cleared
-// before store the result tokens
-void splitTokens(const std::string& input,
-                 std::vector<std::string>* out,
-                 std::string_view splitBy);
-
 // Splits a string into a vector of strings.
 //
 // The string is split at each occurrence of a character in delimiters.
