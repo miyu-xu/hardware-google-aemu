@@ -1,4 +1,5 @@
 package {
+    default_team: "trendy_team_automotive",
     // See: http://go/android-license-faq
     // A large-scale-change added 'default_applicable_licenses' to import
     // all of the 'license_kinds' from "hardware_google_aemu_license"
@@ -10,7 +11,6 @@ package {
 cc_library_static {
     name: "gfxstream_base",
     defaults: ["gfxstream_defaults"],
-    header_libs: ["gfxstream_renderdoc_headers"],
     srcs: [
         "AlignedBuf.cpp",
         "CompressingStream.cpp",
@@ -38,14 +38,15 @@ cc_library_static {
         "Tracing.cpp",
         "Thread_pthread.cpp",
     ],
-    export_header_lib_headers: ["gfxstream_renderdoc_headers"],
+    header_libs: ["libgfxstream_thirdparty_renderdoc_headers"],
+    export_header_lib_headers: ["libgfxstream_thirdparty_renderdoc_headers"],
     static_libs: ["liblz4"],
 }
 
 // Run with `atest --host gfxstream_base_tests`
 cc_test_host {
     name: "gfxstream_base_tests",
-    defaults: [ "gfxstream_defaults" ],
+    defaults: ["gfxstream_defaults"],
     srcs: [
         "LruCache_unittest.cpp",
     ],
@@ -62,7 +63,7 @@ cc_test_host {
 
 cc_test_library {
     name: "gfxstream_base_test_support",
-    defaults: [ "gfxstream_defaults" ],
+    defaults: ["gfxstream_defaults"],
     srcs: [
         "testing/file_io.cpp",
     ],
