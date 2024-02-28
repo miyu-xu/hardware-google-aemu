@@ -235,8 +235,8 @@ private:
 static inline __attribute__((always_inline)) void SmpWmb() {
 #if defined(__aarch64__)
         asm volatile("dmb ishst" ::: "memory");
-#elif defined(__x86_64__)
-        std::atomic_thread_fence(std::memory_order_release);
+#elif (defined(__x86_64__) || (defined(__riscv) && (__riscv_xlen == 64)))
+    std::atomic_thread_fence(std::memory_order_release);
 #else
 #error "Unimplemented SmpWmb for current CPU architecture"
 #endif
@@ -245,8 +245,8 @@ static inline __attribute__((always_inline)) void SmpWmb() {
 static inline __attribute__((always_inline)) void SmpRmb() {
 #if defined(__aarch64__)
         asm volatile("dmb ishld" ::: "memory");
-#elif defined(__x86_64__)
-        std::atomic_thread_fence(std::memory_order_acquire);
+#elif (defined(__x86_64__) || (defined(__riscv) && (__riscv_xlen == 64)))
+    std::atomic_thread_fence(std::memory_order_acquire);
 #else
 #error "Unimplemented SmpRmb for current CPU architecture"
 #endif
