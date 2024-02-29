@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "916640e9_d08c3302",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1074688
+      },
+      "writtenOn": "2024-02-29T20:59:15Z",
+      "side": 1,
+      "message": "b/325929966 looks to have caused the code modified here to start compiling on an internal target that is now failing, a failure that\u0027s tracked at b/327075387\n\nThis patch fixes that compilation issue, and should impact only compilation of RISC-V targets. However, across the presubmit runs, we\u0027ve seen emulator-linux_x64_gfxstream:aosp-emu-master-dev both succeed and fail to build. An ABTD run for this patch on that target builds fine: https://android-build.corp.google.com/build-details/P70782789/targets/emulator-linux_x64_gfxstream\n\nA semantically-equivalent, but syntactically different version of this patch (at aosp/2982012) saw that bot pass, but a similar bot named emulator-mac_aarch64_gfxstream on aosp-emu-master-dev fail to build. Moreover, the failures seem to be called \"Build\" failures, but mostly have to do with some test process attempting to spin up an emulator and losing contact with it after boot. It would be very surprising if this change caused that kind of failure.",
+      "revId": "5eb26295f38f74a4b8fb76e4c416249b2ec2b808",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
