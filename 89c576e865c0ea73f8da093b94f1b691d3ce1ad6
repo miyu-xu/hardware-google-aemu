@@ -33,6 +33,24 @@
       "message": "This is obviously silly, but I\u0027m trying to see if leaving the above #elif untouched changes the outcome on the emulator-linux_x64_gfxstream presubmit bot",
       "revId": "89c576e865c0ea73f8da093b94f1b691d3ce1ad6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "909eefbf_892b96c2",
+        "filename": "base/include/aemu/base/synchronization/Lock.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 1074688
+      },
+      "writtenOn": "2024-02-29T22:52:45Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "4ddb431f_66c8384f",
+      "revId": "89c576e865c0ea73f8da093b94f1b691d3ce1ad6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
