@@ -80,3 +80,8 @@ FEATURE_CONTROL_ITEM(SystemBlob, 46)
 FEATURE_CONTROL_ITEM(NetsimWebUi, 93)
 FEATURE_CONTROL_ITEM(NetsimCliUi, 94)
 FEATURE_CONTROL_ITEM(WiFiPacketStream, 95)
+<<<<<<< HEAD   (abed84 Snap for 11435509 from 0be2028ebfb55711770fa1808b26db4f7a63c)
+=======
+FEATURE_CONTROL_ITEM(VulkanAllocateDeviceMemoryOnly, 98)
+FEATURE_CONTROL_ITEM(VulkanAllocateHostMemory, 99)
+>>>>>>> BRANCH (549034 Merge "Normalize some Gfxstream library names" into main)
