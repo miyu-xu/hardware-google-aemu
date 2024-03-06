@@ -34,6 +34,24 @@
       "parentUuid": "c4a701ff_73206ffa",
       "revId": "c96f2874d39eed86c33283edfc65e348cac61ac0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7c8bc0ef_01fe3485",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1087303
+      },
+      "writtenOn": "2024-03-06T00:40:16Z",
+      "side": 1,
+      "message": "Issue goes away with aosp/2990151. But please do try to test them on your platform.",
+      "parentUuid": "7ce5d54b_46112719",
+      "revId": "c96f2874d39eed86c33283edfc65e348cac61ac0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
