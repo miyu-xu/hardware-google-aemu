@@ -16,11 +16,12 @@
 #include "aemu/base/system/Memory.h"
 #include "aemu/base/system/System.h"
 
-#include <Cocoa/Cocoa.h>
+// #include <Cocoa/Cocoa.h>
 #include <CoreFoundation/CoreFoundation.h>
 #include <IOKit/IOBSD.h>
 #include <IOKit/IOKitLib.h>
-#include <Carbon/Carbon.h>
+#include <AppKit/AppKit.h>
+// #include <Carbon/Carbon.h>
 
 #include <IOKit/kext/KextManager.h>
 #include <IOKit/storage/IOBlockStorageDevice.h>
