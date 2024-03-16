@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9c620865_25277e11",
+        "filename": "base/BUILD",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2024-03-16T02:00:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b41302a1_bc47d3ba",
+      "range": {
+        "startLine": 0,
+        "startChar": 0,
+        "endLine": 0,
+        "endChar": 0
+      },
+      "revId": "ed609664fa3916a653dc833582c3c6a13cf25dfc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5574b790_28b78ae6",
@@ -37,6 +61,30 @@
       "writtenOn": "2024-03-14T17:40:07Z",
       "side": 1,
       "message": "remove",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 27
+      },
+      "revId": "ed609664fa3916a653dc833582c3c6a13cf25dfc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0d9cc30c_d726ae5a",
+        "filename": "base/system-native-mac.mm",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2024-03-16T02:00:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5574b790_28b78ae6",
       "range": {
         "startLine": 19,
         "startChar": 0,
