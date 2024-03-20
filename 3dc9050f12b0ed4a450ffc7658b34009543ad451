@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a1796553_c94835e2",
+        "filename": "host-common/address_space_device.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2024-03-20T20:38:29Z",
+      "side": 1,
+      "message": "While I will suggest the use of the `extract` API, I am fine with the current way we write it.",
+      "revId": "3dc9050f12b0ed4a450ffc7658b34009543ad451",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
