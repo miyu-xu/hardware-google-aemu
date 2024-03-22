@@ -13,7 +13,10 @@ cc_library(
     }),
     includes = ["include"],
     visibility = ["//visibility:public"],
-    deps = ["//hardware/google/aemu/host-common:aemu-host-common-headers"],
+    deps = [
+        "//hardware/google/aemu/host-common:aemu-host-common-headers",
+        "@com_google_absl//absl/strings:str_format",
+    ],
 )
 
 cc_library(
