@@ -112,6 +112,8 @@ bool androidSnapshot_getQuickbootChoice();
 
 void androidSnapshot_quickbootSetShortRunCheck(bool enable);
 
+void android_detectVulkanVersion1();
+
 void androidSnapshot_setUsingHdd(bool usingHdd);
 bool androidSnapshot_isUsingHdd();
 
