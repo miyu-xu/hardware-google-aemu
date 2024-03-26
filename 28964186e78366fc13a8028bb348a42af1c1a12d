@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a0126fc8_3d3b2644",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1087303
+      },
+      "writtenOn": "2024-03-26T22:26:02Z",
+      "side": 1,
+      "message": "I do believe we use it for initialization performance. Any performance concern after deprecation?",
+      "revId": "28964186e78366fc13a8028bb348a42af1c1a12d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
