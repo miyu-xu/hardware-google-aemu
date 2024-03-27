@@ -16,6 +16,24 @@
       "message": "I do believe we use it for initialization performance. Any performance concern after deprecation?",
       "revId": "28964186e78366fc13a8028bb348a42af1c1a12d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f64a2134_0afb2127",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2024-03-27T05:50:16Z",
+      "side": 1,
+      "message": "I don\u0027t think so.\n\n- We will not be replacing the use in emu-master-dev (where we are using C++17)\n- We have a fixed set of singletons with a limited number of objects.\n- I don\u0027t think the initialization cost will be that different.",
+      "parentUuid": "a0126fc8_3d3b2644",
+      "revId": "28964186e78366fc13a8028bb348a42af1c1a12d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
