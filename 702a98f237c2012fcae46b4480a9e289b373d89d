@@ -16,6 +16,24 @@
       "message": "Oh there is a unittest about the feature list, please try to update the test:\n\n/buildbot/src/android/emu-master-dev/external/qemu/android/emu/feature/test/android/featurecontrol/FeatureControl_unittest.cpp:376: Failure\n\nhttps://android-build.corp.google.com/artifact/pending/P72853957/emulator-linux_x64_gfxstream/latest/view/logs%2Fbuild.log",
       "revId": "702a98f237c2012fcae46b4480a9e289b373d89d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b7409c56_b5349e84",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2063756
+      },
+      "writtenOn": "2024-04-08T20:55:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4cd3a03e_79fa383f",
+      "revId": "702a98f237c2012fcae46b4480a9e289b373d89d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
