@@ -284,6 +284,8 @@ public:
         // Make sure that the small array starts exactly where base class
         // expects it: right after the |mCapacity|.
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
         // We can't use a static_assert with offsetof() because in msvc, it uses
         // reinterpret_cast.
         // TODO: Add runtime assertion instead?
@@ -295,6 +297,7 @@ public:
                       "SmallFixedVector<> class layout is wrong, "
                       "|mData| needs to follow |mCapacity|");
 #endif
+#pragma clang diagnostic pop
 
         init_inplace();
     }
