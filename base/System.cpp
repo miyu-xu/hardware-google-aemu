@@ -1,3 +1,17 @@
+// Copyright 2023 The Android Open Source Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #include "aemu/base/EintrWrapper.h"
 #include "aemu/base/StringFormat.h"
 #include "aemu/base/system/System.h"
@@ -25,7 +39,7 @@
 #endif  // __APPLE__
 
 #ifdef _MSC_VER
-// #include "msvc-posix.h"
+// #include "aemu/base/msvc.h"
 // #include <dirent.h>
 #else
 #include <time.h>
@@ -131,7 +145,7 @@ static const TickCountImpl kTickCount;
 namespace android {
 namespace base {
 
-std::string getEnvironmentVariable(const std::string& key) { 
+std::string getEnvironmentVariable(const std::string& key) {
 #ifdef _WIN32
     Win32UnicodeString varname_unicode(key);
     const wchar_t* value = _wgetenv(varname_unicode.c_str());
@@ -217,7 +231,7 @@ void sleepUs(uint64_t n) {
 void sleepToUs(uint64_t absTimeUs) {
     // Approach will vary based on platform.
     //
-    // Linux has clock_nanosleep with TIMER_ABSTIME which does
+    // Linux/QNX has clock_nanosleep with TIMER_ABSTIME which does
     // exactly what we want, a sleep to some absolute time.
     //
     // Mac only has relative nanosleep(), so we'll need to calculate a time
@@ -238,7 +252,7 @@ void sleepToUs(uint64_t absTimeUs) {
     do {
         ret = nanosleep(&ts, nullptr);
     } while (ret == -1 && errno == EINTR);
-#elif defined(__linux__)
+#elif defined __linux__ || defined __QNX__
     struct timespec ts;
     ts.tv_sec = absTimeUs / 1000000ULL;
     ts.tv_nsec = absTimeUs * 1000ULL - ts.tv_sec * 1000000000ULL;

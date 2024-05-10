@@ -1,19 +1,31 @@
 # TODO(gregschlom) move this to base
-add_library(logging-base
-    STATIC
+
+if(NOT DEFINED LOGGING_LIB_NAME)
+   set(LOGGING_LIB_NAME logging-base)
+endif()
+
+add_library(${LOGGING_LIB_NAME}
     logging.cpp
     GfxstreamFatalError.cpp
     ../base/Metrics.cpp)
 target_include_directories(
-    logging-base
+    ${LOGGING_LIB_NAME}
     PRIVATE
     include/host-common)
 target_link_libraries(
-    logging-base
+    ${LOGGING_LIB_NAME}
     PUBLIC
     PRIVATE
     aemu-base.headers
     aemu-host-common.headers)
+
+if (BUILD_SHARED_LIBS)
+    set_target_properties(
+        ${LOGGING_LIB_NAME}
+        PROPERTIES
+        VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}
+        SOVERSION ${VERSION_MAJOR})
+endif()
 
 add_library(aemu-host-common.headers INTERFACE)
 target_link_libraries(
@@ -28,7 +40,6 @@ target_include_directories(
 if (BUILD_STANDALONE)
     add_library(
         aemu-host-common
-        STATIC
 
         # emugl glue
         empty-crash-handler.cpp
@@ -62,8 +73,19 @@ if (BUILD_STANDALONE)
         address_space_graphics.cpp
         address_space_host_media.cpp
 
+	# SubAllocator
+        ../base/SubAllocator.cpp
+
         hw-config.cpp
         )
+
+    if (BUILD_SHARED_LIBS)
+        set_target_properties(
+            aemu-host-common
+            PROPERTIES
+            VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}
+            SOVERSION ${VERSION_MAJOR})
+    endif()
 
     target_include_directories(
         aemu-host-common
@@ -77,7 +99,7 @@ if (BUILD_STANDALONE)
         aemu-host-common.headers
         ${GFXSTREAM_BASE_LIB}
         PRIVATE
-        logging-base
+        ${LOGGING_LIB_NAME}
     )
 endif()
 

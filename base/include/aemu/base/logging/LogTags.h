@@ -17,8 +17,8 @@ extern "C" {
 #endif
 
 #ifndef VERBOSE_TAG_LIST
-    #error "_VERBOSE_TAG(xx, yy) List not defined."
-#endif 
+#error "_VERBOSE_TAG(xx, yy) List not defined."
+#endif
 
 #define _VERBOSE_TAG(x, y) VERBOSE_##x,
 typedef enum {
@@ -26,31 +26,22 @@ typedef enum {
 } VerboseTag;
 #undef _VERBOSE_TAG
 
-extern uint64_t android_verbose;
+#define VERBOSE_ENABLE(tag) verbose_enable((int64_t)VERBOSE_##tag)
+#define VERBOSE_DISABLE(tag) verbose_disable(int64_t) VERBOSE_##tag)
+#define VERBOSE_CHECK(tag) verbose_check((int64_t)VERBOSE_##tag)
+#define VERBOSE_CHECK_ANY() verbose_check_any();
 
-#ifdef __cplusplus
-// Make sure we don't accidentally add in to many tags..
-static_assert(VERBOSE_MAX <= (sizeof(android_verbose) * 8));
-#endif
-
-
-#define VERBOSE_ENABLE(tag) android_verbose |= (1ULL << VERBOSE_##tag)
-#define VERBOSE_DISABLE(tag) android_verbose &= (1ULL << VERBOSE_##tag)
-#define VERBOSE_CHECK(tag) ((android_verbose & (1ULL << VERBOSE_##tag)) != 0)
-#define VERBOSE_CHECK_ANY() (android_verbose != 0)
-
-#define VERBOSE_PRINT(tag, ...)                      \
-    if (VERBOSE_CHECK(tag)) {                        \
-        EMULOG(EMULATOR_LOG_DEBUG, ##__VA_ARGS__); \
+#define VERBOSE_PRINT(tag, ...) \
+    if (VERBOSE_CHECK(tag)) {   \
+        dprint(__VA_ARGS__);  \
     }
 
-#define VERBOSE_INFO(tag, ...)                    \
-    if (VERBOSE_CHECK(tag)) {                     \
-        EMULOG(EMULATOR_LOG_INFO, ##__VA_ARGS__); \
+#define VERBOSE_INFO(tag, ...) \
+    if (VERBOSE_CHECK(tag)) {  \
+        dinfo(__VA_ARGS__);  \
     }
 
 #define VERBOSE_DPRINT(tag, ...) VERBOSE_PRINT(tag, __VA_ARGS__)
-
 
 #ifdef __cplusplus
 }

@@ -68,7 +68,15 @@ if (BUILD_STANDALONE)
     endif()
 
     add_library(aemu-base ${aemu-base-srcs})
-    target_compile_definitions(aemu-base PRIVATE -DENABLE_HEALTH_MONITOR=1)
+    if (BUILD_SHARED_LIBS)
+        set_target_properties(
+            aemu-base
+            PROPERTIES
+            VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}
+            SOVERSION ${VERSION_MAJOR})
+    endif()
+
+    target_compile_definitions(aemu-base PRIVATE)
 
     if (WIN32)
         set(aemu-base-platform-deps Shlwapi)
@@ -87,7 +95,7 @@ if (BUILD_STANDALONE)
         # TODO(joshuaduong): Remove this when logging.h is moved into base
         aemu-host-common.headers
         PRIVATE
-        logging-base
+        ${LOGGING_LIB_NAME}
         ${aemu-base-platform-deps})
 
     target_include_directories(
@@ -142,7 +150,8 @@ if (ENABLE_VKCEREAL_TESTS)
             StringFormat_unittest.cpp
             SubAllocator_unittest.cpp
             TypeTraits_unittest.cpp
-            WorkerThread_unittest.cpp)
+            WorkerThread_unittest.cpp
+            HybridEntityManager_unittest.cpp)
     endif()
     add_executable(aemu-base_unittests ${aemu-base-test-srcs})
     target_link_libraries(
@@ -150,7 +159,7 @@ if (ENABLE_VKCEREAL_TESTS)
         PRIVATE
         aemu-base.headers
         ${GFXSTREAM_BASE_LIB}
-        logging-base
+        ${LOGGING_LIB_NAME}
         aemu-base-testing-support
         gmock
         gtest_main)

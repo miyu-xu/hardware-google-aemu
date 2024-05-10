@@ -36,6 +36,9 @@ typedef enum {
 } WindowMessageType;
 
 typedef struct {} MultiDisplayPageChangeEvent;
+typedef struct SkinLayout SkinLayout;
+typedef struct QFrame QFrame;
+typedef struct SkinEvent SKinEvent;
 
 static const int kWindowMessageTimeoutInfinite = -1;
 
@@ -44,6 +47,9 @@ typedef struct EmulatorWindow EmulatorWindow;
 typedef void (*UiUpdateFunc)(void* data);
 
 typedef struct QAndroidEmulatorWindowAgent {
+    // Initialize the UI, e.g. load and apply settings from all windows
+    void (*initUI)();
+
     // Get a pointer to the emulator window structure.
     EmulatorWindow* (*getEmulatorWindow)(void);
 
@@ -128,6 +134,9 @@ typedef struct QAndroidEmulatorWindowAgent {
     void (*quit_request)(void);
     void (*getWindowPosition)(int*, int*);
     bool (*hasWindow)();
+
+    bool (*userSettingIsDontSaveSnapshot)(void);
+    void (*setUserSettingIsDontSaveSnapshot)(bool);
 } QAndroidEmulatorWindowAgent;
 
 #ifndef USING_ANDROID_BP
