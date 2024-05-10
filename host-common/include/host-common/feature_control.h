@@ -23,11 +23,11 @@
 ANDROID_BEGIN_HEADER
 
 typedef enum {
-#define FEATURE_CONTROL_ITEM(item) kFeature_##item,
+#define FEATURE_CONTROL_ITEM(item, idx) kFeature_##item = idx,
 #include "FeatureControlDefHost.h"
 #include "FeatureControlDefGuest.h"
 #undef FEATURE_CONTROL_ITEM
-    kFeature_n_items
+    kFeature_unknown = -1,
 } Feature;
 
 // Call this function first to initialize the feature control.
@@ -51,5 +51,6 @@ void feature_set_if_not_overridden_or_guest_disabled(Feature feature, bool enabl
 void feature_update_from_server();
 
 const char* feature_name(Feature feature);
+Feature feature_from_name(const char* name);
 
 ANDROID_END_HEADER
