@@ -25,5 +25,5 @@ target_include_directories(
     ${AEMU_COMMON_REPO_ROOT}/include)
 if (APPLE)
     target_compile_definitions(
-        ${SNAPSHOT_LIB_NAME} PRIVATE -Dfseeko64=fseek -Dftello64=ftell)
+        ${SNAPSHOT_LIB_NAME} PRIVATE -Dfseeko=fseek -Dftello=ftell)
 endif()
