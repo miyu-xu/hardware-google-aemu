@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dc897e83_aa5d7da1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1087303
+      },
+      "writtenOn": "2024-05-29T21:35:19Z",
+      "side": 1,
+      "message": "+cc Erwin do we need similar def for bazel build as well?",
+      "revId": "455341880f52b4df3b30490db1c17eb65110c00c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
