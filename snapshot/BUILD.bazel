@@ -15,6 +15,7 @@ cc_library(
     ],
     hdrs = [":gfxstream-snapshot-headers"],
     copts = [
+        "-D_FILE_OFFSET_BITS=64",
         "-Wno-extern-c-compat",
         "-Wno-return-type-c-linkage",
     ],
