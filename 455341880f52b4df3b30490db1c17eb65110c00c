@@ -50,6 +50,24 @@
       "message": "We will need to add this to the build.bazel files in these directories as an explicit `copts \u003d [\u0027-D_FILE_OFFSET_BITS\u003d64\u0027]\u0027",
       "revId": "455341880f52b4df3b30490db1c17eb65110c00c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "79d3786e_dee21ead",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2024-05-29T21:53:04Z",
+      "side": 1,
+      "message": "I misunderstood, we will need to add those defines in the bazel build files.",
+      "parentUuid": "7d174808_fd5307e9",
+      "revId": "455341880f52b4df3b30490db1c17eb65110c00c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
