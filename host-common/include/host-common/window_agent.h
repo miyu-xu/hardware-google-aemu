@@ -46,6 +46,14 @@ typedef struct EmulatorWindow EmulatorWindow;
 
 typedef void (*UiUpdateFunc)(void* data);
 
+// Defines a function type for handling user notifications.
+//
+// Parameters:
+//   message: A null-terminated string containing the message text to display.
+//   type:    A `WindowMessageType` value indicating the severity and style of the message (e.g.,
+//   info, warning, error).
+typedef void (*UserNotification)(void* context, const char* message, WindowMessageType type);
+
 typedef struct QAndroidEmulatorWindowAgent {
     // Initialize the UI, e.g. load and apply settings from all windows
     void (*initUI)();
@@ -63,18 +71,41 @@ typedef struct QAndroidEmulatorWindowAgent {
     // Returns the current rotation.
     int (*getRotation)(void);
 
-    // Shows a message to the user.
-    void (*showMessage)(const char* message,
-                        WindowMessageType type,
-                        int timeoutMs);
+    // Displays a message to the user within a designated window.
+    //
+    // Parameters:
+    //   message:   A null-terminated string containing the message to display.
+    //   type:      A `WindowMessageType` value indicating the message type.
+    //   timeoutMs: The duration in milliseconds for which the message should be displayed (0 for
+    //   indefinite).
+    void (*showMessage)(const char* message, WindowMessageType type, int timeoutMs);
 
-    // Shows a message to the user + custom dismiss op.
-    void (*showMessageWithDismissCallback)(const char* message,
-                                           WindowMessageType type,
-                                           const char* dismissText,
-                                           void* context,
-                                           void (*func)(void*),
-                                           int timeoutMs);
+    // Displays a message to the user with a custom dismiss button and associated callback.
+    //
+    // Parameters:
+    //   message:      A null-terminated string containing the message to display.
+    //   type:         A `WindowMessageType` value indicating the message type.
+    //   dismissText:  A null-terminated string specifying the text to display on the dismiss
+    //                 button.
+    //   context:      An optional pointer to user-defined data that will be passed to the
+    //                 `func` callback.
+    //   func:         A function pointer to a callback that will be invoked when
+    //                 the user dismisses the message.
+    //  timeoutMs:     The duration in milliseconds for which the
+    //                 message should be displayed (0 for indefinite).
+    void (*showMessageWithDismissCallback)(const char* message, WindowMessageType type,
+                                           const char* dismissText, void* context,
+                                           void (*func)(void*), int timeoutMs);
+
+    // Registers a callback function that will be triggered whenever a message is shown using
+    // `showMessage` or `showMessageWithDismissCallback`.
+    //
+    // Parameters:
+    //   callback: A `UserNotification` function pointer that will be called for each message
+    //   displayed.
+    //   context: The context that will be passed along when the callback is invoked.
+    void (*registerMessageCallback)(void* context, UserNotification callback);
+
     // Fold/Unfold device
     bool (*fold)(bool is_fold);
     // Query folded state
