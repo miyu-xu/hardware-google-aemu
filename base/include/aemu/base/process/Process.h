@@ -27,6 +27,7 @@
 #include <vector>
 
 #include "aemu/base/streams/RingStreambuf.h"
+#include "aemu/base/ThreadAnnotations.h"
 
 namespace android {
 namespace base {
@@ -190,12 +191,15 @@ protected:
     // True if no overseer is needed
     bool mDeamon{false};
 
+    // True if we want to inherit all the fds/handles.
+    bool mInherit{false};
+
 private:
     void runOverseer();
 
     std::unique_ptr<ProcessOverseer> mOverseer;
     std::unique_ptr<std::thread> mOverseerThread;
-    bool mOverseerActive{false};
+    bool mOverseerActive GUARDED_BY(mOverseerMutex) {false};
     mutable std::mutex mOverseerMutex;
     mutable std::condition_variable mOverseerCv;
 
