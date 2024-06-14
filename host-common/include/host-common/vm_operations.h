@@ -159,6 +159,12 @@ typedef enum EmuRunState {
     QEMU_RUN_STATE__MAX = 16,
 } EmuRunState;
 
+typedef enum SnapshotSkipReason {
+    SNAPSHOT_SKIP_UNKNOWN = 0,
+    SNAPSHOT_SKIP_UNSUPPORTED_VK_APP = 1,
+    SNAPSHOT_SKIP_UNSUPPORTED_VK_API = 2,
+} SnapshotSkipReason;
+
 // C interface to expose Qemu implementations of common VM related operations.
 typedef struct QAndroidVmOperations {
     bool (*vmStop)(void);
@@ -251,5 +257,11 @@ typedef struct QAndroidVmOperations {
 
     // Reset the machine
     void (*system_shutdown_request)(QemuShutdownCause reason);
+
+    // Set the reason to skip snapshotting on exit.
+    void (*setSkipSnapshotSaveReason)(SnapshotSkipReason reason);
+
+    // Set if Vulkan snapshot is actively used, for stats.
+    void (*setStatSnapshotUseVulkan)(void);
 } QAndroidVmOperations;
 ANDROID_END_HEADER
