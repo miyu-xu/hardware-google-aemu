@@ -111,18 +111,19 @@ protected:
     static void taskCallback(void* opaqueThis, Looper::Timer* timer) {
         const auto self = static_cast<RecurrentTask*>(opaqueThis);
         AutoLock lock(self->mLock);
+        bool has_lock = true;
         self->mInTimerCallback = true;
         const bool inFlight = self->mInFlight;
         self->mInTimerCondition.broadcastAndUnlock(&lock);
-
+        has_lock = false;
         const auto undoInTimerCallback =
-                makeCustomScopedPtr(self, [&lock](RecurrentTask* self) {
-                    if (!lock.isLocked()) {
-                        lock.lock();
-                    }
-                    self->mInTimerCallback = false;
-                    self->mInTimerCondition.broadcastAndUnlock(&lock);
-                });
+            makeCustomScopedPtr(self, [&lock, &has_lock](RecurrentTask* self) {
+                if (!has_lock) {
+                    lock.lock();
+                }
+                self->mInTimerCallback = false;
+                self->mInTimerCondition.broadcastAndUnlock(&lock);
+            });
 
         if (!inFlight) {
             return;
@@ -131,6 +132,7 @@ protected:
         const bool callbackResult = self->mFunction();
 
         lock.lock();
+        has_lock = true;
         if (!callbackResult) {
             self->mInFlight = false;
             return;
@@ -141,6 +143,7 @@ protected:
             return;
         }
         lock.unlock();
+        has_lock = false;
         self->mTimer->startRelative(self->mTaskIntervalMs);
     }
 
