@@ -16,9 +16,9 @@
 
 #include "aemu/base/async/Looper.h"
 #include "aemu/base/Compiler.h"
+#include "aemu/base/memory/ScopedPtr.h"
 #include "aemu/base/synchronization/ConditionVariable.h"
 #include "aemu/base/synchronization/Lock.h"
-#include "aemu/base/memory/ScopedPtr.h"
 
 #include <functional>
 #include <memory>
@@ -111,18 +111,23 @@ protected:
     static void taskCallback(void* opaqueThis, Looper::Timer* timer) {
         const auto self = static_cast<RecurrentTask*>(opaqueThis);
         AutoLock lock(self->mLock);
+        /*
+         * We must set |mInTimerCallback| before broadcasting the condition
+         * variable, otherwise the client code may see |mInTimerCallback| as
+         * false and miss the condition variable broadcast.
+         */
         self->mInTimerCallback = true;
         const bool inFlight = self->mInFlight;
         self->mInTimerCondition.broadcastAndUnlock(&lock);
-
+        bool needs_lock_on_exit = true;
         const auto undoInTimerCallback =
-                makeCustomScopedPtr(self, [&lock](RecurrentTask* self) {
-                    if (!lock.isLocked()) {
-                        lock.lock();
-                    }
-                    self->mInTimerCallback = false;
-                    self->mInTimerCondition.broadcastAndUnlock(&lock);
-                });
+            makeCustomScopedPtr(self, [&lock, &needs_lock_on_exit](RecurrentTask* self) {
+                if (needs_lock_on_exit) {
+                    lock.lock();
+                }
+                self->mInTimerCallback = false;
+                self->mInTimerCondition.broadcastAndUnlock(&lock);
+            });
 
         if (!inFlight) {
             return;
@@ -131,6 +136,7 @@ protected:
         const bool callbackResult = self->mFunction();
 
         lock.lock();
+        needs_lock_on_exit = false;
         if (!callbackResult) {
             self->mInFlight = false;
             return;
