@@ -16,6 +16,29 @@
       "message": "Not an audio bug but blocker for enabling \"--enable-thtread-safety-checks\" on Mac.",
       "revId": "4d011ff7f0f8cba437a676d1d1db91fd518f3333",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8f56dc1b_557f493e",
+        "filename": "base/include/aemu/base/async/RecurrentTask.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1278660
+      },
+      "writtenOn": "2024-06-21T22:51:51Z",
+      "side": 1,
+      "message": "I think you can move this line to #118.",
+      "range": {
+        "startLine": 114,
+        "startChar": 8,
+        "endLine": 114,
+        "endChar": 12
+      },
+      "revId": "4d011ff7f0f8cba437a676d1d1db91fd518f3333",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
