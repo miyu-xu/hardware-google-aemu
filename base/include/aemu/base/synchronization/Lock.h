@@ -15,19 +15,16 @@
 #pragma once
 
 #include "aemu/base/Compiler.h"
-
 #include "aemu/base/ThreadAnnotations.h"
 
 #include <atomic>
-
+#include <cassert>
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
 #else
 #include <pthread.h>
 #endif
-
-#include <assert.h>
 
 namespace android {
 namespace base {
@@ -154,8 +151,6 @@ public:
         mLock.unlock();
         mLocked = false;
     }
-
-    bool isLocked() const { return mLocked; }
 
     ~AutoLock() RELEASE() {
         if (mLocked) {
