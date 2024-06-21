@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e081053c_ed54ca6a",
+        "filename": "base/include/aemu/base/synchronization/Lock.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 1278660
+      },
+      "writtenOn": "2024-06-21T23:06:04Z",
+      "side": 0,
+      "message": "This is one is good. Thank you for noticing.",
+      "range": {
+        "startLine": 158,
+        "startChar": 4,
+        "endLine": 158,
+        "endChar": 45
+      },
+      "revId": "ce859edf4aad8886e515c1858eab5855b878a588",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
