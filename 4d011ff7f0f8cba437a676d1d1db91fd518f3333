@@ -43,6 +43,47 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b68b5816_1a8bdb81",
+        "filename": "base/include/aemu/base/async/RecurrentTask.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 1278660
+      },
+      "writtenOn": "2024-06-21T23:04:22Z",
+      "side": 1,
+      "message": "I think this code requires some extra care.",
+      "range": {
+        "startLine": 115,
+        "startChar": 8,
+        "endLine": 115,
+        "endChar": 38
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "d648a7ed_4f19b0dd",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "base/include/aemu/base/async/RecurrentTask.h",
+              "range": {
+                "startLine": 115,
+                "startChar": 0,
+                "endLine": 115,
+                "endChar": 0
+              },
+              "replacement": "        // We must set |mInTimerCallback| before broadcasting the condition\n        // variable, otherwise the client code may see |mInTimerCallback| as\n        // false and miss the condition variable broadcast.\n"
+            }
+          ]
+        }
+      ],
+      "revId": "4d011ff7f0f8cba437a676d1d1db91fd518f3333",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b6bfcb3e_b2463181",
         "filename": "base/include/aemu/base/async/RecurrentTask.h",
         "patchSetId": 2
