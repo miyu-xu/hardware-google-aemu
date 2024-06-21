@@ -20,6 +20,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5e84944a_ff61907b",
+        "filename": "base/include/aemu/base/async/RecurrentTask.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1278660
+      },
+      "writtenOn": "2024-06-21T23:13:35Z",
+      "side": 1,
+      "message": "I think the only way to implement this properly is to require `Looper::Timer::stop` to be blocking if a callback is running. And then all those extra things will no longer be required.",
+      "range": {
+        "startLine": 85,
+        "startChar": 8,
+        "endLine": 85,
+        "endChar": 23
+      },
+      "revId": "4d011ff7f0f8cba437a676d1d1db91fd518f3333",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8f56dc1b_557f493e",
         "filename": "base/include/aemu/base/async/RecurrentTask.h",
         "patchSetId": 2
