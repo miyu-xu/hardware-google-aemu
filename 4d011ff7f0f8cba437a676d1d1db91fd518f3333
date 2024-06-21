@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8171d5b3_9f65b86e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 3425040
+      },
+      "writtenOn": "2024-06-21T22:45:25Z",
+      "side": 1,
+      "message": "Not an audio bug but blocker for enabling \"--enable-thtread-safety-checks\" on Mac.",
+      "revId": "4d011ff7f0f8cba437a676d1d1db91fd518f3333",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
