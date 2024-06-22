@@ -16,9 +16,7 @@
 
 #include "aemu/base/async/Looper.h"
 #include "aemu/base/Compiler.h"
-#include "aemu/base/synchronization/ConditionVariable.h"
 #include "aemu/base/synchronization/Lock.h"
-#include "aemu/base/memory/ScopedPtr.h"
 
 #include <functional>
 #include <memory>
@@ -59,38 +57,26 @@ public:
     RecurrentTask(Looper* looper,
                   TaskFunction function,
                   Looper::Duration taskIntervalMs)
-        : mLooper(looper),
-          mFunction(function),
+        : mFunction(function),
           mTaskIntervalMs(int(taskIntervalMs)),
-          mTimer(mLooper->createTimer(&RecurrentTask::taskCallback, this)) {}
+          mTimer(looper->createTimer(&RecurrentTask::taskCallbackStatic, this)) {}
 
-    ~RecurrentTask() { stopAndWait(); }
+    ~RecurrentTask() { stop(); }
 
     void start(bool runImmediately = false) {
-        {
+        {   // Just in the case if taskCallback runs in startRelative
             AutoLock lock(mLock);
             mInFlight = true;
         }
+
         mTimer->startRelative(runImmediately ? 0 : mTaskIntervalMs);
     }
 
-    void stopAsync() {
+    void stop() {
         mTimer->stop();
 
         AutoLock lock(mLock);
         mInFlight = false;
-    }
-
-    void stopAndWait() {
-        mTimer->stop();
-
-        AutoLock lock(mLock);
-        mInFlight = false;
-
-        // Make sure we wait for the pending task to complete if it was running.
-        while (mInTimerCallback) {
-            mInTimerCondition.wait(&lock);
-        }
     }
 
     bool inFlight() const {
@@ -98,62 +84,29 @@ public:
         return mInFlight;
     }
 
-    void waitUntilRunning() {
-        AutoLock lock(mLock);
-        while (mInFlight && !mInTimerCallback) {
-            mInTimerCondition.wait(&lock);
-        }
-    }
-
     Looper::Duration taskIntervalMs() const { return mTaskIntervalMs; }
 
-protected:
-    static void taskCallback(void* opaqueThis, Looper::Timer* timer) {
-        const auto self = static_cast<RecurrentTask*>(opaqueThis);
-        AutoLock lock(self->mLock);
-        self->mInTimerCallback = true;
-        const bool inFlight = self->mInFlight;
-        self->mInTimerCondition.broadcastAndUnlock(&lock);
-
-        const auto undoInTimerCallback =
-                makeCustomScopedPtr(self, [&lock](RecurrentTask* self) {
-                    if (!lock.isLocked()) {
-                        lock.lock();
-                    }
-                    self->mInTimerCallback = false;
-                    self->mInTimerCondition.broadcastAndUnlock(&lock);
-                });
-
-        if (!inFlight) {
-            return;
+private:
+    void taskCallback(Looper::Timer* timer) {
+        AutoLock lock(mLock);
+        if (mInFlight) {
+            if (mFunction()) {
+                mTimer->startRelative(mTaskIntervalMs);
+            } else {
+                mInFlight = false;
+            }
         }
-
-        const bool callbackResult = self->mFunction();
-
-        lock.lock();
-        if (!callbackResult) {
-            self->mInFlight = false;
-            return;
-        }
-        // It is possible that the client code in |mFunction| calls |stop|, so
-        // we must double check before reposting the task.
-        if (!self->mInFlight) {
-            return;
-        }
-        lock.unlock();
-        self->mTimer->startRelative(self->mTaskIntervalMs);
     }
 
-private:
-    Looper* const mLooper;
-    const TaskFunction mFunction;
-    const int mTaskIntervalMs;
-    bool mInTimerCallback = false;
-    bool mInFlight = false;
-    const std::unique_ptr<Looper::Timer> mTimer;
+    static void taskCallbackStatic(void* opaqueThis, Looper::Timer* timer) {
+        static_cast<RecurrentTask*>(opaqueThis)->taskCallback(timer);
+    }
 
+    const TaskFunction mFunction;
+    const std::unique_ptr<Looper::Timer> mTimer;
     mutable Lock mLock;
-    ConditionVariable mInTimerCondition;
+    const int mTaskIntervalMs;
+    bool mInFlight = false;
 };
 
 }  // namespace base
