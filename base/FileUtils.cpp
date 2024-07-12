@@ -19,10 +19,6 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include "aemu/base/msvc.h"
-#ifdef _MSC_VER
-//#include "aemu/base/msvc.h"
-#else
 #include <unistd.h>
 #endif
 
