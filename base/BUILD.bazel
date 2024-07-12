@@ -77,7 +77,6 @@ cc_library(
             "SharedMemory_win32.cpp",
             "Thread_win32.cpp",
             "Win32UnicodeString.cpp",
-            "msvc.cpp",
         ],
         "@platforms//os:macos": [
             "SharedMemory_posix.cpp",
@@ -145,7 +144,10 @@ cc_test(
         "ring_buffer_unittest.cpp",
         "testing/file_io.cpp",
     ] + select({
-        "@platforms//os:windows": ["Win32UnicodeString_unittest.cpp"],
+        "@platforms//os:windows": [
+            "Win32UnicodeString_unittest.cpp",
+            "msvc.cpp",
+        ],
         "//conditions:default": [],
     }),
     deps = [
