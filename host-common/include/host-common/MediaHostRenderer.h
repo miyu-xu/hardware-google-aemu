@@ -52,7 +52,7 @@ private:
 
 public:
     // render decoded frame stored in CPU memory
-    void renderToHostColorBuffer(int hostColorBufferId,
+    bool renderToHostColorBuffer(int hostColorBufferId,
                                  unsigned int outputWidth,
                                  unsigned int outputHeight,
                                  uint8_t* decodedFrame,
@@ -60,7 +60,7 @@ public:
 
     // render decoded frame stored in GPU texture; recycle the swapped
     // out texture from colorbuffer into framepool
-    void renderToHostColorBufferWithTextures(
+    bool renderToHostColorBufferWithTextures(
             int hostColorBufferId,
             unsigned int outputWidth,
             unsigned int outputHeight,

@@ -41,6 +41,7 @@ public:
                 -3,  // Can happen when receiving a new set of SPS/PPS frames
         NALUIgnored = -4,  // Can happen if we receive picture data w/o the
                            // SPS/PPS NALUs.
+        FailedToRenderToHostColorBuffer = -5,
     };
 
     // For snapshots

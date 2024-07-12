@@ -39,6 +39,7 @@ public:
         InitContextFailed = -2,
         DecoderRestarted = -3, // Can happen when receiving a new set of SPS/PPS frames
         NALUIgnored = -4, // Can happen if we receive picture data w/o the SPS/PPS NALUs.
+        FailedToRenderToHostColorBuffer = -5, // we receive host color buffer but canno render to it
     };
 
     // For snapshots
