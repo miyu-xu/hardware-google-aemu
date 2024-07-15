@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "878e1e17_b46016b4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 3458821
+      },
+      "writtenOn": "2024-07-15T15:43:51Z",
+      "side": 1,
+      "message": "I\u0027ve added the definition to what I think is the appropriate Bazel file, but despite my best efforts, I haven\u0027t been able to figure out how to actually build with Bazel, so I haven\u0027t been able to test it.",
+      "revId": "6f5f5be5b168a5fbee84e744d867e50b63b029ae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
