@@ -33,6 +33,24 @@
       "message": "```\n21:25:45(08:12.1 ) bld | C:/buildbot/src/android/emu-master-dev/hardware/google/aemu/base/include/aemu/base/EintrWrapper.h(64,26): note: expanded from macro \u0027HANDLE_EINTR\u0027\n21:25:45(08:12.1 ) bld | #define HANDLE_EINTR(x) (x)\n21:25:45(08:12.1 ) bld | ^\n21:25:45(08:12.1 ) bld | C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.19041.0\\ucrt/stdio.h(270,26): note: \u0027fseek\u0027 declared here\n21:25:45(08:12.1 ) bld | _ACRTIMP int __cdecl fseek(\n21:25:45(08:12.1 ) bld | ^\n21:25:45(08:12.1 ) bld | C:/buildbot/src/android/emu-master-dev/hardware/google/aemu/snapshot/TextureLoader.cpp(74,18): error: use of undeclared identifier \u0027fseeko\u0027; did you mean \u0027fseek\u0027?\n21:25:45(08:12.1 ) bld | HANDLE_EINTR(fseeko(mStream.get(), static_cast\u003cint64_t\u003e(indexPos), SEEK_SET));\n21:25:45(08:12.1 ) bld | ^~~~~~\n21:25:45(08:12.23) bld | fseek\n21:25:45(08:12.23) bld | C:/buildbot/src/android/emu-master-dev/hardware/google/aemu/base/include/aemu/base/EintrWrapper.h(64,26): note: expanded from macro \u0027HANDLE_EINTR\u0027\n21:25:45(08:12.23) bld | #define HANDLE_EINTR(x) (x)\n21:25:45(08:12.23) bld | ^\n21:25:45(08:12.23) bld | C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.19041.0\\ucrt/stdio.h(270,26): note: \u0027fseek\u0027 declared here\n21:25:45(08:12.23) bld | _ACRTIMP int __cdecl fseek(\n21:25:45(08:12.23) bld | ^\n21:25:45(08:12.23) bld | 2 errors generated.\n21:26:00(08:27.1 ) bld | ninja: build stopped: subcommand failed.\n21:26:00(08:27.85) bld | Build failure due to C:\\buildbot\\src\\android\\emu-master-dev\\prebuilts\\cmake\\windows-x86\\bin\\cmake.EXE --build C:\\buildbot\\src\\out --target install Status: 1 !\u003d 0\n```\n\nObviously, this change breaks the build on Windows.",
       "revId": "6f5f5be5b168a5fbee84e744d867e50b63b029ae",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2f4811a3_7a92ee57",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2024-07-15T22:24:00Z",
+      "side": 1,
+      "message": "You can vote +1 for Presubmit-Ready to run the CI check if you have the permission, and the CI should tell you if it works.",
+      "parentUuid": "878e1e17_b46016b4",
+      "revId": "6f5f5be5b168a5fbee84e744d867e50b63b029ae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
