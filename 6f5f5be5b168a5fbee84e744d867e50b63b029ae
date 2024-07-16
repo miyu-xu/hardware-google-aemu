@@ -69,6 +69,24 @@
       "parentUuid": "e45d4acd_f5112a20",
       "revId": "6f5f5be5b168a5fbee84e744d867e50b63b029ae",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "43968507_73f4c88e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2024-07-16T23:31:21Z",
+      "side": 1,
+      "message": "It seems that you don\u0027t have the permission to vote +1 for Presubmit-Ready, and you don\u0027t have the access to the check tab information as well.\n\nI will trigger CI for you, and forward any relevant CI failure information.",
+      "parentUuid": "2f4811a3_7a92ee57",
+      "revId": "6f5f5be5b168a5fbee84e744d867e50b63b029ae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
