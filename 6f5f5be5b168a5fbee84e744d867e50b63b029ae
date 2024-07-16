@@ -51,6 +51,24 @@
       "parentUuid": "878e1e17_b46016b4",
       "revId": "6f5f5be5b168a5fbee84e744d867e50b63b029ae",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c8e5ce77_27d2c307",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 3458821
+      },
+      "writtenOn": "2024-07-16T19:10:25Z",
+      "side": 1,
+      "message": "I think I\u0027ve fixed this for Windows and macOS now, by updating their defines.  There are also defines for lseek64 for Windows that don\u0027t seem to be used at all, so I\u0027ve left them alone.",
+      "parentUuid": "e45d4acd_f5112a20",
+      "revId": "6f5f5be5b168a5fbee84e744d867e50b63b029ae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
