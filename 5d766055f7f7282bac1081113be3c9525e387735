@@ -52,6 +52,24 @@
       "parentUuid": "58669f30_7e6abb90",
       "revId": "5d766055f7f7282bac1081113be3c9525e387735",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "774597e6_b3c40ab6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2024-07-17T23:45:01Z",
+      "side": 1,
+      "message": "The CI still doesn\u0027t pass due to some infrastructure issue/flaky tests. I will rerun the CI.",
+      "parentUuid": "521d0496_db0fbc08",
+      "revId": "5d766055f7f7282bac1081113be3c9525e387735",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
