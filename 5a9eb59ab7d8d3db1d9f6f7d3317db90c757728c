@@ -52,6 +52,23 @@
       "parentUuid": "72b0ae8c_faa0d783",
       "revId": "5a9eb59ab7d8d3db1d9f6f7d3317db90c757728c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7d09b182_ffd239b4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2024-07-18T16:32:24Z",
+      "side": 1,
+      "message": "```\n01:28:19(11:50.60) bld | C:\\buildbot\\src\\android\\emu-master-dev\\prebuilts\\clang\\host\\windows-x86\\clang-r487747c\\bin\\clang-cl.exe  /nologo -TP @android\\android-emu\\CMakeFiles\\android-emu.dir\\android\\snapshot\\RamSaver.cpp.obj.rsp /showIncludes /Foandroid/android-emu/CMakeFiles/android-emu.dir/android/snapshot/RamSaver.cpp.obj /Fdandroid\\android-emu\\CMakeFiles\\android-emu.dir\\android-emu.pdb -c -- C:/buildbot/src/android/emu-master-dev/external/qemu/android/android-emu/android/snapshot/RamSaver.cpp\n01:28:19(11:50.60) bld | C:/buildbot/src/android/emu-master-dev/external/qemu/android/android-emu/android/snapshot/RamSaver.cpp(105,13): error: use of undeclared identifier \u0027fseeko64\u0027; did you mean \u0027_fseeki64\u0027?\n01:28:19(11:50.60) bld | fseeko64(mStream.get(), loader-\u003eindexOffset(), SEEK_SET);\n01:28:19(11:50.60) bld | ^~~~~~~~\n01:28:19(11:50.60) bld | _fseeki64\n01:28:19(11:50.60) bld | C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.19041.0\\ucrt/stdio.h(278,26): note: \u0027_fseeki64\u0027 declared here\n01:28:19(11:50.60) bld | _ACRTIMP int __cdecl _fseeki64(\n01:28:19(11:50.60) bld | ^\n01:28:19(11:50.60) bld | C:/buildbot/src/android/emu-master-dev/external/qemu/android/android-emu/android/snapshot/RamSaver.cpp(621,22): error: use of undeclared identifier \u0027fseeko64\u0027; did you mean \u0027_fseeki64\u0027?\n01:28:19(11:50.60) bld | HANDLE_EINTR(fseeko64(mStream.get(), 0, SEEK_SET));\n01:28:19(11:50.60) bld | ^~~~~~~~\n01:28:19(11:50.60) bld | _fseeki64\n01:28:19(11:50.60) bld | C:/buildbot/src/android/emu-master-dev/hardware/google/aemu/base/include/aemu/base/EintrWrapper.h(64,26): note: expanded from macro \u0027HANDLE_EINTR\u0027\n01:28:19(11:50.60) bld | #define HANDLE_EINTR(x) (x)\n01:28:19(11:50.60) bld | ^\n01:28:19(11:50.60) bld | C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.19041.0\\ucrt/stdio.h(278,26): note: \u0027_fseeki64\u0027 declared here\n01:28:19(11:50.60) bld | _ACRTIMP int __cdecl _fseeki64(\n01:28:19(11:50.60) bld | ^\n01:28:19(11:50.60) bld | 2 errors generated.\n```",
+      "revId": "5a9eb59ab7d8d3db1d9f6f7d3317db90c757728c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
