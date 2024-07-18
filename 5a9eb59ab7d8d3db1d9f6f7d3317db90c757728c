@@ -16,6 +16,24 @@
       "message": "```\n00:04:38(13:31.8 ) bld | [7699/10453] Building CXX object android/android-emu/CMakeFiles/android-emu.dir/android/snapshot/TextureLoader.cpp.obj\n00:04:38(13:31.8 ) bld | FAILED: android/android-emu/CMakeFiles/android-emu.dir/android/snapshot/TextureLoader.cpp.obj\n00:04:38(13:31.49) bld | C:\\buildbot\\src\\android\\emu-master-dev\\prebuilts\\clang\\host\\windows-x86\\clang-r487747c\\bin\\clang-cl.exe  /nologo -TP @android\\android-emu\\CMakeFiles\\android-emu.dir\\android\\snapshot\\TextureLoader.cpp.obj.rsp /showIncludes /Foandroid/android-emu/CMakeFiles/android-emu.dir/android/snapshot/TextureLoader.cpp.obj /Fdandroid\\android-emu\\CMakeFiles\\android-emu.dir\\android-emu.pdb -c -- C:/buildbot/src/android/emu-master-dev/external/qemu/android/android-emu/android/snapshot/TextureLoader.cpp\n00:04:38(13:31.49) bld | C:/buildbot/src/android/emu-master-dev/external/qemu/android/android-emu/android/snapshot/TextureLoader.cpp(49,18): error: use of undeclared identifier \u0027fseeko64\u0027; did you mean \u0027_fseeki64\u0027?\n00:04:38(13:31.49) bld | HANDLE_EINTR(fseeko64(mStream.get(), mIndex[texId], SEEK_SET));\n00:04:38(13:31.49) bld | ^~~~~~~~\n00:04:38(13:31.49) bld | _fseeki64\n00:04:38(13:31.49) bld | C:/buildbot/src/android/emu-master-dev/hardware/google/aemu/base/include/aemu/base/EintrWrapper.h(64,26): note: expanded from macro \u0027HANDLE_EINTR\u0027\n00:04:38(13:31.85) bld | #define HANDLE_EINTR(x) (x)\n00:04:38(13:31.85) bld | ^\n00:04:38(13:31.33) bld | C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.19041.0\\ucrt/stdio.h(278,26): note: \u0027_fseeki64\u0027 declared here\n00:04:38(13:31.33) bld | _ACRTIMP int __cdecl _fseeki64(\n00:04:38(13:31.33) bld | ^\n00:04:38(13:31.33) bld | C:/buildbot/src/android/emu-master-dev/external/qemu/android/android-emu/android/snapshot/TextureLoader.cpp(74,18): error: use of undeclared identifier \u0027fseeko64\u0027; did you mean \u0027_fseeki64\u0027?\n00:04:38(13:31.33) bld | HANDLE_EINTR(fseeko64(mStream.get(), static_cast\u003cint64_t\u003e(indexPos), SEEK_SET));\n00:04:38(13:31.33) bld | ^~~~~~~~\n00:04:38(13:31.31) bld | _fseeki64\n00:04:38(13:31.40) bld | C:/buildbot/src/android/emu-master-dev/hardware/google/aemu/base/include/aemu/base/EintrWrapper.h(64,26): note: expanded from macro \u0027HANDLE_EINTR\u0027\n00:04:38(13:31.40) bld | #define HANDLE_EINTR(x) (x)\n00:04:38(13:31.40) bld | ^\n00:04:38(13:31.40) bld | C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.19041.0\\ucrt/stdio.h(278,26): note: \u0027_fseeki64\u0027 declared here\n00:04:38(13:31.40) bld | _ACRTIMP int __cdecl _fseeki64(\n00:04:38(13:31.40) bld | ^\n00:04:38(13:31.40) bld | 2 errors generated.\n```",
       "revId": "5a9eb59ab7d8d3db1d9f6f7d3317db90c757728c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "72b0ae8c_faa0d783",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2024-07-18T01:06:54Z",
+      "side": 1,
+      "message": "We probably need to cherry-pick the change to https://android.googlesource.com/platform/external/qemu/+/refs/heads/emu-master-dev/android/android-emu/android/snapshot/TextureLoader.cpp#49 as well. Let me do that for you.",
+      "parentUuid": "8f0c07f2_d8e31372",
+      "revId": "5a9eb59ab7d8d3db1d9f6f7d3317db90c757728c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
