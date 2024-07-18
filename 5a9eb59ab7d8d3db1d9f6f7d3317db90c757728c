@@ -104,6 +104,23 @@
       "message": "Flaky tests.",
       "revId": "5a9eb59ab7d8d3db1d9f6f7d3317db90c757728c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "53eb9fce_73821a85",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1576895
+      },
+      "writtenOn": "2024-07-18T19:02:07Z",
+      "side": 1,
+      "message": "Ok, we passed the presubmit.",
+      "revId": "5a9eb59ab7d8d3db1d9f6f7d3317db90c757728c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
