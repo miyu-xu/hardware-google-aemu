@@ -183,7 +183,8 @@ protected:
     // Subclasses should implement this to actually launch the process,
     // return std::nullopt in case of failure
     virtual std::optional<Pid> createProcess(const CommandArguments& args,
-                                             bool captureOutput) = 0;
+                                             bool captureOutput,
+                                             bool replace) = 0;
 
     // Create the overseer used to observe the process state.
     virtual std::unique_ptr<ProcessOverseer> createOverseer() = 0;

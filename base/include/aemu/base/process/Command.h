@@ -75,6 +75,9 @@ public:
     // Call this if you wish to inherit all the file handles
     Command& inherit();
 
+    // Call this if you wish to replace the current process like execv.
+    Command& replace();
+
     // Launch the process
     std::unique_ptr<ObservableProcess> execute();
 
@@ -98,6 +101,7 @@ private:
     bool mDeamon{false};
     bool mCaptureOutput{false};
     bool mInherit{false};
+    bool mReplace{false};
     BufferDefinition mStdout{0, 0};
     BufferDefinition mStderr{0, 0};
 };
