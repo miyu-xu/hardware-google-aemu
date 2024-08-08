@@ -1,6 +1,6 @@
 # Logging library
 cc_library(
-    name = "logging",
+    name = "logging-qemu2",
     srcs = [
         "GfxstreamFatalError.cpp",
         "logging.cpp",
@@ -20,6 +20,31 @@ cc_library(
         ":aemu-host-common-headers",
         "//hardware/google/aemu/base:aemu-base-headers",
         "//hardware/google/aemu/base:aemu-base-metrics",
+    ],
+)
+
+cc_library(
+    name = "logging",
+    srcs = [
+        "GfxstreamFatalErrorAbsl.cpp",
+        "logging_absl.cpp",
+    ],
+    hdrs = ["include/host-common/logging.h"],
+    defines = [
+        "BUILDING_EMUGL_COMMON_SHARED",
+    ] + select({
+        "@platforms//os:windows": [
+            "WIN32_LEAN_AND_MEAN",
+        ],
+        "//conditions:default": [],
+    }),
+    includes = ["include/host-common"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":aemu-host-common-headers",
+        "//hardware/google/aemu/base:aemu-base-headers",
+        "//hardware/google/aemu/base:aemu-base-metrics",
+        "@com_google_absl//absl/log",
     ],
 )
 
