@@ -4,10 +4,20 @@ if(NOT DEFINED LOGGING_LIB_NAME)
    set(LOGGING_LIB_NAME logging-base)
 endif()
 
-add_library(${LOGGING_LIB_NAME}
-    logging.cpp
-    GfxstreamFatalError.cpp
-    ../base/Metrics.cpp)
+if (USE_ABSEIL_LOGGING AND TARGET absl::absl_log)
+    message(STATUS "Forwarding logs to abseil logging backend.")
+    add_library(${LOGGING_LIB_NAME}
+        logging_absl.cpp
+        GfxstreamFatalErrorAbsl.cpp
+        ../base/Metrics.cpp)
+    target_link_libraries(${LOGGING_LIB_NAME} PRIVATE absl::absl_log)
+else()
+    add_library(${LOGGING_LIB_NAME}
+        logging.cpp
+        GfxstreamFatalError.cpp
+        ../base/Metrics.cpp)
+endif()
+
 target_include_directories(
     ${LOGGING_LIB_NAME}
     PRIVATE
