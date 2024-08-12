@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "046fecd2_00ed6428",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1087303
+      },
+      "writtenOn": "2024-08-12T17:10:12Z",
+      "side": 1,
+      "message": "A few issues:\n\n1. why don\u0027t we implement it in external/qemu and go through the set_gfxstream_logger() API?\n2. since you put an empty implementation for set_gfxstream_logger(), we no longer collect the setup logs as part of the crash reports.",
+      "revId": "fb1b9f1f4b521bc70f850b1245f6e6acb93dd46e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
