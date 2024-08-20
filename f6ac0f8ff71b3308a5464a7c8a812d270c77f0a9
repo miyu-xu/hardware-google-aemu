@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e4272e6b_dcc49409",
+        "filename": "base/CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2024-08-20T14:41:29Z",
+      "side": 1,
+      "message": "I think you also need to add this to base/Android.bp.",
+      "revId": "f6ac0f8ff71b3308a5464a7c8a812d270c77f0a9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
