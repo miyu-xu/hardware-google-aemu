@@ -16,6 +16,24 @@
       "message": "I think you also need to add this to base/Android.bp.",
       "revId": "f6ac0f8ff71b3308a5464a7c8a812d270c77f0a9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8bb7383f_b088684e",
+        "filename": "base/CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1999272
+      },
+      "writtenOn": "2024-08-20T15:29:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e4272e6b_dcc49409",
+      "revId": "f6ac0f8ff71b3308a5464a7c8a812d270c77f0a9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
