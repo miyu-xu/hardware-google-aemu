@@ -27,6 +27,13 @@ using android::base::Lock;
 using android::base::StaticLock;
 using android::GoldfishSyncCommandQueue;
 
+#include <chrono>
+
+#define _PR_LINE printf("%lld: %s: %s %d\n", std::chrono::duration_cast<std::chrono::microseconds>( \
+                           std::chrono::system_clock::now().time_since_epoch()) \
+                           .count() / 1000, __func__, __FILE__, __LINE__);
+
+
 // Commands can be tagged with with unique id's,
 // so that for the commands that require a reply
 // from the guest, we signal them properly.
@@ -113,12 +120,14 @@ void goldfish_sync_receive_hostcmd_result(uint32_t cmd,
                                           uint64_t handle,
                                           uint32_t time_arg,
                                           uint64_t hostcmd_handle) {
+                                            _PR_LINE
     if (auto elt = android::base::find(wait_map, hostcmd_handle)) {
         CommandWaitInfo* wait_info = elt->get();
         AutoLock lock(wait_info->lock);
         wait_info->return_value = handle;
         wait_info->done = true;
         wait_info->cvDone.broadcast();
+        _PR_LINE
     }
 }
 

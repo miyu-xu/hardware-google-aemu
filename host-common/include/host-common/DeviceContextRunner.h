@@ -22,6 +22,13 @@
 #include <memory>
 #include <vector>
 
+#include <chrono>
+
+#define _PR_LINE printf("%lld: %s: %s %d\n", std::chrono::duration_cast<std::chrono::microseconds>( \
+                           std::chrono::system_clock::now().time_since_epoch()) \
+                           .count() / 1000, __func__, __FILE__, __LINE__);
+
+
 namespace android {
 // All operations that change the global VM state (e.g.
 // virtual device operations) should happen in a thread
@@ -117,6 +124,7 @@ protected:
     // Otherwise, we need to add the request to a pending
     // set of requests, to be finished later when we do have the VM lock.
     void queueDeviceOperation(const T& op) {
+        _PR_LINE
         if (mContextRunMode == ContextRunMode::DeferIfNotLocked &&
             mVmLock->isLockedBySelf()) {
             // Perform the operation correctly since the current thread
