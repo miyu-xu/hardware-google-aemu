@@ -13,9 +13,9 @@
 // limitations under the License.
 
 #pragma once
-
 #ifdef _MSC_VER
-#include "aemu/base/msvc.h"
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
 #endif
 
 #include <sys/types.h>

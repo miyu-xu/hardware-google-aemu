@@ -15,7 +15,6 @@
 #pragma once
 
 #include "aemu/base/c_header.h"
-#include "aemu/base/msvc.h"
 
 #include <inttypes.h>
 #include <sys/types.h>
