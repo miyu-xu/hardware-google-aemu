@@ -39,6 +39,7 @@ public:
         VP8 = 2,
         VP9 = 3,
         HEVC = 4,
+        AV1 = 5,
     };
 
 public:
