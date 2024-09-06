@@ -172,7 +172,7 @@ class SimpleAsyncSocketAdapter : public AsyncSocketEventListener {
     void onClose(AsyncSocketAdapter* socket, int err) override { mOnClose(); };
     void onConnected(AsyncSocketAdapter* socket) override {}
 
-   private:
+   protected:
     std::unique_ptr<AsyncSocketAdapter> mSocket;
     OnReadCallback mOnRead;
     OnCloseCallback mOnClose;
