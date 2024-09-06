@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0e44d626_9fbc0288",
+        "filename": "host-common/logging_absl.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1087303
+      },
+      "writtenOn": "2024-09-06T22:37:38Z",
+      "side": 1,
+      "message": "what is the plan for them?",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 55
+      },
+      "revId": "f7e738f9b9d4a77a52364dffcef3658b2c910056",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
