@@ -54,6 +54,8 @@ if (MSVC)
     add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
     # ask msvc not to warn non C ISO POSIX functions
     add_compile_definitions(_CRT_NONSTDC_NO_DEPRECATE)
+
+    add_subdirectory(windows)
 endif()
 
 # Set AEMU_BUILD_CONFIG_NAME to use a custom cmake build script located in
@@ -69,12 +71,13 @@ ${AEMU_COMMON_REPO_ROOT}/build-config/${AEMU_COMMON_BUILD_CONFIG}")
     add_subdirectory(build-config/${AEMU_COMMON_BUILD_CONFIG})
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-extern-c-compat -Wno-return-type-c-linkage")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-extern-c-compat -Wno-return-type-c-linkage -D_FILE_OFFSET_BITS=64")
 
 add_subdirectory(base)
 add_subdirectory(snapshot)
 add_subdirectory(host-common)
 add_subdirectory(third-party)
+
 
 add_library(aemu_common INTERFACE)
 target_link_libraries(
