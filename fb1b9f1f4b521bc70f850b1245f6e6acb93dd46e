@@ -34,6 +34,24 @@
       "parentUuid": "046fecd2_00ed6428",
       "revId": "fb1b9f1f4b521bc70f850b1245f6e6acb93dd46e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "716705af_a8965da9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2024-09-11T17:36:59Z",
+      "side": 1,
+      "message": "Rewritten to make it QEMU8 only, which is using gfxstream over rutabaga.",
+      "parentUuid": "08d0829f_6db84895",
+      "revId": "fb1b9f1f4b521bc70f850b1245f6e6acb93dd46e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

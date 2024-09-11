@@ -22,6 +22,30 @@
       },
       "revId": "f7e738f9b9d4a77a52364dffcef3658b2c910056",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f0cd7cf2_0b1aebd4",
+        "filename": "host-common/logging_absl.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2024-09-11T17:36:59Z",
+      "side": 1,
+      "message": "These are not used in QEMU8",
+      "parentUuid": "0e44d626_9fbc0288",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 55
+      },
+      "revId": "f7e738f9b9d4a77a52364dffcef3658b2c910056",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
