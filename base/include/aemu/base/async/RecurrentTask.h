@@ -54,7 +54,7 @@ class RecurrentTask {
         : mLooper(looper),
           mFunction(std::move(function)),
           mTaskIntervalMs(static_cast<int>(taskIntervalMs)),
-          mTimer(mLooper->createTimer(&RecurrentTask::taskCallback, this)) {}
+          mTimer(mLooper->createTimer(&RecurrentTask::taskCallbackStatic, this)) {}
 
     /**
      * @brief Constructor to initialize a RecurrentTask.
@@ -146,46 +146,49 @@ class RecurrentTask {
     }
 
    private:
-    static void taskCallback(void* opaqueThis, Looper::Timer* /*timer*/) {
-        auto self = static_cast<RecurrentTask*>(opaqueThis);
-        std::unique_lock<std::mutex> lock(self->mMutex);
+    void taskCallback(Looper::Timer* /*timer*/) {
+        std::unique_lock<std::mutex> lock(mMutex);
 
-        self->mInTimerCallback = true;
-        const bool inFlight = self->mInFlight;
+        mInTimerCallback = true;
+        const bool inFlight = mInFlight;
 
-        self->mInTimerCondition.notify_all();
+        mInTimerCondition.notify_all();
         lock.unlock();
 
         auto undoInTimerCallback =
             std::unique_ptr<RecurrentTask, std::function<void(RecurrentTask*)>>(
-                self, [](RecurrentTask* self) {
-                    std::lock_guard<std::mutex> lock(self->mMutex);
-                    self->mInTimerCallback = false;
-                    self->mInTimerCondition.notify_all();
-                });
+                this, [](RecurrentTask* self) {
+                std::lock_guard<std::mutex> lock(self->mMutex);
+                self->mInTimerCallback = false;
+                self->mInTimerCondition.notify_all();
+            });
 
         if (!inFlight) {
             return;
         }
 
-        const bool callbackResult = self->mFunction();
+        const bool callbackResult = mFunction();
 
         if (!callbackResult) {
-            std::lock_guard<std::mutex> lock(self->mMutex);
-            self->mInFlight = false;
+            std::lock_guard<std::mutex> lock(mMutex);
+            mInFlight = false;
             return;
         }
 
         // It is possible that the client code in |mFunction| calls |stop|,
         // so we must double-check before reposting the task.
         {
-            std::lock_guard<std::mutex> lock(self->mMutex);
-            if (!self->mInFlight) {
+            std::lock_guard<std::mutex> lock(mMutex);
+            if (!mInFlight) {
                 return;
             }
         }
 
-        self->mTimer->startRelative(self->mTaskIntervalMs);
+        mTimer->startRelative(mTaskIntervalMs);
+    }
+
+    static void taskCallbackStatic(void* that, Looper::Timer* timer) {
+        static_cast<RecurrentTask*>(that)->taskCallback(timer);
     }
 
    protected:
