@@ -130,16 +130,6 @@ class RecurrentTask {
     }
 
     /**
-     * @brief Blocks the calling thread until the task is running.
-     *
-     * This function waits until the task is either running or stops entirely.
-     */
-    void waitUntilRunning() {
-        std::unique_lock<std::mutex> lock(mMutex);
-        mInTimerCondition.wait(lock, [this]() { return !mInFlight || mInTimerCallback; });
-    }
-
-    /**
      * @brief Gets the task execution interval in milliseconds.
      *
      * @return The interval (in milliseconds) between task executions.
