@@ -16,7 +16,12 @@ cc_library(
     deps = [
         "//hardware/google/aemu/host-common:aemu-host-common-headers",
         "@com_google_absl//absl/strings:str_format",
-    ],
+    ] + select({
+        "@platforms//os:windows": [
+            "//hardware/google/aemu/windows:compat-hdrs",
+        ],
+        "//conditions:default": [],
+    }),
 )
 
 cc_library(
@@ -57,6 +62,7 @@ cc_library(
         "FileUtils.cpp",
         "FunctorThread.cpp",
         "GLObjectCounter.cpp",
+        "GraphicsObjectCounter.cpp",
         "HealthMonitor.cpp",
         "LayoutResolver.cpp",
         "MemStream.cpp",
@@ -140,6 +146,7 @@ cc_test(
         "ManagedDescriptor_unittest.cpp",
         "NoDestructor_unittest.cpp",
         "Optional_unittest.cpp",
+        "RecurrentTask_unittest.cpp",
         "StringFormat_unittest.cpp",
         "SubAllocator_unittest.cpp",
         "TypeTraits_unittest.cpp",
@@ -152,10 +159,15 @@ cc_test(
         ],
         "//conditions:default": [],
     }),
+    linkopts = [
+        "-undefined error",
+    ],
     deps = [
         ":aemu-base",
         ":aemu-base-headers",
         "//hardware/generic/goldfish/android/logging:backend",
+        "//hardware/generic/goldfish/android/looper",
+        "//hardware/generic/goldfish/android/sockets",
         "//hardware/google/aemu/base:aemu-base-metrics",
         "//hardware/google/aemu/host-common:logging",
         "@com_google_absl//absl/log",
