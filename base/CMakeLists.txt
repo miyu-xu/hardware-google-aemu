@@ -139,20 +139,22 @@ if (ENABLE_VKCEREAL_TESTS)
         gmock)
 
     if (NOT DEFINED aemu-base-test-srcs)
-        set(aemu-base-test-srcs
+        set(aemu-base-test-srcs  # cmake-format: sortable
             AlignedBuf_unittest.cpp
             HealthMonitor_unittest.cpp
             ArraySize_unittest.cpp
+            HybridEntityManager_unittest.cpp
             LayoutResolver_unittest.cpp
             LruCache_unittest.cpp
             ManagedDescriptor_unittest.cpp
             Optional_unittest.cpp
+            RecurrentTask_unittest.cpp
             ring_buffer_unittest.cpp
             StringFormat_unittest.cpp
             SubAllocator_unittest.cpp
             TypeTraits_unittest.cpp
             WorkerThread_unittest.cpp
-            HybridEntityManager_unittest.cpp)
+            )
     endif()
     add_executable(aemu-base_unittests ${aemu-base-test-srcs})
     target_link_libraries(
