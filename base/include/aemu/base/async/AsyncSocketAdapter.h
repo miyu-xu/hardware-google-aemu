@@ -146,10 +146,37 @@ class AsyncSocketAdapter {
     AsyncSocketEventListener* mListener = nullptr;
 };
 
+/**
+ * @brief A simplified wrapper for `AsyncSocketAdapter` that provides
+ *        easy-to-use callbacks for handling read and close events.
+ *
+ * This class handles incoming socket connections and provides a convenient
+ * interface for receiving data and handling socket closures.
+ */
 class SimpleAsyncSocketAdapter : public AsyncSocketEventListener {
    public:
+    /**
+     * @brief Callback type for handling received data.
+     *
+     * @param data The received data as a `std::string_view`. Note that this
+     *             `std::string_view` will become invalid upon return from this
+     *             callback. If you need to store the data for later use, you
+     *             must copy it.
+     */
     using OnReadCallback = std::function<void(std::string_view)>;
+
+    /**
+     * @brief Callback type for handling socket closures.
+     */
     using OnCloseCallback = std::function<void()>;
+
+    /**
+     * @brief Constructs a `SimpleAsyncSocketAdapter`.
+     *
+     * @param socket The underlying `AsyncSocketAdapter` to wrap.
+     * @param onRead The callback to invoke when data is received.
+     * @param onClose The callback to invoke when the socket is closed.
+     */
     SimpleAsyncSocketAdapter(std::unique_ptr<AsyncSocketAdapter> socket, OnReadCallback onRead,
                              OnCloseCallback onClose)
         : mSocket(std::move(socket)), mOnRead(std::move(onRead)), mOnClose(std::move(onClose)) {
@@ -158,6 +185,14 @@ class SimpleAsyncSocketAdapter : public AsyncSocketEventListener {
 
     virtual ~SimpleAsyncSocketAdapter() = default;
 
+    /**
+     * @brief Implementation of `AsyncSocketEventListener::onRead`.
+     *
+     * This method is called when data is available to be read from the socket.
+     * It reads data in chunks and invokes the `onRead` callback for each chunk.
+     *
+     * @param socket The `AsyncSocketAdapter` that has data available for reading.
+     */
     void onRead(AsyncSocketAdapter* socket) override {
         char buffer[1024];
         do {
@@ -172,11 +207,31 @@ class SimpleAsyncSocketAdapter : public AsyncSocketEventListener {
     void onClose(AsyncSocketAdapter* socket, int err) override { mOnClose(); };
     void onConnected(AsyncSocketAdapter* socket) override {}
 
-   protected:
-    std::unique_ptr<AsyncSocketAdapter> mSocket;
-    OnReadCallback mOnRead;
-    OnCloseCallback mOnClose;
-};
+    /**
+     * @brief Sends data over the socket.
+     *
+     * @param buffer The buffer containing the data to send.
+     * @param bufferSize The size of the data to send.
+     * @return The number of bytes sent, or -1 if an error occurred.
+     */
+    ssize_t send(const char* buffer, uint64_t bufferSize) {
+        return mSocket->send(buffer, bufferSize);
+    }
 
+    /**
+     * @brief Closes the socket.
+     */
+    void close() { mSocket->close(); }
+
+    /**
+     * @brief Disposes the socket.
+     */
+    void dispose() { mSocket->dispose(); }
+
+   protected:
+    std::unique_ptr<AsyncSocketAdapter> mSocket;  ///< The underlying socket.
+    OnReadCallback mOnRead;                       ///< Callback for handling received data.
+    OnCloseCallback mOnClose;                     ///< Callback for handling socket closures.
+};
 }  // namespace base
 }  // namespace android
