@@ -1,0 +1,121 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "da9bf133_47dc731a",
+        "filename": "base/include/aemu/base/async/AsyncSocketAdapter.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1278660
+      },
+      "writtenOn": "2024-09-19T20:23:40Z",
+      "side": 1,
+      "message": "I think this should be pure virtual and then you can remove the `mListener` field.",
+      "range": {
+        "startLine": 80,
+        "startChar": 9,
+        "endLine": 80,
+        "endChar": 31
+      },
+      "revId": "126af2c032ff1fc11518360acd2de61c70636e2c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "33a4645e_78b85de5",
+        "filename": "base/include/aemu/base/async/AsyncSocketAdapter.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1278660
+      },
+      "writtenOn": "2024-09-19T20:23:40Z",
+      "side": 1,
+      "message": "Is this a socket or a listener?",
+      "range": {
+        "startLine": 156,
+        "startChar": 33,
+        "endLine": 156,
+        "endChar": 64
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "beafc47d_49e819e5",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "base/include/aemu/base/async/AsyncSocketAdapter.h",
+              "range": {
+                "startLine": 156,
+                "startChar": 0,
+                "endLine": 157,
+                "endChar": 0
+              },
+              "replacement": "class SimpleAsyncSocket : public AsyncSocketEventListener {\n"
+            },
+            {
+              "path": "base/include/aemu/base/async/AsyncSocketAdapter.h",
+              "range": {
+                "startLine": 174,
+                "startChar": 0,
+                "endLine": 175,
+                "endChar": 0
+              },
+              "replacement": "     * @brief Constructs a `SimpleAsyncSocket`.\n"
+            },
+            {
+              "path": "base/include/aemu/base/async/AsyncSocketAdapter.h",
+              "range": {
+                "startLine": 180,
+                "startChar": 0,
+                "endLine": 181,
+                "endChar": 0
+              },
+              "replacement": "    SimpleAsyncSocket(std::unique_ptr\u003cAsyncSocketAdapter\u003e socket, OnReadCallback onRead,\n"
+            },
+            {
+              "path": "base/include/aemu/base/async/AsyncSocketAdapter.h",
+              "range": {
+                "startLine": 186,
+                "startChar": 0,
+                "endLine": 187,
+                "endChar": 0
+              },
+              "replacement": "    virtual ~SimpleAsyncSocket() \u003d default;\n"
+            }
+          ]
+        }
+      ],
+      "revId": "126af2c032ff1fc11518360acd2de61c70636e2c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a242f464_b775fb44",
+        "filename": "base/include/aemu/base/async/AsyncSocketAdapter.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 1278660
+      },
+      "writtenOn": "2024-09-19T20:23:40Z",
+      "side": 1,
+      "message": "Do we need this class to have mSocket in it? Maybe keep the socket outside.",
+      "range": {
+        "startLine": 232,
+        "startChar": 40,
+        "endLine": 232,
+        "endChar": 47
+      },
+      "revId": "126af2c032ff1fc11518360acd2de61c70636e2c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
