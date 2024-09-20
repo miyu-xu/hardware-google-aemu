@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "996a92e5_270bdbcb",
+        "filename": "base/include/aemu/base/async/AsyncSocketAdapter.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2024-09-20T17:47:40Z",
+      "side": 1,
+      "message": "This would require quite some changes in our existing codebase. Let\u0027s not do that in this change.",
+      "parentUuid": "da9bf133_47dc731a",
+      "range": {
+        "startLine": 80,
+        "startChar": 9,
+        "endLine": 80,
+        "endChar": 31
+      },
+      "revId": "126af2c032ff1fc11518360acd2de61c70636e2c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "33a4645e_78b85de5",
@@ -95,6 +119,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1efe44e3_afbc142a",
+        "filename": "base/include/aemu/base/async/AsyncSocketAdapter.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2024-09-20T17:47:40Z",
+      "side": 1,
+      "message": "It is both, let me rename the class and add some additional documentation.",
+      "parentUuid": "33a4645e_78b85de5",
+      "range": {
+        "startLine": 156,
+        "startChar": 33,
+        "endLine": 156,
+        "endChar": 64
+      },
+      "revId": "126af2c032ff1fc11518360acd2de61c70636e2c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a242f464_b775fb44",
@@ -108,6 +156,30 @@
       "writtenOn": "2024-09-19T20:23:40Z",
       "side": 1,
       "message": "Do we need this class to have mSocket in it? Maybe keep the socket outside.",
+      "range": {
+        "startLine": 232,
+        "startChar": 40,
+        "endLine": 232,
+        "endChar": 47
+      },
+      "revId": "126af2c032ff1fc11518360acd2de61c70636e2c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6e603503_ee542c4f",
+        "filename": "base/include/aemu/base/async/AsyncSocketAdapter.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2024-09-20T17:47:40Z",
+      "side": 1,
+      "message": "Let me change the ownership.",
+      "parentUuid": "a242f464_b775fb44",
       "range": {
         "startLine": 232,
         "startChar": 40,
