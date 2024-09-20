@@ -20,6 +20,7 @@
 #include <functional>
 #include <memory>
 #include <string_view>
+#include <thread>
 #include <utility>
 
 #include <inttypes.h>
@@ -96,6 +97,13 @@ public:
     // as soon as possible. runWithDeadlineMS() and runWithTimeoutMs() will
     // return 0.
     virtual void forceQuit() = 0;
+
+    // True if you are on the looper thread and
+    // it is safe to call register file watchers.
+    virtual bool onLooperThread() const {
+        static thread_local std::thread::id thread_id = std::this_thread::get_id();
+        return mThreadId == thread_id;
+    };
 
     // Interface class for timers implemented by a Looper instance.
     // Use createTimer() to create these.
@@ -235,6 +243,8 @@ protected:
     // new generic Looper instances.
     Looper();
 
+
+    std::thread::id mThreadId;
 private:
     DISALLOW_COPY_AND_ASSIGN(Looper);
 };
