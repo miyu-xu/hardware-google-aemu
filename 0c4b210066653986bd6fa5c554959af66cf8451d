@@ -16,6 +16,24 @@
       "message": "no default?",
       "revId": "0c4b210066653986bd6fa5c554959af66cf8451d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8957381d_3aade049",
+        "filename": "host-common/logging_absl.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2024-09-24T16:37:38Z",
+      "side": 1,
+      "message": "Added default.",
+      "parentUuid": "7b9b0f76_84c68f6c",
+      "revId": "0c4b210066653986bd6fa5c554959af66cf8451d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
