@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7b9b0f76_84c68f6c",
+        "filename": "host-common/logging_absl.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1964400
+      },
+      "writtenOn": "2024-09-24T03:45:50Z",
+      "side": 1,
+      "message": "no default?",
+      "revId": "0c4b210066653986bd6fa5c554959af66cf8451d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
