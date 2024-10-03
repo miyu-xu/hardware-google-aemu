@@ -70,6 +70,29 @@
       "parentUuid": "761a89fa_cd659e3d",
       "revId": "ef4bfc9ce9c7dc6e8cb7cf7b2dc1bde01d7d39f8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1745a7dd_597276c4",
+        "filename": "base/include/aemu/base/AlignedBuf.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1278660
+      },
+      "writtenOn": "2024-10-03T20:19:27Z",
+      "side": 1,
+      "message": "Should this be `std::is_trivial`? We don\u0027t call any ctor/dctor here.",
+      "range": {
+        "startLine": 49,
+        "startChar": 18,
+        "endLine": 49,
+        "endChar": 74
+      },
+      "revId": "ef4bfc9ce9c7dc6e8cb7cf7b2dc1bde01d7d39f8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
