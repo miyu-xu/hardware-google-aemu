@@ -95,21 +95,26 @@ public:
     }
 
 private:
+    T* getNewBuffer(size_t newSize) {
+        if (newSize == 0) {
+            return nullptr;
+        }
+        size_t pad = std::max(align, sizeof(T));
+        size_t newSizeBytes =
+            ((align - 1 + newSize * sizeof(T) + pad) / align) * align;
+        return static_cast<T*>(reallocImpl(nullptr, newSizeBytes));
+    }
 
     void resizeImpl(size_t newSize) {
-        if (newSize) {
-            size_t pad = std::max(align, sizeof(T));
+        T* new_buffer = getNewBuffer(newSize);
+        if (new_buffer && mBuffer) {
             size_t keepSize = std::min(newSize, mSize);
-            size_t newSizeBytes = ((align - 1 + newSize * sizeof(T) + pad) / align) * align;
-
-            std::vector<T> temp(mBuffer, mBuffer + keepSize);
-            mBuffer = static_cast<T*>(reallocImpl(mBuffer, newSizeBytes));
-            std::copy(temp.data(), temp.data() + keepSize, mBuffer);
-        } else {
-            if (mBuffer) freeImpl(mBuffer);
-            mBuffer = nullptr;
+            std::copy(mBuffer, mBuffer + keepSize, new_buffer);
         }
-
+        if (mBuffer) {
+            freeImpl(mBuffer);
+        }
+        mBuffer = new_buffer;
         mSize = newSize;
     }
 
