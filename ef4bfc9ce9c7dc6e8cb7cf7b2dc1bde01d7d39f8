@@ -117,6 +117,30 @@
       },
       "revId": "ef4bfc9ce9c7dc6e8cb7cf7b2dc1bde01d7d39f8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0592c308_c168cde7",
+        "filename": "base/include/aemu/base/AlignedBuf.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1278660
+      },
+      "writtenOn": "2024-10-03T20:44:10Z",
+      "side": 1,
+      "message": "\u003e TreeNode(int v) : val(v), next(nullptr) {}\n\nThe ctor will not be called in AlignedBuf.\n\n\u003e The only disadvantage\n\nIsn\u0027t this WAI?",
+      "parentUuid": "4bad344a_1f8be4b8",
+      "range": {
+        "startLine": 49,
+        "startChar": 18,
+        "endLine": 49,
+        "endChar": 74
+      },
+      "revId": "ef4bfc9ce9c7dc6e8cb7cf7b2dc1bde01d7d39f8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
