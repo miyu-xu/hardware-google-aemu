@@ -76,6 +76,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9772cf02_ca2ee4fa",
+        "filename": "base/include/aemu/base/AlignedBuf.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 3425040
+      },
+      "writtenOn": "2024-10-03T19:47:52Z",
+      "side": 1,
+      "message": "I did it at the end of the function.",
+      "parentUuid": "8d8a9bf5_0da0fd56",
+      "range": {
+        "startLine": 110,
+        "startChar": 8,
+        "endLine": 110,
+        "endChar": 22
+      },
+      "revId": "975e57403e8512ee88b74a6f0874e7690840f10f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fbd7ccb1_4f482f7a",
@@ -89,6 +113,30 @@
       "writtenOn": "2024-10-03T18:38:00Z",
       "side": 1,
       "message": "Should this be memcpy? It looks like we don\u0027t call ctors/dctors here anyway.",
+      "range": {
+        "startLine": 112,
+        "startChar": 12,
+        "endLine": 112,
+        "endChar": 21
+      },
+      "revId": "975e57403e8512ee88b74a6f0874e7690840f10f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a0fa29ec_42259c01",
+        "filename": "base/include/aemu/base/AlignedBuf.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 3425040
+      },
+      "writtenOn": "2024-10-03T19:47:52Z",
+      "side": 1,
+      "message": "The next CL I am about to uploading is to do some efforts to prevent `T` from being a non-primitive, non-POD type. I\u0027d like to also add a comment. As you pointed out, we don\u0027t call constructors. We do have some template meta programming pieces in resize-related functions; that (or similar) should be in the class scope, I guess.\n\nGiven that `T` is a POD or primitive, I think most compiler can at least map `std::copy` to `std::memcpy`. unless the compiler thinks there is something better (e.g. the compiler, unlike memcpy knows the alignment of `T` here).\n\nI guess, I found a similar argument from here:\nhttps://stackoverflow.com/questions/4707012/is-it-better-to-use-stdmemcpy-or-stdcopy-in-terms-to-performance\n\nPerhaps, most of the users would build Android Emulator using Visual Studio, clang, and/or gcc, it might be okay to leave that decision to the compiler.",
+      "parentUuid": "fbd7ccb1_4f482f7a",
       "range": {
         "startLine": 112,
         "startChar": 12,
