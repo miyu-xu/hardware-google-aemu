@@ -93,6 +93,30 @@
       },
       "revId": "ef4bfc9ce9c7dc6e8cb7cf7b2dc1bde01d7d39f8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4bad344a_1f8be4b8",
+        "filename": "base/include/aemu/base/AlignedBuf.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 3425040
+      },
+      "writtenOn": "2024-10-03T20:36:49Z",
+      "side": 1,
+      "message": "I am okay with that. The only disadvantage I was thinking of about `std::is_trivial` was:\n\n```C++ \nstruct TreeNode {\n  TreeNode(int v) : val(v), next(nullptr) {}\n  TreeNode* next;\n  int val ;\n};\n```\n\nI added `std::is_trivial` to the patchset 2.\n\nThere is, however, this code:\n\n```C++ \n bool operator\u003d\u003d(const AlignedBuf\u0026 other) const {\n        return 0 \u003d\u003d std::memcmp(mBuffer, other.mBuffer, sizeof(T) * std::min(mSize, other.mSize));\n    }\n```\n\nAlso, in `resize`, there is a `static_assert` to prevent `T` from being non-trivially copyable. So, I guess it might be okay to also add `is_trivially_copyable\u003cT\u003e::value` check as it was in `resize` function only.",
+      "parentUuid": "1745a7dd_597276c4",
+      "range": {
+        "startLine": 49,
+        "startChar": 18,
+        "endLine": 49,
+        "endChar": 74
+      },
+      "revId": "ef4bfc9ce9c7dc6e8cb7cf7b2dc1bde01d7d39f8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
