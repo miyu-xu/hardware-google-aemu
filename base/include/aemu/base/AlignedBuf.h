@@ -30,8 +30,24 @@
 
 namespace android {
 
+/**
+ * Do not abuse this by using any complicated T. Use it for POD or primitives
+ */
 template <class T, size_t align>
 class AlignedBuf {
+    constexpr static bool triviallyCopyable() {
+#if (defined(__GNUC__) && !defined(__clang__) && __GNUC__ <= 4) || \
+        defined(__OLD_STD_VERSION__)
+        // Older g++ doesn't support std::is_trivially_copyable.
+        constexpr bool triviallyCopyable =
+                std::has_trivial_copy_constructor<T>::value;
+#else
+        constexpr bool triviallyCopyable = std::is_trivially_copyable<T>::value;
+#endif
+        return triviallyCopyable;
+    }
+    static_assert(triviallyCopyable() && std::is_standard_layout<T>::value);
+
 public:
     explicit AlignedBuf(size_t size) {
         static_assert(align && ((align & (align - 1)) == 0),
