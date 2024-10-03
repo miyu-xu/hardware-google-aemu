@@ -33,6 +33,70 @@
       "message": "Please note that mBuffer is nullptr and mSize is 0 here.",
       "revId": "975e57403e8512ee88b74a6f0874e7690840f10f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8d8a9bf5_0da0fd56",
+        "filename": "base/include/aemu/base/AlignedBuf.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1278660
+      },
+      "writtenOn": "2024-10-03T18:38:00Z",
+      "side": 1,
+      "message": "If `new_buffer` is nullptr, should we set `mSize` to zero?",
+      "range": {
+        "startLine": 110,
+        "startChar": 8,
+        "endLine": 110,
+        "endChar": 22
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "477492ab_63d11778",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "base/include/aemu/base/AlignedBuf.h",
+              "range": {
+                "startLine": 113,
+                "startChar": 0,
+                "endLine": 113,
+                "endChar": 0
+              },
+              "replacement": "        } else {\n            mSize \u003d 0;\n"
+            }
+          ]
+        }
+      ],
+      "revId": "975e57403e8512ee88b74a6f0874e7690840f10f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fbd7ccb1_4f482f7a",
+        "filename": "base/include/aemu/base/AlignedBuf.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1278660
+      },
+      "writtenOn": "2024-10-03T18:38:00Z",
+      "side": 1,
+      "message": "Should this be memcpy? It looks like we don\u0027t call ctors/dctors here anyway.",
+      "range": {
+        "startLine": 112,
+        "startChar": 12,
+        "endLine": 112,
+        "endChar": 21
+      },
+      "revId": "975e57403e8512ee88b74a6f0874e7690840f10f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
