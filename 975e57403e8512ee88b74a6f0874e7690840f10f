@@ -16,6 +16,23 @@
       "message": "The existing code effectively does:\n\n```\nstd::vector\u003cstd::uint64_t\u003e v{nullptr, nullptr + 0};\n// some code\nstd::copy(v.data(), v.data() + 0, valid_dst);\n```\n\nAlso, it has a redundant copy of the original buffer, on resizing. \n\nLastly, the coding style might not be complying with Google or Android Emulator C++ style.\n\nAnd.. the code did not look like the cleanest possible, and had rooms for improvement in that.",
       "revId": "975e57403e8512ee88b74a6f0874e7690840f10f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "31484e9f_293a7f5c",
+        "filename": "base/include/aemu/base/AlignedBuf.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 3425040
+      },
+      "writtenOn": "2024-10-03T18:27:46Z",
+      "side": 1,
+      "message": "Please note that mBuffer is nullptr and mSize is 0 here.",
+      "revId": "975e57403e8512ee88b74a6f0874e7690840f10f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
