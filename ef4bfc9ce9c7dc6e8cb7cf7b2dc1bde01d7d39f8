@@ -141,6 +141,30 @@
       },
       "revId": "ef4bfc9ce9c7dc6e8cb7cf7b2dc1bde01d7d39f8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "467859e2_b0c433cc",
+        "filename": "base/include/aemu/base/AlignedBuf.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 3425040
+      },
+      "writtenOn": "2024-10-03T21:02:01Z",
+      "side": 1,
+      "message": "I am actually not sure what WAI stands for. For clarification, I changed my mind and included `std::is_trivial\u003cT\u003e::value` in patchset 2. \n\nBefore sending this patchset 1 for review, I was thinking about including `std::is_trivial\u003cT\u003e::value`. Then, I thought the `static_assert` would refuse a struct like `TreeNode` above. \n\nIf you are to say such use cases may not be common, I guess I would agree with that. I thought the non-default constructor might be useful to push a relatively large struct to std::vector or other containers, using `emplace_*` instead of `push_back`. Perhaps, I might be wrong on that.\n\nIf a struct just has a non-default constructor for the sake of `std::vector::emplace_back`, etc, I thought, before uploading the patchset 1 of this CL, that those should still be somehow allowed for `AlignedBuf`,",
+      "parentUuid": "0592c308_c168cde7",
+      "range": {
+        "startLine": 49,
+        "startChar": 18,
+        "endLine": 49,
+        "endChar": 74
+      },
+      "revId": "ef4bfc9ce9c7dc6e8cb7cf7b2dc1bde01d7d39f8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
