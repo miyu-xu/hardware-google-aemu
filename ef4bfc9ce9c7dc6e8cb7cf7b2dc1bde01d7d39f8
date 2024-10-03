@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7d92e23c_c27df8f4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 3425040
+      },
+      "writtenOn": "2024-10-03T20:01:02Z",
+      "side": 1,
+      "message": "As we discussed, `T` in the `AlignedBuf` template doesn\u0027t appear to be meant to be a non-POD/non-primitive types. It does not call constructors.\n\nPlease let me know if we have a better template magic.\n\nI was thinking about this kind of struct, and did not include `std::is_trivial\u003cT\u003e`:\n\n```\nstruct Data {\n  Data(int x, double d);\n  int x_;\n  double d_;\n};\n```",
+      "revId": "ef4bfc9ce9c7dc6e8cb7cf7b2dc1bde01d7d39f8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
