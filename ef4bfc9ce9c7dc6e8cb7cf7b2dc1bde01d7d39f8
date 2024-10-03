@@ -52,6 +52,24 @@
       "parentUuid": "55c2543b_a6648b92",
       "revId": "ef4bfc9ce9c7dc6e8cb7cf7b2dc1bde01d7d39f8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6f459695_d848dd51",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1278660
+      },
+      "writtenOn": "2024-10-03T20:15:09Z",
+      "side": 1,
+      "message": "You are correct, it only allocates memory, it does not call the placement new. And in ~AlignedBuf we simply deallocate memory.\n\n\u003e `T` is not intended to be something like `std::string`\n\nthis is probably true, but if one forgets this fact there could be interesting effects.",
+      "parentUuid": "761a89fa_cd659e3d",
+      "revId": "ef4bfc9ce9c7dc6e8cb7cf7b2dc1bde01d7d39f8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
