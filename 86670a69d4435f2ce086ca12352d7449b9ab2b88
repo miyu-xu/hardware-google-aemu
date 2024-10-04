@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "df5af501_902ffcd0",
+        "filename": "base/include/aemu/base/AlignedBuf.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2024-10-04T20:49:26Z",
+      "side": 1,
+      "message": "nit: A comment with an explanation of this calculation might be useful.",
+      "revId": "86670a69d4435f2ce086ca12352d7449b9ab2b88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
