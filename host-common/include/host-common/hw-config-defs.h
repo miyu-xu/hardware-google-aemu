@@ -437,7 +437,7 @@ HWCFG_INT(
   hw_display1_yOffset,
   "hw.display1.yOffset",
   -1,
-  "the veritcal offset of the second display with respect to the host QT window.",
+  "the vertical offset of the second display with respect to the host QT window.",
   "")
 
 HWCFG_INT(
@@ -479,7 +479,7 @@ HWCFG_INT(
   hw_display2_yOffset,
   "hw.display2.yOffset",
   -1,
-  "the veritcal offset of the third display with respect to the host QT window.",
+  "the vertical offset of the third display with respect to the host QT window.",
   "")
 
 HWCFG_INT(
@@ -521,14 +521,14 @@ HWCFG_INT(
   hw_display3_yOffset,
   "hw.display3.yOffset",
   -1,
-  "the veritcal offset of the fourth display with respect to the host QT window.",
+  "the vertical offset of the fourth display with respect to the host QT window.",
   "")
 
 HWCFG_INT(
   hw_display3_flag,
   "hw.display3.flag",
   0,
-  "the flag touse when the fourth display is initialized in the Android system.",
+  "the flag to use when the fourth display is initialized in the Android system.",
   "")
 
 HWCFG_BOOL(
@@ -668,7 +668,7 @@ HWCFG_BOOL(
   hw_sensor_hinge,
   "hw.sensor.hinge",
   "no",
-  "Enalbe hinge angle sensor.",
+  "Enable hinge angle sensor.",
   "")
 
 HWCFG_INT(
@@ -703,14 +703,14 @@ HWCFG_STRING(
   hw_sensor_hinge_ranges,
   "hw.sensor.hinge.ranges",
   "",
-  "angel ranges for each hinge sensor, e.g., 0-360, 0-180 for two sensors.",
+  "angle ranges for each hinge sensor, e.g., 0-360, 0-180 for two sensors.",
   "")
 
 HWCFG_STRING(
   hw_sensor_hinge_defaults,
   "hw.sensor.hinge.defaults",
   "",
-  "default angel for each hinge sensor, e.g., 180, 90 for two sensors.",
+  "default angle for each hinge sensor, e.g., 180, 90 for two sensors.",
   "")
 
 HWCFG_STRING(
@@ -745,7 +745,7 @@ HWCFG_BOOL(
   hw_sensor_roll,
   "hw.sensor.roll",
   "no",
-  "Enalbe rollable sensor.",
+  "Enable rollable sensor.",
   "")
 
 HWCFG_INT(
@@ -759,14 +759,14 @@ HWCFG_STRING(
   hw_sensor_roll_radius,
   "hw.sensor.roll.radius",
   "",
-  "roll radious of display width or height.",
+  "roll radius of display width or height.",
   "")
 
 HWCFG_STRING(
   hw_sensor_roll_ranges,
   "hw.sensor.roll.ranges",
   "",
-  "the pecentage of display width or height which is rollable.",
+  "the percentage of display width or height which is rollable.",
   "")
 
 HWCFG_STRING(
