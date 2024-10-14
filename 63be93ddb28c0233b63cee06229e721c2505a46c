@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "55593d33_14199298",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 3683714
+      },
+      "writtenOn": "2024-10-14T01:20:43Z",
+      "side": 1,
+      "message": "Also added changes in hardware-properties.ini, since that is mentioned in the comments.\n\nAlso, sorry, unsure how these two different projects interact",
+      "revId": "63be93ddb28c0233b63cee06229e721c2505a46c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
