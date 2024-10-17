@@ -30,6 +30,6 @@ std::unordered_map<uint32_t, std::pair<uint32_t, uint32_t>> resolveLayout(
 
 std::unordered_map<uint32_t, std::pair<uint32_t, uint32_t>> resolveStackedLayout(
         std::unordered_map<uint32_t, std::pair<uint32_t, uint32_t>> rectangles,
-        const bool isDistantDisplay);
+        const bool isDistantDisplay, const bool isDynamicMultiDisplay);
 }  // namespace base
 }  // namespace android
