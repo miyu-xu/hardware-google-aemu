@@ -147,20 +147,20 @@ public:
                                     std::is_copy_constructible<U>::value,
                             Optional<U>>::type
     ok() {
-        CHECK(mValid) << "Result invalid";
+        DCHECK(mValid) << "Result invalid";
         return mStorage.ok;
     }
     template <typename U = T>
     typename std::enable_if<!std::is_void<U>::value, const Optional<U>&>::type
     ok() const {
-        CHECK(mValid) << "Result invalid";
+        DCHECK(mValid) << "Result invalid";
         return mStorage.ok;
     }
 
     // For Result<void, E> types, returns true if the Result is ok.
     template <typename U = T>
     typename std::enable_if<std::is_void<U>::value, bool>::type ok() const {
-        CHECK(mValid) << "Result invalid";
+        DCHECK(mValid) << "Result invalid";
         return mStorage.isOk();
     }
 
@@ -169,25 +169,25 @@ public:
     typename std::enable_if<std::is_copy_constructible<U>::value,
                             Optional<U>>::type
     err() {
-        CHECK(mValid) << "Result invalid";
+        DCHECK(mValid) << "Result invalid";
         return mStorage.err;
     }
     const Optional<E>& err() const {
-        CHECK(mValid) << "Result invalid";
+        DCHECK(mValid) << "Result invalid";
         return mStorage.err;
     }
 
     // Unwraps the value and returns it.  After this call the Result is invalid.
     template <typename U = T>
     typename std::enable_if<!std::is_void<U>::value, U>::type unwrap() {
-        CHECK(mValid) << "Result invalid";
+        DCHECK(mValid) << "Result invalid";
         mValid = false;
         return std::move(*(mStorage.ok.ptr()));
     }
 
     // Unwraps the error and returns it.  After this call the Result is invalid.
     E unwrapErr() {
-        CHECK(mValid) << "Result invalid";
+        DCHECK(mValid) << "Result invalid";
         mValid = false;
         return std::move(*(mStorage.err.ptr()));
     }
