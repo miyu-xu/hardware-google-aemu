@@ -35,6 +35,48 @@
 #define ASGFX_LOG(fmt,...)
 #endif
 
+static constexpr const uint32_t kSnapshotMagicNumberPreContext = 24623457;
+static constexpr const uint32_t kSnapshotMagicNumberPostContext = 67835683;
+
+static constexpr const uint32_t kSnapshotMagicNumberPreRingBlocks = 456735687;
+static constexpr const uint32_t kSnapshotMagicNumberPostRingBlocks = 3242356;
+
+static constexpr const uint32_t kSnapshotMagicNumberPreBufferBlocks = 12465745;
+static constexpr const uint32_t kSnapshotMagicNumberPostBufferBlocks = 9807899;
+
+static constexpr const uint32_t kSnapshotMagicNumberPreCombinedBlocks = 53452457;
+static constexpr const uint32_t kSnapshotMagicNumberPostCombinedBlocks = 2372568;
+
+static constexpr const uint32_t kSnapshotMagicNumberBlockPre = 9957876;
+static constexpr const uint32_t kSnapshotMagicNumberBlockPost = 6568453;
+
+static constexpr const uint32_t kSnapshotMagicNumberSubAllocPre = 234135136;
+static constexpr const uint32_t kSnapshotMagicNumberSubAllocPost = 7774572;
+
+static constexpr const uint32_t kSnapshotMagicNumberBufferPre = 23423637;
+static constexpr const uint32_t kSnapshotMagicNumberBufferPost = 435734658;
+
+static constexpr const uint32_t kSnapshotMagicNumberPreCombinedBlockIndividualBlock = 5686888;
+static constexpr const uint32_t kSnapshotMagicNumberPostCombinedBlockIndividualBlock = 43554554;
+
+#define SNAPSHOT_WRITE_MAGIC(x) \
+    stream->putBe32(x);
+
+#define SNAPSHOT_VERIFY_MAGIC(x)                                                            \
+    do {                                                                                    \
+        const uint32_t val = stream->getBe32();                                             \
+        if (val != x) {                                                                     \
+            GFXSTREAM_ABORT(emugl::FatalError(emugl::ABORT_REASON_OTHER))                   \
+                << "Failed to verify snapshot magic value "                                 \
+                << #x                                                                       \
+                << " actual: "                                                              \
+                << val                                                                      \
+                << " expected: "                                                            \
+                << x                                                                        \
+                << ".";                                                                     \
+        }                                                                                   \
+    } while(0);
+
 using android::base::AutoLock;
 using android::base::Lock;
 using android::base::SubAllocator;
@@ -291,21 +333,40 @@ public:
     }
 
     void save(base::Stream* stream) {
+        SNAPSHOT_WRITE_MAGIC(kSnapshotMagicNumberPreContext);
+
+        ERR("jasonjason saving |mRingBlocks.size()| -> %" PRIu64, mRingBlocks.size());
         stream->putBe64(mRingBlocks.size());
+
+        ERR("jasonjason saving |mBufferBlocks.size()| -> %" PRIu64, mBufferBlocks.size());
         stream->putBe64(mBufferBlocks.size());
+
+        ERR("jasonjason saving |mCombinedBlocks.size()| -> %" PRIu64, mCombinedBlocks.size());
         stream->putBe64(mCombinedBlocks.size());
 
+        SNAPSHOT_WRITE_MAGIC(kSnapshotMagicNumberPreRingBlocks);
         for (const auto& block: mRingBlocks) {
             saveBlockLocked(stream, block);
         }
+        SNAPSHOT_WRITE_MAGIC(kSnapshotMagicNumberPostRingBlocks);
 
+        SNAPSHOT_WRITE_MAGIC(kSnapshotMagicNumberPreBufferBlocks);
         for (const auto& block: mBufferBlocks) {
             saveBlockLocked(stream, block);
         }
+        SNAPSHOT_WRITE_MAGIC(kSnapshotMagicNumberPostBufferBlocks);
 
-        for (const auto& block: mCombinedBlocks) {
+        SNAPSHOT_WRITE_MAGIC(kSnapshotMagicNumberPreCombinedBlocks);
+        for (size_t i = 0; i < mCombinedBlocks.size(); i++) {
+            const auto& block = mCombinedBlocks[i];
+            ERR("jasonjason saving combined block %d", i);
+            SNAPSHOT_WRITE_MAGIC(kSnapshotMagicNumberPreCombinedBlockIndividualBlock);
             saveBlockLocked(stream, block);
+            SNAPSHOT_WRITE_MAGIC(kSnapshotMagicNumberPostCombinedBlockIndividualBlock);
         }
+        SNAPSHOT_WRITE_MAGIC(kSnapshotMagicNumberPostCombinedBlocks);
+
+        SNAPSHOT_WRITE_MAGIC(kSnapshotMagicNumberPostContext);
     }
 
     void postSave() {
@@ -313,29 +374,48 @@ public:
     }
 
     bool load(base::Stream* stream) {
+        SNAPSHOT_VERIFY_MAGIC(kSnapshotMagicNumberPreContext);
+
         clear();
         mConsumerInterface.globalPreLoad();
 
         uint64_t ringBlockCount = stream->getBe64();
+        ERR("jasonjason loaded |ringBlockCount| -> %" PRIu64, ringBlockCount);
+
         uint64_t bufferBlockCount = stream->getBe64();
+        ERR("jasonjason loaded |bufferBlockCount| -> %" PRIu64, bufferBlockCount);
+
         uint64_t combinedBlockCount = stream->getBe64();
+        ERR("jasonjason loaded |combinedBlockCount| -> %" PRIu64, combinedBlockCount);
 
         mRingBlocks.resize(ringBlockCount);
         mBufferBlocks.resize(bufferBlockCount);
         mCombinedBlocks.resize(combinedBlockCount);
 
+        SNAPSHOT_VERIFY_MAGIC(kSnapshotMagicNumberPreRingBlocks);
         for (auto& block: mRingBlocks) {
             loadBlockLocked(stream, block);
         }
+        SNAPSHOT_VERIFY_MAGIC(kSnapshotMagicNumberPostRingBlocks);
 
+        SNAPSHOT_VERIFY_MAGIC(kSnapshotMagicNumberPreBufferBlocks);
         for (auto& block: mBufferBlocks) {
             loadBlockLocked(stream, block);
         }
+        SNAPSHOT_VERIFY_MAGIC(kSnapshotMagicNumberPostBufferBlocks);
 
-        for (auto& block: mCombinedBlocks) {
+        SNAPSHOT_VERIFY_MAGIC(kSnapshotMagicNumberPreCombinedBlocks);
+        for (size_t i = 0; i < mCombinedBlocks.size(); i++) {
+            auto& block = mCombinedBlocks[i];
+            ERR("jasonjason loading combined block %d", i);
+            SNAPSHOT_VERIFY_MAGIC(kSnapshotMagicNumberPreCombinedBlockIndividualBlock);
             loadBlockLocked(stream, block);
+            SNAPSHOT_VERIFY_MAGIC(kSnapshotMagicNumberPostCombinedBlockIndividualBlock);
         }
+        SNAPSHOT_VERIFY_MAGIC(kSnapshotMagicNumberPostCombinedBlocks);
 
+
+        SNAPSHOT_VERIFY_MAGIC(kSnapshotMagicNumberPostContext);
         return true;
     }
 
@@ -367,6 +447,8 @@ private:
         base::Stream* stream,
         const Block& block) {
 
+        SNAPSHOT_WRITE_MAGIC(kSnapshotMagicNumberBlockPre);
+
         if (block.isEmpty) {
             stream->putBe32(0);
             return;
@@ -379,13 +461,23 @@ private:
         stream->putBe32(block.dedicated);
         stream->putBe32(block.usesVirtioGpuHostmem);
         stream->putBe64(block.hostmemId);
+
+        SNAPSHOT_WRITE_MAGIC(kSnapshotMagicNumberSubAllocPre);
         block.subAlloc->save(stream);
+        SNAPSHOT_WRITE_MAGIC(kSnapshotMagicNumberSubAllocPost);
+
+        SNAPSHOT_WRITE_MAGIC(kSnapshotMagicNumberBufferPre);
         stream->write(block.buffer, block.bufferSize);
+        SNAPSHOT_WRITE_MAGIC(kSnapshotMagicNumberBufferPost);
+
+        SNAPSHOT_WRITE_MAGIC(kSnapshotMagicNumberBlockPost);
     }
 
     void loadBlockLocked(
         base::Stream* stream,
         Block& block) {
+
+        SNAPSHOT_VERIFY_MAGIC(kSnapshotMagicNumberBlockPre);
 
         uint32_t filled = stream->getBe32();
         struct AllocationCreateInfo create = {0};
@@ -407,9 +499,15 @@ private:
 
         fillBlockLocked(block, create);
 
+        SNAPSHOT_VERIFY_MAGIC(kSnapshotMagicNumberSubAllocPre);
         block.subAlloc->load(stream);
+        SNAPSHOT_VERIFY_MAGIC(kSnapshotMagicNumberSubAllocPost);
 
+        SNAPSHOT_VERIFY_MAGIC(kSnapshotMagicNumberBufferPre);
         stream->read(block.buffer, block.bufferSize);
+        SNAPSHOT_VERIFY_MAGIC(kSnapshotMagicNumberBufferPost);
+
+        SNAPSHOT_VERIFY_MAGIC(kSnapshotMagicNumberBlockPost);
     }
 
     void fillAllocFromLoad(const Block& block, Allocation& alloc) {

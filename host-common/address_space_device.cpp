@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 #include "host-common/address_space_device.h"
+#include "host-common/address_space_device.hpp"
 #include "host-common/AddressSpaceService.h"
 #include "host-common/address_space_graphics.h"
 #ifndef AEMU_MIN
@@ -20,8 +21,10 @@
 #include "host-common/address_space_host_memory_allocator.h"
 #include "host-common/address_space_shared_slots_host_memory_allocator.h"
 #include "host-common/vm_operations.h"
+#include "host-common/GfxstreamFatalError.h"
 
 #include "aemu/base/synchronization/Lock.h"
+
 
 #include <map>
 #include <unordered_map>
@@ -31,6 +34,7 @@ using android::base::AutoLock;
 using android::base::Lock;
 using android::base::Stream;
 using android::emulation::asg::AddressSpaceGraphicsContext;
+using android::emulation::AddressSpaceDeviceLoadResources;
 
 using namespace android::emulation;
 
@@ -43,6 +47,30 @@ using namespace android::emulation;
 #endif
 
 const QAndroidVmOperations* sVmOps = nullptr;
+
+static constexpr const uint32_t kSnapshotMagicNumberPreSharedSlotsHostMemory = 46727;
+static constexpr const uint32_t kSnapshotMagicNumberPostSharedSlotsHostMemory = 223423637;
+static constexpr const uint32_t kSnapshotMagicNumberPreAsgContextGlobal = 13435478;
+static constexpr const uint32_t kSnapshotMagicNumberPostAsgContextGlobal = 2346824;
+
+#define SNAPSHOT_WRITE_MAGIC(x) \
+    stream->putBe32(x);
+
+#define SNAPSHOT_VERIFY_MAGIC(x)                                                            \
+    do {                                                                                    \
+        const uint32_t val = stream->getBe32();                                             \
+        if (val != x) {                                                                     \
+            GFXSTREAM_ABORT(emugl::FatalError(emugl::ABORT_REASON_OTHER))                   \
+                << "Failed to verify snapshot magic value "                                 \
+                << #x                                                                       \
+                << " actual: "                                                              \
+                << val                                                                      \
+                << " expected: "                                                            \
+                << x                                                                        \
+                << ".";                                                                     \
+        }                                                                                   \
+    } while(0);
+
 
 namespace {
 
@@ -212,8 +240,14 @@ public:
         AddressSpaceGraphicsContext::globalStatePreSave();
 
         // Save
+
+        SNAPSHOT_WRITE_MAGIC(kSnapshotMagicNumberPreSharedSlotsHostMemory);
         AddressSpaceSharedSlotsHostMemoryAllocatorContext::globalStateSave(stream);
+        SNAPSHOT_WRITE_MAGIC(kSnapshotMagicNumberPostSharedSlotsHostMemory);
+
+        SNAPSHOT_WRITE_MAGIC(kSnapshotMagicNumberPreAsgContextGlobal);
         AddressSpaceGraphicsContext::globalStateSave(stream);
+        SNAPSHOT_WRITE_MAGIC(kSnapshotMagicNumberPostAsgContextGlobal);
 
         stream->putBe32(mHandleIndex);
         stream->putBe32(mContexts.size());
@@ -248,24 +282,32 @@ public:
         }
     }
 
+    void preload(AddressSpaceDeviceLoadResources& resources) {
+        mLoadResources = std::move(resources);
+    }
+
     bool load(Stream* stream) {
         // First destroy all contexts, because
         // this can be done while an emulator is running
         clear();
 
+        SNAPSHOT_VERIFY_MAGIC(kSnapshotMagicNumberPreSharedSlotsHostMemory);
         if (!AddressSpaceSharedSlotsHostMemoryAllocatorContext::globalStateLoad(
                 stream,
                 get_address_space_device_control_ops(),
                 get_address_space_device_hw_funcs())) {
             return false;
         }
+        SNAPSHOT_VERIFY_MAGIC(kSnapshotMagicNumberPostSharedSlotsHostMemory);
 
         asg::AddressSpaceGraphicsContext::init(get_address_space_device_control_ops());
 
+        SNAPSHOT_VERIFY_MAGIC(kSnapshotMagicNumberPreAsgContextGlobal);
         if (!AddressSpaceGraphicsContext::globalStateLoad(
                 stream)) {
             return false;
         }
+        SNAPSHOT_VERIFY_MAGIC(kSnapshotMagicNumberPostAsgContextGlobal);
 
         const uint32_t handleIndex = stream->getBe32();
         const size_t size = stream->getBe32();
@@ -447,6 +489,8 @@ private:
     };
 
     std::map<uint64_t, std::vector<DeallocationCallbackEntry>> mDeallocationCallbacks; // do not save/load, users re-register on load
+
+    std::optional<AddressSpaceDeviceLoadResources> mLoadResources; // do not save/load
 };
 
 static AddressSpaceDeviceState* sAddressSpaceDeviceState() {
@@ -585,6 +629,11 @@ int goldfish_address_space_memory_state_load(android::base::Stream *stream) {
 
 int goldfish_address_space_memory_state_save(android::base::Stream *stream) {
     sAddressSpaceDeviceState()->save(stream);
+    return 0;
+}
+
+int goldfish_address_space_memory_state_preload(AddressSpaceDeviceLoadResources& resources) {
+    sAddressSpaceDeviceState()->preload(resources);
     return 0;
 }
 

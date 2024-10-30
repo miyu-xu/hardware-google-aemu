@@ -13,6 +13,8 @@
 // limitations under the License.
 #pragma once
 
+#include <unordered_map>
+
 #include "aemu/base/files/Stream.h"
 #include "aemu/base/export.h"
 
@@ -26,6 +28,24 @@ AEMU_EXPORT const QAndroidVmOperations* goldfish_address_space_get_vm_operations
 
 int goldfish_address_space_memory_state_load(android::base::Stream *stream);
 int goldfish_address_space_memory_state_save(android::base::Stream *stream);
+
+// Resources which can not be reloaded directly by ASG.
+struct AddressSpaceDeviceLoadResources {
+    // ASGs may use memory backed by an external memory allocation (e.g. a
+    // Virtio GPU blob resource with a host shmem allocation). These external
+    // memory allocations can not be directly saved and loaded via
+    // `android::base::Stream` and may not have the same `void*` across save
+    // and load.
+    struct ExternalMemory {
+        void* externalAddress = nullptr;
+        uint64_t externalAddressSize = 0;
+    };
+    // Maps ASG handle to the dedicated external memory.
+    std::unordered_map<uint32_t, ExternalMemory> asgExternaMemory;
+};
+
+// Provides clients an oppurtunity to share resources which can not be loaded directly by ASG.
+int goldfish_address_space_memory_state_preload(AddressSpaceDeviceLoadResources& resources);
 
 }  // namespace emulation
 }  // namespace android
