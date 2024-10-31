@@ -71,13 +71,21 @@ class AsyncSocket : public AsyncSocketAdapter {
     ssize_t recv(char* buffer, uint64_t bufferSize) override;
 
     /**
-     * @brief Sends data over the socket.
+     * @brief Sends data over the socket, note these are send
+     *        asynchronously!
+     *
      *
      * @param buffer The buffer containing the data to send.
      * @param bufferSize The size of the data to send.
      * @return The number of bytes sent, or -1 if an error occurred.
      */
     ssize_t send(const char* buffer, uint64_t bufferSize) override;
+
+    // Number of bytes in the buffer (scheduled to be send)
+    size_t sendBuffer() { return mSendBuffer; };
+
+    // Wait at most duration for the send buffer to be cleared
+    bool waitForSend(const std::chrono::milliseconds& rel_time);
 
     /**
      * @brief Attempts to asynchronously connect the socket.
@@ -127,6 +135,9 @@ class AsyncSocket : public AsyncSocketAdapter {
     void wantRead();
 
    private:
+    // Indicates that the socket is interested in writing data.
+    void wantWrite();
+
     // Attempts to connect to the specified port.
     void connectToPort();
 
@@ -156,24 +167,17 @@ class AsyncSocket : public AsyncSocketAdapter {
     // Condition variable for signaling changes in FdWatch state.
     std::condition_variable mWatchLockCv;
 
+    // Condition variable for signaling changes in sendBuffer
+    std::mutex mSendBufferMutex;
+    std::condition_variable mSendBufferCv;
+    std::atomic<size_t> mSendBuffer{0};
+
     // Write buffer used by the async writer.
     std::string mWriteBuffer;
 
     // Mutex to track callback activity, this mutex will be taken
     // when a callback is active.
     std::recursive_mutex mListenerLock;
-};
-
-/**
- * @brief Wraps an AsyncSocket to provide simple onRead/onClose
- * callbacks.
- */
-class SimpleAsyncSocket : public SimpleAsyncSocketAdapter {
-   public:
-    SimpleAsyncSocket(Looper* looper, int fd, SimpleAsyncSocketAdapter::OnReadCallback onRead,
-                      SimpleAsyncSocketAdapter::OnCloseCallback onClose)
-        : SimpleAsyncSocketAdapter(std::make_unique<AsyncSocket>(looper, ScopedSocket(fd)),
-                                   std::move(onRead), std::move(onClose)) {}
 };
 
 }  // namespace base
