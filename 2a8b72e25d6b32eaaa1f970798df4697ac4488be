@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "996d477d_c7689ebd",
+        "filename": "host-common/address_space_graphics.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 377,
+      "author": {
+        "id": 1967833
+      },
+      "writtenOn": "2024-11-01T09:34:47Z",
+      "side": 1,
+      "message": "Do we have some versioning over these data blocks that requires an update with this atructural change? Ie. how do can we ensure that we are loading the correct data structure from the stream?",
+      "revId": "2a8b72e25d6b32eaaa1f970798df4697ac4488be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
