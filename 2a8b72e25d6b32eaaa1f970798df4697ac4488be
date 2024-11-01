@@ -70,6 +70,24 @@
       "parentUuid": "fc002b37_c4a25ccb",
       "revId": "2a8b72e25d6b32eaaa1f970798df4697ac4488be",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f0cb6ac4_971ad96c",
+        "filename": "host-common/address_space_graphics.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 377,
+      "author": {
+        "id": 1561731
+      },
+      "writtenOn": "2024-11-01T17:46:58Z",
+      "side": 1,
+      "message": "\u003e I don\u0027t have access to this document.\n\nAdded you.",
+      "parentUuid": "d6bea557_24cc7f96",
+      "revId": "2a8b72e25d6b32eaaa1f970798df4697ac4488be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
