@@ -52,6 +52,24 @@
       "parentUuid": "09ea6c71_ad6922c4",
       "revId": "2a8b72e25d6b32eaaa1f970798df4697ac4488be",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d6bea557_24cc7f96",
+        "filename": "host-common/address_space_graphics.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 377,
+      "author": {
+        "id": 1278660
+      },
+      "writtenOn": "2024-11-01T16:37:12Z",
+      "side": 1,
+      "message": "\u003e go/gfxstream-snapshots-on-protobuf\n\nI don\u0027t have access to this document.\n\n\u003e the snapshots are only expected to work across launches of the same version of the host tools\n\nDo we want them to work across different versions? Also, snapshots could be CPU/GPU sensitive, I am not sure how much value we will get from supporting different versions.",
+      "parentUuid": "fc002b37_c4a25ccb",
+      "revId": "2a8b72e25d6b32eaaa1f970798df4697ac4488be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
