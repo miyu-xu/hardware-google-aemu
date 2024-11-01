@@ -34,6 +34,24 @@
       "parentUuid": "996d477d_c7689ebd",
       "revId": "2a8b72e25d6b32eaaa1f970798df4697ac4488be",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fc002b37_c4a25ccb",
+        "filename": "host-common/address_space_graphics.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 377,
+      "author": {
+        "id": 1561731
+      },
+      "writtenOn": "2024-11-01T16:19:51Z",
+      "side": 1,
+      "message": "I believe this is a fundamental limitation of the current snapshot design/implementation - sequential loading of values without some kind of key-value lookup will never be backwards compatible. IIRC, yahan@ in the past confirmed that the snapshots are only expected to work across launches of the same version of the host tools. I put together a minimal doc at go/gfxstream-snapshots-on-protobuf a couple weeks ago just to document this issue. I also started using protobuf on the virtio gpu frontend (the `hardware/google/gfxstream/host/VirtioGpu*` files) parts of gfxstream - partially to address this but mostly to make debugging possible while I\u0027m iterating on that. Long term, maybe we can start to sneak proto definitions into various parts of the existing backend.",
+      "parentUuid": "09ea6c71_ad6922c4",
+      "revId": "2a8b72e25d6b32eaaa1f970798df4697ac4488be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
