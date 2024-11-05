@@ -4,9 +4,6 @@
  */
 #pragma once
 
-#include "aemu/base/containers/Lookup.h"
-#include "aemu/base/Optional.h"
-
 #include <functional>
 #include <unordered_map>
 #include <vector>
