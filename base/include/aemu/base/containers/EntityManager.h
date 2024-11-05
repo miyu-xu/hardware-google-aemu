@@ -4,9 +4,6 @@
  */
 #pragma once
 
-#include "aemu/base/containers/Lookup.h"
-#include "aemu/base/Optional.h"
-
 #include <functional>
 #include <unordered_map>
 #include <vector>
@@ -427,8 +424,12 @@ public:
 
     // If we didn't explicitly track, just fail.
     ComponentHandle getComponentHandle(EntityHandle h) const {
-        auto componentHandlePtr = android::base::find(mEntityToComponentMap, h);
-        if (!componentHandlePtr) return INVALID_COMPONENT_HANDLE;
+        const auto it = mEntityToComponentMap.find(h);
+        if (it == mEntityToComponentMap.end()) {
+            return INVALID_COMPONENT_HANDLE;
+        }
+
+        auto componentHandlePtr = &it->second;
         return *componentHandlePtr;
     }
 
