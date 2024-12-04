@@ -34,6 +34,24 @@
       "parentUuid": "76055a84_da80f337",
       "revId": "9b11b311a1b04be3d99ef131b132a84079118ca8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bd953a0f_ec1a0a4f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1967833
+      },
+      "writtenOn": "2024-12-04T15:04:11Z",
+      "side": 1,
+      "message": "This file won\u0027t generate conflicts as there are no changes, and qemu side very likely merge without issues.",
+      "parentUuid": "2a5499d6_01131ffb",
+      "revId": "9b11b311a1b04be3d99ef131b132a84079118ca8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
