@@ -19,6 +19,13 @@
 
 namespace android {
 namespace base {
+struct AutomotiveDisplay {
+    enum {
+        GENERIC_DISPLAY = 1 << 0,
+        DISTANT_DISPLAY = 1 << 1,
+        DYNAMIC_MULTI_DISPLAY = 1 << 2,
+    };
+};
 // rect: a mapping from display ID to a rectangle represented as pair of width
 // and height. 
 // monitorAspectRatio: current host monitor's aspect ratio.
@@ -29,7 +36,7 @@ std::unordered_map<uint32_t, std::pair<uint32_t, uint32_t>> resolveLayout(
         const double monitorAspectRatio);
 
 std::unordered_map<uint32_t, std::pair<uint32_t, uint32_t>> resolveStackedLayout(
-        std::unordered_map<uint32_t, std::pair<uint32_t, uint32_t>> rectangles);
-
+        std::unordered_map<uint32_t, std::pair<uint32_t, uint32_t>> rectangles,
+        uint32_t displayType);
 }  // namespace base
 }  // namespace android
