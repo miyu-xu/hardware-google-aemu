@@ -45,7 +45,7 @@ struct MultiDisplayInfo {
     MultiDisplayInfo(int32_t x, int32_t y, uint32_t w, uint32_t h,
                      uint32_t d, uint32_t f, bool e, uint32_t c = 0) :
       pos_x(x), pos_y(y), width(w), height(h), originalWidth(w),
-      originalHeight(h), dpi(d), flag(f), rotation(0), enabled(e), cb(c) {}
+      originalHeight(h), dpi(d), flag(f), cb(c), rotation(0), enabled(e) {}
 
 };
 
@@ -119,6 +119,8 @@ public:
     int setDisplayColorBuffer(uint32_t displayId, uint32_t colorBuffer);
     void getCombinedDisplaySize(uint32_t* w, uint32_t* h);
     bool isMultiDisplayWindow();
+    bool isDisplayPipeReady();
+    bool startDisplayPipe();
     bool isPixelFold();
     void loadConfig();
     void onSave(base::Stream* stream);

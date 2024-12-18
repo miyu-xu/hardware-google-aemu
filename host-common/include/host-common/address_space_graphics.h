@@ -13,16 +13,17 @@
 // limitations under the License.
 #pragma once
 
-#include "AddressSpaceService.h"
+#include <functional>
+#include <optional>
+#include <vector>
 
+#include "AddressSpaceService.h"
+#include "address_space_device.h"
+#include "address_space_device.hpp"
+#include "address_space_graphics_types.h"
 #include "aemu/base/ring_buffer.h"
 #include "aemu/base/synchronization/MessageChannel.h"
 #include "aemu/base/threads/FunctorThread.h"
-#include "address_space_device.h"
-#include "address_space_graphics_types.h"
-
-#include <functional>
-#include <vector>
 
 namespace android {
 namespace emulation {
@@ -33,7 +34,7 @@ struct Allocation {
     size_t blockIndex = 0;
     uint64_t offsetIntoPhys = 0;
     uint64_t size = 0;
-    bool dedicated = false;
+    std::optional<uint32_t> dedicatedContextHandle;
     uint64_t hostmemId = 0;
     bool isView = false;
 };
@@ -60,7 +61,8 @@ public:
  static void globalStateSave(base::Stream*);
  static void globalStatePostSave();
 
- static bool globalStateLoad(base::Stream*);
+ static bool globalStateLoad(base::Stream*,
+                             const std::optional<AddressSpaceDeviceLoadResources>& resources);
 
  enum AllocType {
      AllocTypeRing,
@@ -75,7 +77,7 @@ private:
 
     void loadRingConfig(base::Stream* stream, struct asg_ring_config& config);
 
-    void loadAllocation(base::Stream* stream, Allocation& alloc, AllocType type);
+    void loadAllocation(base::Stream* stream, Allocation& alloc);
 
     // For consumer communication
     enum ConsumerCommand {
@@ -107,7 +109,12 @@ private:
     // For onUnavailableRead
     uint32_t mUnavailableReadCount = 0;
 
-    bool mIsVirtio = false;
+    struct VirtioGpuInfo {
+        uint32_t contextId = 0;
+        uint32_t capsetId = 0;
+        std::optional<std::string> name;
+    };
+    std::optional<VirtioGpuInfo> mVirtioGpuInfo;
     // To save the ring config if it is cleared on hostmem map
     struct asg_ring_config mSavedConfig;
 };
