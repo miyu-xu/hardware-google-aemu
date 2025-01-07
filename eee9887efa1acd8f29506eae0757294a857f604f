@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fb432a14_bbe75d6f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1101621
+      },
+      "writtenOn": "2025-01-07T16:59:32Z",
+      "side": 1,
+      "message": "This isn\u0027t really used, but I guess it can be deleted later.",
+      "revId": "eee9887efa1acd8f29506eae0757294a857f604f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
