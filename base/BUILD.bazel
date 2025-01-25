@@ -58,6 +58,7 @@ cc_library(
         "CLog.cpp",
         "CompressingStream.cpp",
         "CpuTime.cpp",
+        "Debug.cpp",
         "DecompressingStream.cpp",
         "FileUtils.cpp",
         "FunctorThread.cpp",
