@@ -1,0 +1,45 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "21895488_4934fb40",
+        "filename": "base/Debug.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1278660
+      },
+      "writtenOn": "2025-01-27T23:52:18Z",
+      "side": 1,
+      "message": "bkpt?",
+      "range": {
+        "startLine": 99,
+        "startChar": 9,
+        "endLine": 99,
+        "endChar": 13
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "3a1cdd2d_7050c5bb",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "base/Debug.cpp",
+              "range": {
+                "startLine": 99,
+                "startChar": 0,
+                "endLine": 100,
+                "endChar": 0
+              },
+              "replacement": "    asm(\"bkpt\");\n"
+            }
+          ]
+        }
+      ],
+      "revId": "3a261569ad0ef3159178b97928b618589bc3ee04",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
