@@ -261,6 +261,9 @@ typedef struct QAndroidVmOperations {
     // Set the reason to skip snapshotting on exit.
     void (*setSkipSnapshotSaveReason)(SnapshotSkipReason reason);
 
+    // handle vulkan device lost
+    void (*handleVulkanDeviceLost)(const char* process_name);
+
     // Get the reason to skip snapshotting on exit.
     SnapshotSkipReason (*getSkipSnapshotSaveReason)();
 
