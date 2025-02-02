@@ -1,3 +1,5 @@
+load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
+
 cc_library(
     name = "compat-hdrs",
     hdrs = glob(["includes/**/*.h"]),
@@ -11,9 +13,9 @@ cc_library(
 
 cc_library(
     name = "compat",
-    srcs =
+    srcs =[
+            "src/dirent/dirent.cpp",] +
         glob([
-            "src/dirent/*.c",
             "src/*.c",
             "src/*.h",
             "src/*.cpp",
@@ -34,4 +36,15 @@ cc_library(
     linkstatic = True,
     visibility = ["//visibility:public"],
     deps = [":compat-hdrs"],
+)
+
+cc_test(
+    name = "dirent_test",
+    srcs = [
+        "tests/dirent_test.cpp",
+    ],
+    deps = [
+        ":compat",
+        "@com_google_googletest//:gtest_main",
+    ],
 )
