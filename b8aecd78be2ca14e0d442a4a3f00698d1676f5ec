@@ -1,0 +1,39 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "03820a89_34e55920",
+        "filename": "windows/tests/dirent_test.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1964400
+      },
+      "writtenOn": "2025-02-03T23:03:21Z",
+      "side": 1,
+      "message": "Warning has still the typo",
+      "fixSuggestions": [
+        {
+          "fixId": "087dd0b8_71c99d90",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "windows/tests/dirent_test.cpp",
+              "range": {
+                "startLine": 57,
+                "startChar": 0,
+                "endLine": 58,
+                "endChar": 0
+              },
+              "replacement": "            std::cerr \u003c\u003c \"Warning failed to remove directory: \" \u003c\u003c e.what() \u003c\u003c std::endl;\n"
+            }
+          ]
+        }
+      ],
+      "revId": "b8aecd78be2ca14e0d442a4a3f00698d1676f5ec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
