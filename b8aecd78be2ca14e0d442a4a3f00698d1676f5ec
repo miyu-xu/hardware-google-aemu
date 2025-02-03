@@ -34,6 +34,61 @@
       ],
       "revId": "b8aecd78be2ca14e0d442a4a3f00698d1676f5ec",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eb5ff07b_b94a2352",
+        "filename": "windows/tests/dirent_test.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1964400
+      },
+      "writtenOn": "2025-02-03T23:05:24Z",
+      "side": 1,
+      "message": "Please consider using /\n\nThere are 3 (6) other places",
+      "fixSuggestions": [
+        {
+          "fixId": "9f0940ee_fad4c95a",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "windows/tests/dirent_test.cpp",
+              "range": {
+                "startLine": 89,
+                "startChar": 0,
+                "endLine": 91,
+                "endChar": 0
+              },
+              "replacement": "    createFile(tempDir / \"file1.txt\");\n    createFile(tempDir / \"file2.txt\");\n"
+            },
+            {
+              "path": "windows/tests/dirent_test.cpp",
+              "range": {
+                "startLine": 128,
+                "startChar": 0,
+                "endLine": 130,
+                "endChar": 0
+              },
+              "replacement": "    createFile(tempDir / \"file1.txt\");\n    createFile(tempDir / \"file2.txt\");\n"
+            },
+            {
+              "path": "windows/tests/dirent_test.cpp",
+              "range": {
+                "startLine": 295,
+                "startChar": 0,
+                "endLine": 297,
+                "endChar": 0
+              },
+              "replacement": "    createFile(tempDir / \"file.txt\");\n    dir \u003d opendir((tempDir / \"file.txt\").c_str());\n"
+            }
+          ]
+        }
+      ],
+      "revId": "b8aecd78be2ca14e0d442a4a3f00698d1676f5ec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
