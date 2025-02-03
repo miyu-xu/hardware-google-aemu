@@ -1,0 +1,94 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "789bf49d_585f318e",
+        "filename": "windows/tests/dirent_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1964400
+      },
+      "writtenOn": "2025-02-03T01:27:07Z",
+      "side": 1,
+      "message": "typo on Warning",
+      "fixSuggestions": [
+        {
+          "fixId": "1258ab83_c5435905",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "windows/tests/dirent_test.cpp",
+              "range": {
+                "startLine": 57,
+                "startChar": 0,
+                "endLine": 58,
+                "endChar": 0
+              },
+              "replacement": "            std::cerr \u003c\u003c \"Warning failed to remove directory: \" \u003c\u003c e.what() \u003c\u003c std::endl;\n"
+            }
+          ]
+        }
+      ],
+      "revId": "fa74fed893fd4b79f9b128b45708ddf23473e564",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a6155684_a349f9fc",
+        "filename": "windows/tests/dirent_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1964400
+      },
+      "writtenOn": "2025-02-03T01:27:07Z",
+      "side": 1,
+      "message": "I think empDir.string() + \"/file1.txt\" will not be handled cross platform.\nWe should use the / operator instead: tempDir / \"file1.txt\"",
+      "fixSuggestions": [
+        {
+          "fixId": "f5b98dca_30e0200c",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "windows/tests/dirent_test.cpp",
+              "range": {
+                "startLine": 89,
+                "startChar": 0,
+                "endLine": 91,
+                "endChar": 0
+              },
+              "replacement": "    createFile(tempDir / \"file1.txt\");\n    createFile(tempDir / \"file2.txt\");\n"
+            },
+            {
+              "path": "windows/tests/dirent_test.cpp",
+              "range": {
+                "startLine": 128,
+                "startChar": 0,
+                "endLine": 130,
+                "endChar": 0
+              },
+              "replacement": "    createFile(tempDir / \"file1.txt\");\n    createFile(tempDir / \"file2.txt\");\n"
+            },
+            {
+              "path": "windows/tests/dirent_test.cpp",
+              "range": {
+                "startLine": 295,
+                "startChar": 0,
+                "endLine": 297,
+                "endChar": 0
+              },
+              "replacement": "    createFile(tempDir / \"file.txt\");\n    dir \u003d opendir((tempDir / \"file.txt\").c_str());\n"
+            }
+          ]
+        }
+      ],
+      "revId": "fa74fed893fd4b79f9b128b45708ddf23473e564",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
