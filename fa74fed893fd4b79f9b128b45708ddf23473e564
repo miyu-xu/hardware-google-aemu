@@ -3,6 +3,202 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "11eb7642_3aa8965a",
+        "filename": "windows/src/dirent/dirent.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1278660
+      },
+      "writtenOn": "2025-02-03T03:29:37Z",
+      "side": 1,
+      "message": "Please add a type alias for this. I think it should be `uint64_t`.",
+      "range": {
+        "startLine": 76,
+        "startChar": 4,
+        "endLine": 76,
+        "endChar": 22
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "97900106_a06c9651",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "windows/src/dirent/dirent.cpp",
+              "range": {
+                "startLine": 25,
+                "startChar": 0,
+                "endLine": 25,
+                "endChar": 0
+              },
+              "replacement": "    // Type alias for file index\n    typedef unsigned long long file_index_t;\n\n"
+            },
+            {
+              "path": "windows/src/dirent/dirent.cpp",
+              "range": {
+                "startLine": 76,
+                "startChar": 0,
+                "endLine": 77,
+                "endChar": 0
+              },
+              "replacement": "    file_index_t get_file_index(const std::wstring\u0026 path) {\n"
+            },
+            {
+              "path": "windows/src/dirent/dirent.cpp",
+              "range": {
+                "startLine": 93,
+                "startChar": 0,
+                "endLine": 94,
+                "endChar": 0
+              },
+              "replacement": "        return (static_cast\u003cfile_index_t\u003e(info.nFileIndexHigh) \u003c\u003c 32) | info.nFileIndexLow;\n"
+            }
+          ]
+        }
+      ],
+      "revId": "fa74fed893fd4b79f9b128b45708ddf23473e564",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5776ac40_7527a173",
+        "filename": "windows/src/dirent/dirent.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1278660
+      },
+      "writtenOn": "2025-02-03T03:29:37Z",
+      "side": 1,
+      "message": "I think this should be `std::remove_pointer\u003cHANDLE\u003e`, add an alias for it.",
+      "range": {
+        "startLine": 78,
+        "startChar": 24,
+        "endLine": 78,
+        "endChar": 28
+      },
+      "revId": "fa74fed893fd4b79f9b128b45708ddf23473e564",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "22d64ad9_1b1a155b",
+        "filename": "windows/src/dirent/dirent.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1278660
+      },
+      "writtenOn": "2025-02-03T03:29:37Z",
+      "side": 1,
+      "message": "Maybe add a deleter for HANDLE, like\n\n```\nstruct HandleDeleter {\n    void operator()(HANDLE h) const { ::CloseHandle(h); }\n};\n```",
+      "range": {
+        "startLine": 78,
+        "startChar": 30,
+        "endLine": 78,
+        "endChar": 54
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "c0ea65bf_6e7f0928",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "windows/src/dirent/dirent.cpp",
+              "range": {
+                "startLine": 78,
+                "startChar": 0,
+                "endLine": 78,
+                "endChar": 0
+              },
+              "replacement": "        // The second template parameter is a deleter function that will be called\n        // when the unique_ptr goes out of scope. In this case, it\u0027s ::CloseHandle,\n        // which closes the file handle.\n"
+            }
+          ]
+        }
+      ],
+      "revId": "fa74fed893fd4b79f9b128b45708ddf23473e564",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e62dd8b1_cb8642cb",
+        "filename": "windows/src/dirent/dirent.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1278660
+      },
+      "writtenOn": "2025-02-03T03:29:37Z",
+      "side": 1,
+      "message": "This shoudl not be in Windows.",
+      "range": {
+        "startLine": 96,
+        "startChar": 4,
+        "endLine": 97,
+        "endChar": 57
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "372c15d2_9a689444",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "windows/src/dirent/dirent.cpp",
+              "range": {
+                "startLine": 23,
+                "startChar": 0,
+                "endLine": 23,
+                "endChar": 0
+              },
+              "replacement": "#include \"windows/src/util/utf8.h\"\n\n"
+            },
+            {
+              "path": "windows/src/dirent/dirent.cpp",
+              "range": {
+                "startLine": 95,
+                "startChar": 0,
+                "endLine": 137,
+                "endChar": 0
+              },
+              "replacement": ""
+            },
+            {
+              "path": "windows/src/dirent/dirent.cpp",
+              "range": {
+                "startLine": 208,
+                "startChar": 0,
+                "endLine": 209,
+                "endChar": 0
+              },
+              "replacement": "    std::wstring wide_path \u003d windows::utf8_to_wide(name);\n"
+            },
+            {
+              "path": "windows/src/dirent/dirent.cpp",
+              "range": {
+                "startLine": 284,
+                "startChar": 0,
+                "endLine": 285,
+                "endChar": 0
+              },
+              "replacement": "        std::string utf8_filename \u003d windows::wide_to_utf8(dirp-\u003epImpl-\u003efind_data.cFileName);\n"
+            }
+          ]
+        }
+      ],
+      "revId": "fa74fed893fd4b79f9b128b45708ddf23473e564",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "789bf49d_585f318e",
         "filename": "windows/tests/dirent_test.cpp",
         "patchSetId": 3
