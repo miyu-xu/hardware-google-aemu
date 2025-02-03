@@ -317,6 +317,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d0dc28a8_1baba920",
+        "filename": "windows/src/dirent/dirent.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2025-02-03T20:55:50Z",
+      "side": 1,
+      "message": "Ok, let me replace with standard C++",
+      "parentUuid": "ca0ef89f_886bd9e9",
+      "range": {
+        "startLine": 96,
+        "startChar": 4,
+        "endLine": 97,
+        "endChar": 57
+      },
+      "revId": "fa74fed893fd4b79f9b128b45708ddf23473e564",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "789bf49d_585f318e",
