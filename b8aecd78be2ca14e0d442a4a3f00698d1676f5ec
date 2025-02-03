@@ -36,6 +36,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a59bfddf_554bd23d",
+        "filename": "windows/tests/dirent_test.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2025-02-03T23:09:35Z",
+      "side": 1,
+      "message": "Fix applied.",
+      "parentUuid": "03820a89_34e55920",
+      "revId": "b8aecd78be2ca14e0d442a4a3f00698d1676f5ec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "eb5ff07b_b94a2352",
@@ -87,6 +105,24 @@
           ]
         }
       ],
+      "revId": "b8aecd78be2ca14e0d442a4a3f00698d1676f5ec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a1bc7571_2cc44fb3",
+        "filename": "windows/tests/dirent_test.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2025-02-03T23:09:35Z",
+      "side": 1,
+      "message": "Fix applied.",
+      "parentUuid": "eb5ff07b_b94a2352",
       "revId": "b8aecd78be2ca14e0d442a4a3f00698d1676f5ec",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
