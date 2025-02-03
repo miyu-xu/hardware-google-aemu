@@ -62,6 +62,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e7ec2f68_266395c2",
+        "filename": "windows/src/dirent/dirent.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2025-02-03T19:47:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "11eb7642_3aa8965a",
+      "range": {
+        "startLine": 76,
+        "startChar": 4,
+        "endLine": 76,
+        "endChar": 22
+      },
+      "revId": "fa74fed893fd4b79f9b128b45708ddf23473e564",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5776ac40_7527a173",
@@ -122,6 +146,30 @@
           ]
         }
       ],
+      "revId": "fa74fed893fd4b79f9b128b45708ddf23473e564",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "96fa9345_43e549fc",
+        "filename": "windows/src/dirent/dirent.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2025-02-03T19:47:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "22d64ad9_1b1a155b",
+      "range": {
+        "startLine": 78,
+        "startChar": 30,
+        "endLine": 78,
+        "endChar": 54
+      },
       "revId": "fa74fed893fd4b79f9b128b45708ddf23473e564",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -193,6 +241,30 @@
           ]
         }
       ],
+      "revId": "fa74fed893fd4b79f9b128b45708ddf23473e564",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "169fd563_5a91186a",
+        "filename": "windows/src/dirent/dirent.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2025-02-03T19:47:06Z",
+      "side": 1,
+      "message": "I\u0027m not sure what you mean. The main thing we want is utf-8 \u003c-\u003e wchar_t conversion so we do not run into unicode issues in Qemu. The qemu build cannot handle wchar_t",
+      "parentUuid": "e62dd8b1_cb8642cb",
+      "range": {
+        "startLine": 96,
+        "startChar": 4,
+        "endLine": 97,
+        "endChar": 57
+      },
       "revId": "fa74fed893fd4b79f9b128b45708ddf23473e564",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
