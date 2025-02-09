@@ -272,6 +272,7 @@ typedef struct QAndroidVmOperations {
 
     void (*vulkanInstanceRegister)(uint64_t id, const char* name);
     void (*vulkanInstanceUnregister)(uint64_t id);
+    void (*getVulkanAppNames)(int* count, char** names);
 
     // Set the reason to skip snapshotting on exit.
     void (*setSkipSnapshotSaveReason)(SnapshotSkipReason reason);
