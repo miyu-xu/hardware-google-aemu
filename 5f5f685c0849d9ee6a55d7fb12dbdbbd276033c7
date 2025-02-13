@@ -1,0 +1,45 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6efeeb90_8d9a6b99",
+        "filename": "host-common/include/host-common/vm_operations.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 275,
+      "author": {
+        "id": 1128973
+      },
+      "writtenOn": "2025-02-13T17:14:43Z",
+      "side": 1,
+      "message": "nit: add a comment here describing it\u0027s intended usage",
+      "range": {
+        "startLine": 275,
+        "startChar": 4,
+        "endLine": 275,
+        "endChar": 85
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "42381c53_5630584c",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "host-common/include/host-common/vm_operations.h",
+              "range": {
+                "startLine": 275,
+                "startChar": 0,
+                "endLine": 275,
+                "endChar": 0
+              },
+              "replacement": "    // Enumerate all registered Vulkan instances, for stats.\n"
+            }
+          ]
+        }
+      ],
+      "revId": "5f5f685c0849d9ee6a55d7fb12dbdbbd276033c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
