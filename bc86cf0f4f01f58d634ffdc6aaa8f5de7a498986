@@ -34,6 +34,24 @@
       ],
       "revId": "bc86cf0f4f01f58d634ffdc6aaa8f5de7a498986",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "026e4c6d_3fc72311",
+        "filename": "base/include/aemu/base/utils/status_macros.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 3831493
+      },
+      "writtenOn": "2025-02-13T17:21:56Z",
+      "side": 1,
+      "message": "Fix applied.",
+      "parentUuid": "5606af6c_1938cae7",
+      "revId": "bc86cf0f4f01f58d634ffdc6aaa8f5de7a498986",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
