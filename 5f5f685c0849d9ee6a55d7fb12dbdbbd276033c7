@@ -40,6 +40,30 @@
       ],
       "revId": "5f5f685c0849d9ee6a55d7fb12dbdbbd276033c7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "79df5096_deb185ac",
+        "filename": "host-common/include/host-common/vm_operations.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 275,
+      "author": {
+        "id": 1046320
+      },
+      "writtenOn": "2025-02-13T17:19:27Z",
+      "side": 1,
+      "message": "Fix applied.",
+      "parentUuid": "6efeeb90_8d9a6b99",
+      "range": {
+        "startLine": 275,
+        "startChar": 4,
+        "endLine": 275,
+        "endChar": 85
+      },
+      "revId": "5f5f685c0849d9ee6a55d7fb12dbdbbd276033c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
