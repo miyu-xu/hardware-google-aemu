@@ -1,0 +1,39 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5606af6c_1938cae7",
+        "filename": "base/include/aemu/base/utils/status_macros.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2025-02-13T17:20:02Z",
+      "side": 1,
+      "message": "Nit: 2025",
+      "fixSuggestions": [
+        {
+          "fixId": "2e45e1e9_63b68a04",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "base/include/aemu/base/utils/status_macros.h",
+              "range": {
+                "startLine": 2,
+                "startChar": 0,
+                "endLine": 3,
+                "endChar": 0
+              },
+              "replacement": " * Copyright (C) 2025 The Android Open Source Project\n"
+            }
+          ]
+        }
+      ],
+      "revId": "bc86cf0f4f01f58d634ffdc6aaa8f5de7a498986",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
