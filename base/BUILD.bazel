@@ -1,6 +1,4 @@
-load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test", "objc_library")
 # Interface library
-
 cc_library(
     name = "aemu-base-headers",
     hdrs = glob([
@@ -60,7 +58,6 @@ cc_library(
         "CLog.cpp",
         "CompressingStream.cpp",
         "CpuTime.cpp",
-        "Debug.cpp",
         "DecompressingStream.cpp",
         "FileUtils.cpp",
         "FunctorThread.cpp",
