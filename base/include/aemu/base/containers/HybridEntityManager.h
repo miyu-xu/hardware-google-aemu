@@ -27,7 +27,12 @@ template <size_t maxIndex,
           class Data>
 class HybridEntityManager {
 public:
-    using EM = EntityManager<32, 16, 16, Data>;
+    // 24 bit: 16 Million id, good enough
+    // 16 bit: 64k gen
+    // 24 bit: divided into
+    //       8 bit: 256 tag
+    //       16 bit: 64k global state (4k vulkan processes)
+    using EM = EntityManager<24, 16, 24, Data>;
     using IterFunc = typename EM::IteratorFunc;
     using ConstIterFunc = typename EM::ConstIteratorFunc;
     using Handle = typename EM::EntityHandle;
