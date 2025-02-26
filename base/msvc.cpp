@@ -33,9 +33,12 @@ int mkstemp(char* t) {
     if (err != 0) {
         return -1;
     }
-
+#ifdef __MINGW32__
+    return -1; // stub constant
+#else
     return _sopen(t, _O_RDWR | _O_CREAT | _O_EXCL | _O_BINARY, _SH_DENYRW,
                   _S_IREAD | _S_IWRITE);
+#endif // __MINGW32__
 }
 
 // From https://msdn.microsoft.com/en-us/library/28d5ce15.aspx
@@ -89,11 +92,18 @@ static int vasprintf(char** buf, const char* format, va_list args) {
 // This is a poor resolution timer, but at least it
 // is available on Win7 and older. System.cpp will install
 // a better one.
+#ifdef __MINGW32__
+
+#else
 static SystemTime getSystemTime = (SystemTime)GetSystemTimeAsFileTime;
+#endif // __MINGW32__
 
 int getntptimeofday(struct timespec*, struct timezone*);
 
 int getntptimeofday(struct timespec* tp, struct timezone* z) {
+#ifdef __MINGW32__
+    return -1; // stub constant
+#else
     int res = 0;
     union {
         unsigned long long ns100; /*time since 1 Jan 1601 in 100ns units */
@@ -127,9 +137,13 @@ int getntptimeofday(struct timespec* tp, struct timezone* z) {
                       100; /* nanoseconds */
     }
     return res;
+#endif // __MINGW32__
 }
 
 int gettimeofday(struct timeval* p, struct timezone* z) {
+#ifdef __MINGW32__
+    return -1; //stub constant
+#else
     struct timespec tp;
 
     if (getntptimeofday(&tp, z))
@@ -137,4 +151,5 @@ int gettimeofday(struct timeval* p, struct timezone* z) {
     p->tv_sec = tp.tv_sec;
     p->tv_usec = (tp.tv_nsec / 1000);
     return 0;
+#endif // __MINGW32__
 }

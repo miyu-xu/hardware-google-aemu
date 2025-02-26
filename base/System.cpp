@@ -46,7 +46,10 @@
 #include <sys/time.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#ifdef __MINGW32__
+#else
 #include <sys/resource.h>
+#endif // __MINGW32__
 #include <unistd.h>
 #endif
 

@@ -35,6 +35,9 @@ Thread::~Thread() {
 }
 
 bool Thread::start() {
+#ifdef __MINGW32__
+    return false; // stub constant
+#else
     if (mStarted) {
         return false;
     }
@@ -78,6 +81,7 @@ bool Thread::start() {
         }
     }
     return ret;
+#endif // __MINGW32__
 }
 
 bool Thread::wait(intptr_t* exitStatus) {
