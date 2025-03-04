@@ -23,15 +23,12 @@ namespace base {
 namespace internal {
 
 // Older GCC stdlib uses deprecated naming scheme has_xxx instead of is_xxx
-#if (defined(__GNUC__) && !defined(__clang__) && __GNUC__ <= 4) || \
-        defined(__OLD_STD_VERSION__)
+#if (defined(__GNUC__) && !defined(__clang__) && __GNUC__ <= 4) || defined(__OLD_STD_VERSION__)
 template <class T>
-using is_trivially_default_constructible =
-        std::has_trivial_default_constructor<T>;
+using is_trivially_default_constructible = std::has_trivial_default_constructor<T>;
 #else
 template <class T>
-using is_trivially_default_constructible =
-        std::is_trivially_default_constructible<T>;
+using is_trivially_default_constructible = std::is_trivially_default_constructible<T>;
 #endif
 
 // A LazyInstance is a helper template that can be used to perform
@@ -129,7 +126,7 @@ struct LazyInstanceState {
 static_assert(std::is_standard_layout<LazyInstanceState>::value,
               "LazyInstanceState is not a standard layout type");
 #ifndef _MSC_VER
-static_assert(is_trivially_default_constructible<LazyInstanceState>::value,
+static_assert(std::is_default_constructible<LazyInstanceState>::value,
               "LazyInstanceState can't be trivially default constructed");
 #endif
 }  // namespace internal
@@ -145,8 +142,7 @@ class StaticLock;
 //
 template <class T>
 struct LazyInstance {
-    static_assert(!std::is_same<T, Lock>::value &&
-                          !std::is_same<T, StaticLock>::value,
+    static_assert(!std::is_same<T, Lock>::value && !std::is_same<T, StaticLock>::value,
                   "Don't use LazyInstance<Lock | StaticLock>, use StaticLock "
                   "by value instead");
 
@@ -171,12 +167,10 @@ struct LazyInstance {
         }
     }
 
-private:
+   private:
     T* ptrInternal() const;
 
-    using StorageT =
-            typename std::aligned_storage<sizeof(T),
-                                          std::alignment_of<T>::value>::type;
+    using StorageT = typename std::aligned_storage<sizeof(T), std::alignment_of<T>::value>::type;
 
     alignas(double) mutable internal::LazyInstanceState mState;
     mutable StorageT mStorage;
@@ -195,9 +189,8 @@ T* LazyInstance<T>::ptrInternal() const {
                   "LazyInstance<T> is not a standard layout type");
 #ifndef _MSC_VER
     // These checks are not working in vs2019..
-    static_assert(
-            internal::is_trivially_default_constructible<LazyInstance>::value,
-            "LazyInstance<T> can't be trivially default constructed");
+    static_assert(std::is_default_constructible<LazyInstance>::value,
+                  "LazyInstance<T> can't be default constructed");
 #endif
     if (mState.needConstruction()) {
         new (&mStorage) T();
