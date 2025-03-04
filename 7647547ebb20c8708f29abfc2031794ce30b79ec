@@ -16,6 +16,24 @@
       "message": "Bug here doesn\u0027t explain the need for this very well, are we changing the structure of the binary folders and way of loading the dependencies?",
       "revId": "7647547ebb20c8708f29abfc2031794ce30b79ec",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d48710fd_c1197309",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 3831493
+      },
+      "writtenOn": "2025-03-04T17:46:08Z",
+      "side": 1,
+      "message": "In the new emulator world, from the gfxtream perspective, the ProgramDirector and LauncherDirectory are both under external/qemu. However, the launcher is actually under hardware/generic/goldfish. DYLD_LIBRARY_PATH is already set by the launcher so that Qemu can find its plugins and gfxstream is also able to find libvulkan etc that way. \nGiven the relevant path is already being communicated through this env var, it seemed simplest to use it to find the icd file too. Perhaps we will need a more sophisticated solution in the future, especially if other things need to be found.\n\nNote that the gfxstream libs and icd files are being added here: http://go/aog/3523273\n\nWould you be happy if I update the description with something along these lines?",
+      "parentUuid": "91afcba6_6a8c41b2",
+      "revId": "7647547ebb20c8708f29abfc2031794ce30b79ec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
