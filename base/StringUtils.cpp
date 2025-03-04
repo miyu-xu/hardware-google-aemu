@@ -18,7 +18,7 @@
 #include <string.h>
 
 #ifdef _MSC_VER
-#include "aemu/base/msvc.h"
+#include "msvc-posix.h"
 #endif
 
 #include <algorithm>
@@ -26,6 +26,10 @@
 #include <string_view>
 #include <vector>
 
+#include "host-common/GfxstreamFatalError.h"
+
+using emugl::ABORT_REASON_OTHER;
+using emugl::FatalError;
 
 #ifdef _WIN32
 const void* memmem(const void* haystack, size_t haystackLen,
@@ -117,20 +121,22 @@ bool endsWith(std::string_view string, std::string_view suffix) {
 void splitTokens(const std::string& input,
                  std::vector<std::string>* out,
                  std::string_view splitBy) {
-    auto removeWhiteSpace = [out](std::string_view strView) {
+    auto removeWhiteSpace = [out](const std::string& strView) {
         std::string s(strView);
         s.erase(std::remove_if(s.begin(), s.end(), ::isspace), s.end());
         out->push_back(s);
     };
     out->clear();
-    split(input, splitBy, removeWhiteSpace);
+    split<std::string>(input, std::string(splitBy), removeWhiteSpace);
 }
+
+#define CHECK_NE(a, b) \
+    if ((a) == (b))    \
+        GFXSTREAM_ABORT(FatalError(ABORT_REASON_OTHER));
 
 std::vector<std::string> Split(const std::string& s,
                                const std::string& delimiters) {
-    if (delimiters.empty()) {
-        return {}
-    }
+    CHECK_NE(delimiters.size(), 0U);
 
     std::vector<std::string> result;
 
