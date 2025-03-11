@@ -50,7 +50,7 @@ cc_library_static {
 
     ],
     export_header_lib_headers: ["libgfxstream_thirdparty_renderdoc_headers"],
-    static_libs: ["liblz4"],
+    static_libs: ["liblz4", "libabsl"],
     apex_available: [
         "//apex_available:platform",
         "com.android.virt",

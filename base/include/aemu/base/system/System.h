@@ -1,3 +1,5 @@
+#pragma once
+
 #include "aemu/base/CpuTime.h"
 
 #include <string>
@@ -28,6 +30,17 @@ CpuTime cpuTime();
 bool queryFileVersionInfo(const char* filename, int* major, int* minor, int* build1, int* build2);
 
 int getCpuCoreCount();
+
+// Return the program bitness as an integer, either 32 or 64.
+#if defined(__x86_64__) || defined(__aarch64__)
+    static const int kProgramBitness = 64;
+#else
+    static const int kProgramBitness = 32;
+#endif
+
+inline int getProgramBitness() { return kProgramBitness; }
+
+bool isRemoteSession(std::string* sessionType);
 
 } // namespace base
 } // namespace android
