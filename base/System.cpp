@@ -588,5 +588,109 @@ int getCpuCoreCount() {
 #endif
 }
 
+namespace {
+    bool envTest(std::string_view varname) {
+#ifdef _WIN32
+        Win32UnicodeString varname_unicode(varname.data());
+        const wchar_t* value = _wgetenv(varname_unicode.c_str());
+        return value && value[0] != L'\0';
+#else
+        std::string s(varname);
+        const char* value = getenv(s.c_str());
+        return value && value[0] != '\0';
+#endif
+    }
+} // namespace
+
+bool isRemoteSession(std::string* sessionType) {
+  if (envTest("NX_TEMP")) {
+      if (sessionType) {
+          *sessionType = "NX";
+      }
+      return true;
+  }
+  if (envTest("CHROME_REMOTE_DESKTOP_SESSION")) {
+      if (sessionType) {
+          *sessionType = "Chrome Remote Desktop";
+      }
+      return true;
+  }
+  if (!getEnvironmentVariable("SSH_CONNECTION").empty() && !getEnvironmentVariable("SSH_CLIENT").empty()) {
+      // This can be a remote X11 session, let's check if DISPLAY is set
+      // to something uncommon.
+      if (getEnvironmentVariable("DISPLAY").size() > 2) {
+          if (sessionType) {
+              *sessionType = "X11 Forwarding";
+          }
+          return true;
+      }
+  }
+#ifdef _WIN32
+
+// https://docs.microsoft.com/en-us/windows/win32/termserv/detecting-the-terminal-services-environment
+//
+// "You should not use GetSystemMetrics(SM_REMOTESESSION) to determine if your
+// application is running in a remote session in Windows 8 and later or Windows
+// Server 2012 and later if the remote session may also be using the RemoteFX
+// vGPU improvements to the Microsoft Remote Display Protocol (RDP). In this
+// case, GetSystemMetrics(SM_REMOTESESSION) will identify the remote session as
+// a local session."
+
+#define TERMINAL_SERVER_KEY "SYSTEM\\CurrentControlSet\\Control\\Terminal Server\\"
+#define GLASS_SESSION_ID    "GlassSessionId"
+
+      BOOL fIsRemoteable = FALSE;
+
+    if (GetSystemMetrics(SM_REMOTESESSION)) {
+        fIsRemoteable = TRUE;
+    } else {
+        HKEY hRegKey = NULL;
+        LONG lResult;
+
+        lResult = RegOpenKeyEx(
+            HKEY_LOCAL_MACHINE,
+            TERMINAL_SERVER_KEY,
+            0, // ulOptions
+            KEY_READ,
+            &hRegKey);
+
+        if (lResult == ERROR_SUCCESS) {
+            DWORD dwGlassSessionId;
+            DWORD cbGlassSessionId = sizeof(dwGlassSessionId);
+            DWORD dwType;
+
+            lResult = RegQueryValueEx(
+                hRegKey,
+                GLASS_SESSION_ID,
+                NULL, // lpReserved
+                &dwType,
+                (BYTE*) &dwGlassSessionId,
+                &cbGlassSessionId);
+
+            if (lResult == ERROR_SUCCESS) {
+                DWORD dwCurrentSessionId;
+                if (ProcessIdToSessionId(GetCurrentProcessId(), &dwCurrentSessionId)) {
+                    fIsRemoteable = (dwCurrentSessionId != dwGlassSessionId);
+                }
+            }
+        }
+
+        if (hRegKey) {
+            RegCloseKey(hRegKey);
+        }
+    }
+
+    if (TRUE == fIsRemoteable && sessionType) {
+        *sessionType = "Windows Remote Desktop";
+    }
+
+    if (TRUE == fIsRemoteable) {
+        return true;
+    }
+
+#endif  // _WIN32
+    return false;
+}
+
 } // namespace base
 } // namespace android
