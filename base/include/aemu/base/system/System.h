@@ -1,3 +1,5 @@
+#pragma once
+
 #include "aemu/base/CpuTime.h"
 
 #include <string>
@@ -28,6 +30,8 @@ CpuTime cpuTime();
 bool queryFileVersionInfo(const char* filename, int* major, int* minor, int* build1, int* build2);
 
 int getCpuCoreCount();
+
+bool isRemoteSession(std::string* sessionType);
 
 } // namespace base
 } // namespace android

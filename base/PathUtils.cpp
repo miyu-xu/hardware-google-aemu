@@ -14,18 +14,29 @@
 
 #include "aemu/base/files/PathUtils.h"
 
-#include <string.h>                      // for size_t, strncmp
-#include <iterator>                      // for reverse_iterator, operator!=
-#include <numeric>                       // for accumulate
-#include <type_traits>                   // for enable_if<>::type
+#include <string.h>  // for size_t, strncmp
+
+#include <algorithm>
+#include <filesystem>
+#include <iterator>     // for reverse_iterator, operator!=
+#include <numeric>      // for accumulate
+#include <type_traits>  // for enable_if<>::type
 
 #ifndef _WIN32
+#include <dirent.h>
+#include "msvc-posix.h"
+#else
+#include <sys/time.h>
 #include <unistd.h>
 #endif
 
 #ifdef _WIN32
 #include "aemu/base/system/Win32UnicodeString.h"
 #endif
+
+#include <sys/stat.h>
+
+#include "host-common/logging.h"
 
 static inline bool sIsEmpty(const char* str) {
     return !str || str[0] == '\0';
@@ -443,6 +454,109 @@ std::string PathUtils::addTrailingDirSeparator(const std::string& path,
     }
     return result;
 }
+
+namespace {
+namespace fs = std::filesystem;
+
+std::vector<fs::path> scanDirInternal(fs::path dirPath) {
+    std::vector<fs::path> result;
+
+    if (dirPath.empty()) {
+        WARN("Empty path!");
+        return result;
+    }
+
+#ifdef _WIN32
+    auto root = dirPath / "*";
+    Win32UnicodeString rootUnicode{root.string()};
+    struct _wfinddata_t findData;
+    intptr_t findIndex = _wfindfirst(rootUnicode.c_str(), &findData);
+    if (findIndex >= 0) {
+        do {
+            const wchar_t* name = findData.name;
+            if (wcscmp(name, L".") != 0 && wcscmp(name, L"..") != 0) {
+                result.push_back(Win32UnicodeString::convertToUtf8(name));
+            }
+        } while (_wfindnext(findIndex, &findData) >= 0);
+        _findclose(findIndex);
+    }
+#else   // !_WIN32
+    DIR* dir = ::opendir(dirPath.c_str());
+    if (dir) {
+        for (;;) {
+            struct dirent* entry = ::readdir(dir);
+            if (!entry) {
+                break;
+            }
+            const char* name = entry->d_name;
+            if (strcmp(name, ".") != 0 && strcmp(name, "..") != 0) {
+                result.push_back(std::string(name));
+            }
+        }
+        ::closedir(dir);
+    }
+#endif  // !_WIN32
+    std::sort(result.begin(), result.end());
+    return result;
+}
+
+#ifdef _WIN32
+// Return |path| as a Unicode string, while discarding trailing separators.
+Win32UnicodeString win32Path(fs::path path) {
+    Win32UnicodeString wpath(path.string());
+    // Get rid of trailing directory separators, Windows doesn't like them.
+    size_t size = wpath.size();
+    while (size > 0U && (wpath[size - 1U] == L'\\' || wpath[size - 1U] == L'/')) {
+        size--;
+    }
+    if (size < wpath.size()) {
+        wpath.resize(size);
+    }
+    return wpath;
+}
+
+using PathStat = struct _stat64;
+
+#else  // _WIN32
+
+using PathStat = struct stat;
+
+#endif  // _WIN32
+
+int pathStat(fs::path path, PathStat* st) {
+#ifdef _WIN32
+    return _wstat64(win32Path(path).c_str(), st);
+#else   // !_WIN32
+    return stat(path.c_str(), st);
+#endif  // !_WIN32
+}
+
+bool pathIsDirInternal(fs::path path) {
+    if (path.empty()) {
+        return false;
+    }
+    PathStat st;
+    int ret = pathStat(path, &st);
+    if (ret < 0) {
+        return false;
+    }
+    return S_ISDIR(st.st_mode);
+}
+
+}  // namespace
+
+std::vector<fs::path> scanDirEntries(fs::path dirPath, bool fullPath) {
+    auto result = scanDirInternal(dirPath);
+
+    if (fullPath) {
+        for (int i = 0; i < result.size(); i++) {
+            result[i] = dirPath / result[i];
+        }
+    }
+    return result;
+}
+
+bool pathIsDir(fs::path path) { return pathIsDirInternal(path); }
 
 }  // namespace base
 }  // namespace android
