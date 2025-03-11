@@ -313,6 +313,7 @@ cc_library(
         ],
         "@platforms//os:windows": [
             "//external/qemu/google/compat/windows:compat",
+            "//hardware/google/aemu/windows:compat",
         ],
         "//conditions:default": [],
     }),
