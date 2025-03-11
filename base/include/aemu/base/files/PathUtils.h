@@ -14,14 +14,16 @@
 
 #pragma once
 
-#include <stddef.h>                   // for size_t
-#include <optional>
-#include <string>                     // for string, basic_string
-#include <string_view>
-#include <utility>                    // for move, forward
-#include <vector>                     // for vector
+#include <stddef.h>  // for size_t
 
-#include "aemu/base/Optional.h"    // for Optional
+#include <filesystem>
+#include <optional>
+#include <string>  // for string, basic_string
+#include <string_view>
+#include <utility>  // for move, forward
+#include <vector>   // for vector
+
+#include "aemu/base/Optional.h"  // for Optional
 
 #ifdef __APPLE__
 
@@ -370,6 +372,11 @@ std::string pj(const std::string& path1, const std::string& path2);
 std::string pj(const std::vector<std::string>& paths);
 
 bool pathExists(const char* path);
+
+std::vector<std::filesystem::path> scanDirEntries(std::filesystem::path dirPath,
+                                                  bool fullPath = false);
+
+bool pathIsDir(std::filesystem::path path);
 
 }  // namespace base
 }  // namespace android
