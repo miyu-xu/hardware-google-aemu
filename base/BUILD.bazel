@@ -317,7 +317,14 @@ cc_library(
             ":aemu-base-darwin",
         ],
         "@platforms//os:windows": [
+<<<<<<< PATCH SET (15b5c9 Add scanDirEntries, pathIsDir to PathUtils and getProgramBit)
+            "//external/qemu/google/compat/windows:compat",
+            "//hardware/google/aemu/windows:compat",
+||||||| BASE
+            "//external/qemu/google/compat/windows:compat",
+=======
             "@aemu//windows:compat",
+>>>>>>> BASE      (3c1ced Remove extraneous gfxstream dep and add lz4 repo rule)
         ],
         "//conditions:default": [],
     }),
