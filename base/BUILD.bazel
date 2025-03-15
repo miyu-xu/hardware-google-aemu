@@ -1,5 +1,8 @@
 load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test", "objc_library")
-# Interface library
+
+package(
+    default_visibility = ["//visibility:public"],
+)
 
 cc_library(
     name = "aemu-base-headers",
@@ -170,29 +173,31 @@ cc_library(
         "//conditions:default": [],
     }),
     includes = ["include"],
-    visibility = ["//visibility:public"],
     deps = [
-        "//hardware/google/aemu/host-common:aemu-host-common-headers",
-        "@com_google_absl//absl/strings:str_format",
+        "//host-common:aemu-host-common-headers",
     ] + select({
         "@platforms//os:windows": [
-            "//hardware/google/aemu/windows:compat-hdrs",
+            "//windows:compat-hdrs",
         ],
         "//conditions:default": [],
+    }) + select({
+        "//:aemu_absl_enabled": [
+            "@com_google_absl//absl/strings:str_format",
+        ],
+        "//:aemu_absl_disabled": [
+        ],
     }),
 )
 
 cc_library(
     name = "aemu-base-metrics",
     srcs = ["Metrics.cpp"],
-    visibility = ["//visibility:public"],
     deps = [":aemu-base-headers"],
 )
 
 cc_library(
     name = "aemu-base-allocator",
     srcs = ["SubAllocator.cpp"],
-    visibility = ["//visibility:public"],
     deps = [":aemu-base-headers"],
 )
 
@@ -231,17 +236,14 @@ cc_library(
         "//conditions:default": [],
     }),
     includes = ["include"],
-    visibility = ["//visibility:public"],
 )
 
 cc_library(
     name = "aemu-base",
     srcs = [
         "AlignedBuf.cpp",
-        "CompressingStream.cpp",
         "CpuTime.cpp",
         "Debug.cpp",
-        "DecompressingStream.cpp",
         "FileUtils.cpp",
         "FunctorThread.cpp",
         "GLObjectCounter.cpp",
@@ -275,6 +277,12 @@ cc_library(
             "SharedMemory_posix.cpp",
             "Thread_pthread.cpp",
         ],
+    }) + select({
+        "//:aemu_lz4_enabled": [
+            "CompressingStream.cpp",
+            "DecompressingStream.cpp",
+        ],
+        "//:aemu_lz4_disabled": [],
     }),
     defines = [
         "BUILDING_EMUGL_COMMON_SHARED",
@@ -301,12 +309,10 @@ cc_library(
         ],
         "//conditions:default": [],
     }),
-    visibility = ["//visibility:public"],
     deps = [
         ":aemu-base-headers",
         ":aemu-base-metrics",
-        "//external/lz4",
-        "//hardware/google/aemu/host-common:logging",
+        "//host-common:logging",
     ] + select({
         "@platforms//os:macos": [
             ":aemu-base-darwin",
@@ -338,6 +344,10 @@ cc_library(
     srcs = [
         "testing/ProtobufMatchers.cpp",
     ],
+    target_compatible_with = select({
+        "//:aemu_tests_enabled": [],
+        "//:aemu_tests_disabled": ["@platforms//:incompatible"],
+    }),
     visibility = [
         "//visibility:public",
     ],
@@ -379,14 +389,18 @@ cc_test(
     linkopts = [
         "-undefined error",
     ],
+    target_compatible_with = select({
+        "//:aemu_tests_enabled": [],
+        "//:aemu_tests_disabled": ["@platforms//:incompatible"],
+    }),
     deps = [
         ":aemu-base",
         ":aemu-base-headers",
+        "//base:aemu-base-metrics",
         "//hardware/generic/goldfish/android/logging:backend",
         "//hardware/generic/goldfish/android/looper",
         "//hardware/generic/goldfish/android/sockets",
-        "//hardware/google/aemu/base:aemu-base-metrics",
-        "//hardware/google/aemu/host-common:logging",
+        "//host-common:logging",
         "@com_google_absl//absl/log",
         "@com_google_absl//absl/strings",
         "@com_google_absl//absl/strings:str_format",

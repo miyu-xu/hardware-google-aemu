@@ -1,3 +1,4 @@
+load("@bazel_skylib//rules:common_settings.bzl", "bool_setting")
 load("@rules_license//rules:license.bzl", "license")
 load("@rules_license//rules:license_kind.bzl", "license_kind")
 
@@ -21,13 +22,59 @@ license_kind(
     url = "https://spdx.org/licenses/Apache-2.0.html",
 )
 
-cc_library(
-    name = "aemu-host-common-test-headers",
-    hdrs = glob([
-        "host-common/testing/**/*.h",
-        "host-common/testing/**/*.hpp",
-    ]),
-    includes = ["include"],
-    visibility = ["//visibility:public"],
-    deps = ["//hardware/google/aemu/base:test-io"],
+bool_setting(
+    name = "aemu_build_tests",
+    build_setting_default = False,
+)
+
+config_setting(
+    name = "aemu_tests_enabled",
+    flag_values = {
+        ":aemu_build_tests": "1",
+    },
+)
+
+config_setting(
+    name = "aemu_tests_disabled",
+    flag_values = {
+        ":aemu_build_tests": "0",
+    },
+)
+
+bool_setting(
+    name = "aemu_use_absl",
+    build_setting_default = False,
+)
+
+config_setting(
+    name = "aemu_absl_enabled",
+    flag_values = {
+        ":aemu_use_absl": "1",
+    },
+)
+
+config_setting(
+    name = "aemu_absl_disabled",
+    flag_values = {
+        ":aemu_use_absl": "0",
+    },
+)
+
+bool_setting(
+    name = "aemu_use_lz4",
+    build_setting_default = False,
+)
+
+config_setting(
+    name = "aemu_lz4_enabled",
+    flag_values = {
+        ":aemu_use_lz4": "1",
+    },
+)
+
+config_setting(
+    name = "aemu_lz4_disabled",
+    flag_values = {
+        ":aemu_use_lz4": "0",
+    },
 )

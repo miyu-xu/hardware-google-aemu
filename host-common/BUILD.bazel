@@ -1,5 +1,9 @@
 load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 
+package(
+    default_visibility = ["//visibility:public"],
+)
+
 # Logging library
 cc_library(
     name = "logging-qemu2",
@@ -17,20 +21,24 @@ cc_library(
         "//conditions:default": [],
     }),
     includes = ["include/host-common"],
-    visibility = ["//visibility:public"],
     deps = [
         ":aemu-host-common-headers",
-        "//hardware/google/aemu/base:aemu-base-headers",
-        "//hardware/google/aemu/base:aemu-base-metrics",
+        "//base:aemu-base-headers",
+        "//base:aemu-base-metrics",
     ],
 )
 
 cc_library(
     name = "logging",
-    srcs = [
-        "GfxstreamFatalErrorAbsl.cpp",
-        "logging_absl.cpp",
-    ],
+    srcs = select({
+        "//:aemu_absl_enabled": [
+            "GfxstreamFatalErrorAbsl.cpp",
+            "logging_absl.cpp",
+        ],
+        "//:aemu_absl_disabled": [
+            "logging.cpp",
+        ],
+    }),
     hdrs = ["include/host-common/logging.h"],
     defines = [
         "BUILDING_EMUGL_COMMON_SHARED",
@@ -41,14 +49,17 @@ cc_library(
         "//conditions:default": [],
     }),
     includes = ["include/host-common"],
-    visibility = ["//visibility:public"],
     deps = [
         ":aemu-host-common-headers",
-        "//hardware/google/aemu/base:aemu-base-headers",
-        "//hardware/google/aemu/base:aemu-base-metrics",
-        "@com_google_absl//absl/log",
-        "@com_google_absl//absl/log:absl_log",
-    ],
+        "//base:aemu-base-headers",
+        "//base:aemu-base-metrics",
+    ] + select({
+        "//:aemu_absl_enabled": [
+            "@com_google_absl//absl/log",
+            "@com_google_absl//absl/log:absl_log",
+        ],
+        "//:aemu_absl_disabled": [],
+    }),
 )
 
 cc_library(
@@ -145,7 +156,6 @@ cc_library(
         "include/host-common/window_agent.h",
     ],
     includes = ["include"],
-    visibility = ["//visibility:public"],
 )
 
 # Standalone Library (conditional)
@@ -189,12 +199,11 @@ cc_library(
         ],
         "//conditions:default": [],
     }),
-    visibility = ["//visibility:public"],
     deps = [
         ":aemu-host-common-headers",
         ":logging",
-        "//hardware/google/aemu/base:aemu-base-allocator",
-        "//hardware/google/aemu/base:aemu-base-headers",
+        "//base:aemu-base-allocator",
+        "//base:aemu-base-headers",
     ],
     alwayslink = 1,
 )
@@ -212,10 +221,9 @@ cc_library(
         "//conditions:default": [],
     }),
     includes = ["include"],
-    visibility = ["//visibility:public"],
     deps = [
         ":aemu-host-common-headers",
-        "//hardware/google/aemu/base:aemu-base-headers",
+        "//base:aemu-base-headers",
     ],
 )
 
@@ -235,9 +243,13 @@ cc_library(
         "testing/MockGraphicsAgentFactory.h",
     ],
     includes = ["testing"],
+    target_compatible_with = select({
+        "//:aemu_tests_enabled": [],
+        "//:aemu_tests_disabled": ["@platforms//:incompatible"],
+    }),
     deps = [
         ":aemu-host-common-headers",
-        "//hardware/google/aemu/base:aemu-base-headers",
+        "//base:aemu-base-headers",
         "@com_google_googletest//:gtest",
     ],
 )
@@ -257,14 +269,18 @@ cc_test(
             "testing/**",
         ]),
     includes = ["testing"],
+    target_compatible_with = select({
+        "//:aemu_tests_enabled": [],
+        "//:aemu_tests_disabled": ["@platforms//:incompatible"],
+    }),
     deps = [
         ":aemu-host-common-headers",
         ":logging",
-        "//hardware/google/aemu:aemu-host-common-test-headers",
-        "//hardware/google/aemu/base:aemu-base",
-        "//hardware/google/aemu/base:aemu-base-allocator",
-        "//hardware/google/aemu/base:aemu-base-headers",
-        "//hardware/google/aemu/host-common:aemu-host-common",
+        "//:aemu-host-common-test-headers",
+        "//base:aemu-base",
+        "//base:aemu-base-allocator",
+        "//base:aemu-base-headers",
+        "//host-common:aemu-host-common",
         "@com_google_absl//absl/log",
         "@com_google_absl//absl/log:absl_log",
         "@com_google_absl//absl/log:globals",
