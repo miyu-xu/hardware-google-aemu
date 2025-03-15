@@ -38,21 +38,21 @@ bool loadBufferRaw(Stream* stream, char* buffer);
 template <class T, class = enable_if<std::is_standard_layout<T>>>
 void saveBuffer(Stream* stream, const std::vector<T>& buffer) {
     stream->putBe32(buffer.size());
-    stream->write(buffer.data(), sizeof(T) * buffer.size());
+    stream->mywrite(buffer.data(), sizeof(T) * buffer.size());
 }
 
 template <class T, class = enable_if<std::is_standard_layout<T>>>
 bool loadBuffer(Stream* stream, std::vector<T>* buffer) {
     auto len = stream->getBe32();
     buffer->resize(len);
-    int ret = (int)stream->read(buffer->data(), len * sizeof(T));
+    int ret = (int)stream->myread(buffer->data(), len * sizeof(T));
     return ret == len * sizeof(T);
 }
 
 template <class T, class = enable_if<std::is_standard_layout<T>>>
 void saveBuffer(Stream* stream, const SmallVector<T>& buffer) {
     stream->putBe32(buffer.size());
-    stream->write(buffer.data(), sizeof(T) * buffer.size());
+    stream->mywrite(buffer.data(), sizeof(T) * buffer.size());
 }
 
 template <class T, class = enable_if<std::is_standard_layout<T>>>
@@ -60,7 +60,7 @@ bool loadBuffer(Stream* stream, SmallVector<T>* buffer) {
     auto len = stream->getBe32();
     buffer->clear();
     buffer->resize_noinit(len);
-    int ret = (int)stream->read(buffer->data(), len * sizeof(T));
+    int ret = (int)stream->myread(buffer->data(), len * sizeof(T));
     return ret == len * sizeof(T);
 }
 
@@ -75,13 +75,13 @@ void saveBuffer(Stream* stream, const std::vector<T>& buffer, SaveFunc&& saver) 
 template <class T>
 void saveBuffer(Stream* stream, const T* buffer, size_t numElts) {
     stream->putBe32(numElts);
-    stream->write(buffer, sizeof(T) * numElts);
+    stream->mywrite(buffer, sizeof(T) * numElts);
 }
 
 template <class T>
 void loadBufferPtr(Stream* stream, T* out) {
     auto len = stream->getBe32();
-    stream->read(out, len * sizeof(T));
+    stream->myread(out, len * sizeof(T));
 }
 
 template <class T, class LoadFunc>
