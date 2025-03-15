@@ -33,6 +33,8 @@ public:
     // number of bytes that were actually transferred, or -errno value on
     // error.
     virtual ssize_t write(const void* buffer, size_t size) = 0;
+    ssize_t mywrite(const void* buffer, size_t size);
+    ssize_t myread(void* buffer, size_t size);
 
     virtual void* getProtobuf() { return nullptr; }
 
@@ -107,6 +109,9 @@ public:
     static void fromBe16(uint8_t*);
     static void fromBe32(uint8_t*);
     static void fromBe64(uint8_t*);
+
+
+    uint64_t pos {0};
 };
 
 }  // namespace base

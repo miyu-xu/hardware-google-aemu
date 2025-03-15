@@ -12,23 +12,35 @@ namespace android {
 namespace base {
 
 void Stream::putByte(uint8_t value) {
-    write(&value, 1U);
+    mywrite(&value, 1U);
+}
+
+ssize_t Stream::mywrite(const void* buffer, size_t size) {
+    auto ret = write(buffer, size);
+    pos += ret;
+    return ret;
+}
+
+ssize_t Stream::myread(void* buffer, size_t size) {
+    auto ret = read(buffer, size);
+    pos += ret;
+    return ret;
 }
 
 uint8_t Stream::getByte() {
     uint8_t value[1] = { 0 };
-    read(value, 1U);
+    myread(value, 1U);
     return value[0];
 }
 
 void Stream::putBe16(uint16_t value) {
     uint8_t b[2] = { (uint8_t)(value >> 8), (uint8_t)value };
-    write(b, 2U);
+    mywrite(b, 2U);
 }
 
 uint16_t Stream::getBe16() {
     uint8_t b[2] = { 0, 0 };
-    read(b, 2U);
+    myread(b, 2U);
     return ((uint16_t)b[0] << 8) | (uint16_t)b[1];
 }
 
@@ -38,12 +50,12 @@ void Stream::putBe32(uint32_t value) {
             (uint8_t)(value >> 16),
             (uint8_t)(value >> 8),
             (uint8_t)value };
-    write(b, 4U);
+    mywrite(b, 4U);
 }
 
 uint32_t Stream::getBe32() {
     uint8_t b[4] = { 0, 0, 0, 0 };
-    read(b, 4U);
+    myread(b, 4U);
     return ((uint32_t)b[0] << 24) |
            ((uint32_t)b[1] << 16) |
            ((uint32_t)b[2] << 8) |
@@ -60,12 +72,12 @@ void Stream::putBe64(uint64_t value) {
             (uint8_t)(value >> 16),
             (uint8_t)(value >> 8),
             (uint8_t)value };
-    write(b, 8U);
+    mywrite(b, 8U);
 }
 
 uint64_t Stream::getBe64() {
     uint8_t b[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
-    read(b, 8U);
+    myread(b, 8U);
     return ((uint64_t)b[0] << 56) |
            ((uint64_t)b[1] << 48) |
            ((uint64_t)b[2] << 40) |
@@ -82,7 +94,7 @@ void Stream::putFloat(float v) {
         uint8_t bytes[sizeof(float)];
     } u;
     u.f = v;
-    this->write(u.bytes, sizeof(u.bytes));
+    this->mywrite(u.bytes, sizeof(u.bytes));
 }
 
 float Stream::getFloat() {
@@ -90,7 +102,7 @@ float Stream::getFloat() {
         float f;
         uint8_t bytes[sizeof(float)];
     } u;
-    this->read(u.bytes, sizeof(u.bytes));
+    this->myread(u.bytes, sizeof(u.bytes));
     return u.f;
 }
 
@@ -100,7 +112,7 @@ void Stream::putString(const char* str) {
 
 void Stream::putString(const char* str, size_t len) {
     this->putBe32(len);
-    this->write(str, len);
+    this->mywrite(str, len);
 }
 
 void Stream::putString(const std::string& str) {
@@ -112,13 +124,13 @@ std::string Stream::getString() {
     size_t len = this->getBe32();
     if (len > 0) {
         result.resize(len);
-        if (this->read(&result[0], len) != static_cast<ssize_t>(len)) {
+        if (this->myread(&result[0], len) != static_cast<ssize_t>(len)) {
             result.clear();
         }
     }
 #ifdef _WIN32
     else {
-        // std::string in GCC's STL still uses copy on write implementation
+        // std::string in GCC's STL still uses copy on mywrite implementation
         // with a single shared buffer for an empty string. Its dtor has
         // a check for that shared buffer, and it deallocates memory only if
         // the current string's instance address != shared empty string address
