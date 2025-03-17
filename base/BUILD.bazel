@@ -312,7 +312,7 @@ cc_library(
             ":aemu-base-darwin",
         ],
         "@platforms//os:windows": [
-            "//external/qemu/google/compat/windows:compat",
+            "@aemu//windows:compat",
         ],
         "//conditions:default": [],
     }),
