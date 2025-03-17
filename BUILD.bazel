@@ -29,5 +29,5 @@ cc_library(
     ]),
     includes = ["include"],
     visibility = ["//visibility:public"],
-    deps = ["//hardware/google/aemu/base:test-io"],
+    deps = ["@aemu//base:test-io"],
 )

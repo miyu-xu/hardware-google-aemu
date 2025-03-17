@@ -20,8 +20,8 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = [
         ":aemu-host-common-headers",
-        "//hardware/google/aemu/base:aemu-base-headers",
-        "//hardware/google/aemu/base:aemu-base-metrics",
+        "@aemu//base:aemu-base-headers",
+        "@aemu//base:aemu-base-metrics",
     ],
 )
 
@@ -44,10 +44,10 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = [
         ":aemu-host-common-headers",
-        "//hardware/google/aemu/base:aemu-base-headers",
-        "//hardware/google/aemu/base:aemu-base-metrics",
-        "@com_google_absl//absl/log",
-        "@com_google_absl//absl/log:absl_log",
+        "@aemu//base:aemu-base-headers",
+        "@aemu//base:aemu-base-metrics",
+        "@abseil-cpp//absl/log",
+        "@abseil-cpp//absl/log:absl_log",
     ],
 )
 
@@ -193,8 +193,8 @@ cc_library(
     deps = [
         ":aemu-host-common-headers",
         ":logging",
-        "//hardware/google/aemu/base:aemu-base-allocator",
-        "//hardware/google/aemu/base:aemu-base-headers",
+        "@aemu//base:aemu-base-allocator",
+        "@aemu//base:aemu-base-headers",
     ],
     alwayslink = 1,
 )
@@ -215,7 +215,7 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = [
         ":aemu-host-common-headers",
-        "//hardware/google/aemu/base:aemu-base-headers",
+        "@aemu//base:aemu-base-headers",
     ],
 )
 
@@ -237,8 +237,8 @@ cc_library(
     includes = ["testing"],
     deps = [
         ":aemu-host-common-headers",
-        "//hardware/google/aemu/base:aemu-base-headers",
-        "@com_google_googletest//:gtest",
+        "@aemu//base:aemu-base-headers",
+        "@googletest//:gtest",
     ],
 )
 
@@ -260,16 +260,16 @@ cc_test(
     deps = [
         ":aemu-host-common-headers",
         ":logging",
-        "//hardware/google/aemu:aemu-host-common-test-headers",
-        "//hardware/google/aemu/base:aemu-base",
-        "//hardware/google/aemu/base:aemu-base-allocator",
-        "//hardware/google/aemu/base:aemu-base-headers",
-        "//hardware/google/aemu/host-common:aemu-host-common",
-        "@com_google_absl//absl/log",
-        "@com_google_absl//absl/log:absl_log",
-        "@com_google_absl//absl/log:globals",
-        "@com_google_absl//absl/log:initialize",
-        "@com_google_absl//absl/log:log_sink_registry",
-        "@com_google_googletest//:gtest_main",
+        "@aemu//:aemu-host-common-test-headers",
+        "@aemu//base:aemu-base",
+        "@aemu//base:aemu-base-allocator",
+        "@aemu//base:aemu-base-headers",
+        "@aemu//host-common:aemu-host-common",
+        "@abseil-cpp//absl/log",
+        "@abseil-cpp//absl/log:absl_log",
+        "@abseil-cpp//absl/log:globals",
+        "@abseil-cpp//absl/log:initialize",
+        "@abseil-cpp//absl/log:log_sink_registry",
+        "@googletest//:gtest_main",
     ],
 )
