@@ -287,5 +287,8 @@ typedef struct QAndroidVmOperations {
 
     // Check if Vulkan snapshot is actively used, for stats.
     bool (*snapshotUseVulkan)();
+
+    bool (*shouldSkipCreateVulkanInstance)();
+    void (*setShouldSkipCreateVulkanInstance)(bool value);
 } QAndroidVmOperations;
 ANDROID_END_HEADER
