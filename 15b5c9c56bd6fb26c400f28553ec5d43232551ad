@@ -1,0 +1,264 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dac22219_fa131c98",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 11
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2025-03-21T14:57:25Z",
+      "side": 1,
+      "message": "We should no longer really need getProgramBitness, as we require 64 bit nowadays.",
+      "revId": "15b5c9c56bd6fb26c400f28553ec5d43232551ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8808672c_eb5a84dd",
+        "filename": "base/PathUtils.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2025-03-21T14:57:25Z",
+      "side": 1,
+      "message": "Nit: on windows we have _WIN32 -\u003e _MSC_VER",
+      "fixSuggestions": [
+        {
+          "fixId": "fc71de5c_31d914a6",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "base/PathUtils.cpp",
+              "range": {
+                "startLine": 28,
+                "startChar": 0,
+                "endLine": 29,
+                "endChar": 0
+              },
+              "replacement": "#ifdef _WIN32\n"
+            },
+            {
+              "path": "base/PathUtils.cpp",
+              "range": {
+                "startLine": 30,
+                "startChar": 0,
+                "endLine": 31,
+                "endChar": 0
+              },
+              "replacement": ""
+            }
+          ]
+        }
+      ],
+      "revId": "15b5c9c56bd6fb26c400f28553ec5d43232551ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "46928714_f248bcee",
+        "filename": "base/PathUtils.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 487,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2025-03-21T14:57:25Z",
+      "side": 1,
+      "message": "We have a utf-8 compliant version of dirent that is part of `//hardware/google/aemu/windows:compat`",
+      "fixSuggestions": [
+        {
+          "fixId": "256a77b1_4c204be3",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "base/PathUtils.cpp",
+              "range": {
+                "startLine": 25,
+                "startChar": 0,
+                "endLine": 28,
+                "endChar": 0
+              },
+              "replacement": ""
+            },
+            {
+              "path": "base/PathUtils.cpp",
+              "range": {
+                "startLine": 30,
+                "startChar": 0,
+                "endLine": 31,
+                "endChar": 0
+              },
+              "replacement": ""
+            },
+            {
+              "path": "base/PathUtils.cpp",
+              "range": {
+                "startLine": 38,
+                "startChar": 0,
+                "endLine": 38,
+                "endChar": 0
+              },
+              "replacement": "#include \"aemu/base/system/Win32Dir.h\"\n"
+            },
+            {
+              "path": "base/PathUtils.cpp",
+              "range": {
+                "startLine": 487,
+                "startChar": 0,
+                "endLine": 488,
+                "endChar": 0
+              },
+              "replacement": "    Win32Dir dir(dirPath.c_str());\n"
+            },
+            {
+              "path": "base/PathUtils.cpp",
+              "range": {
+                "startLine": 490,
+                "startChar": 0,
+                "endLine": 491,
+                "endChar": 0
+              },
+              "replacement": "            struct dirent* entry \u003d dir.readdir();\n"
+            },
+            {
+              "path": "base/PathUtils.cpp",
+              "range": {
+                "startLine": 499,
+                "startChar": 0,
+                "endLine": 500,
+                "endChar": 0
+              },
+              "replacement": ""
+            }
+          ]
+        }
+      ],
+      "revId": "15b5c9c56bd6fb26c400f28553ec5d43232551ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "72e74316_ff32bc1d",
+        "filename": "base/System.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 652,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2025-03-21T14:57:25Z",
+      "side": 1,
+      "message": "LSTATUS",
+      "range": {
+        "startLine": 652,
+        "startChar": 10,
+        "endLine": 652,
+        "endChar": 11
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "c1c12381_65882589",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "base/System.cpp",
+              "range": {
+                "startLine": 652,
+                "startChar": 0,
+                "endLine": 653,
+                "endChar": 0
+              },
+              "replacement": "        LSTATUS lResult;\n"
+            }
+          ]
+        }
+      ],
+      "revId": "15b5c9c56bd6fb26c400f28553ec5d43232551ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "54ae8fc2_2480b9b5",
+        "filename": "base/System.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 683,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2025-03-21T14:57:25Z",
+      "side": 1,
+      "message": "Nit: VLOG(1) \u003c\u003c \"Error...\";",
+      "fixSuggestions": [
+        {
+          "fixId": "c04abcf7_bc7d8aa5",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "base/System.cpp",
+              "range": {
+                "startLine": 18,
+                "startChar": 0,
+                "endLine": 18,
+                "endChar": 0
+              },
+              "replacement": "#include \"aemu/base/logging.h\"\n"
+            },
+            {
+              "path": "base/System.cpp",
+              "range": {
+                "startLine": 679,
+                "startChar": 0,
+                "endLine": 679,
+                "endChar": 0
+              },
+              "replacement": "            } else {\n                VLOG(1) \u003c\u003c \"Error querying glass session ID: \" \u003c\u003c lResult;\n"
+            },
+            {
+              "path": "base/System.cpp",
+              "range": {
+                "startLine": 680,
+                "startChar": 0,
+                "endLine": 680,
+                "endChar": 0
+              },
+              "replacement": "        } else {\n            VLOG(1) \u003c\u003c \"Error opening terminal server key: \" \u003c\u003c lResult;\n"
+            }
+          ]
+        }
+      ],
+      "revId": "15b5c9c56bd6fb26c400f28553ec5d43232551ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "767f2e1f_986dc0f2",
+        "filename": "base/include/aemu/base/system/System.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1125918
+      },
+      "writtenOn": "2025-03-21T14:57:25Z",
+      "side": 1,
+      "message": "We can always make this 64 nowadays.",
+      "revId": "15b5c9c56bd6fb26c400f28553ec5d43232551ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
