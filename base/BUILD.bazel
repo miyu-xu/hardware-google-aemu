@@ -132,6 +132,7 @@ cc_library(
         "include/aemu/base/system/System.h",
         "include/aemu/base/system/Win32UnicodeString.h",
         "include/aemu/base/system/Win32Utils.h",
+        "include/aemu/base/testing/FileMatchers.h",
         "include/aemu/base/testing/GTestUtils.h",
         "include/aemu/base/testing/GlmTestHelpers.h",
         "include/aemu/base/testing/MockUtils.h",
@@ -341,6 +342,7 @@ cc_test(
     srcs = [
         "AlignedBuf_unittest.cpp",
         "ArraySize_unittest.cpp",
+        "FileMatcher_unittest.cpp",
         "HealthMonitor_unittest.cpp",
         "HybridEntityManager_unittest.cpp",
         "LayoutResolver_unittest.cpp",
