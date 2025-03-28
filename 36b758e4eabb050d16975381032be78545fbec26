@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "aed7a092_12c54181",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1872231
+      },
+      "writtenOn": "2025-03-28T18:48:21Z",
+      "side": 1,
+      "message": "I can only +1 here - also I think the main branch is now read-only?",
+      "revId": "36b758e4eabb050d16975381032be78545fbec26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
