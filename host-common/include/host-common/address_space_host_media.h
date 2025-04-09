@@ -22,6 +22,10 @@
 
 #include <unordered_map>
 
+#if defined(__aarch64__) && defined(__linux__)
+#include <unistd.h>
+#endif
+
 namespace android {
 namespace emulation {
 
@@ -46,12 +50,19 @@ private:
 #if defined(__APPLE__) && defined(__arm64__)
     static constexpr uint32_t kPageSize = 16384;
     static constexpr int kNumPages = 2049; // 32M + 16k
+#elif defined(__aarch64__) && defined(__linux__)
+    const uint32_t kPageSize = getpagesize();
+    const int kNumPages = 1 + 32 * 1024 * 1024 / kPageSize; // 32M + 1 page
 #else
     static constexpr uint32_t kPageSize = 4096;
     static constexpr int kNumPages = 1 + kPageSize * 2; // 32M + 4k
 #endif
 
+#if defined(__aarch64__) && defined(__linux__)
+    const int kAlignment = kPageSize;
+#else
     static constexpr int kAlignment = kPageSize;
+#endif
 
     bool isMemoryAllocated = false;
     std::unique_ptr<MediaVpxDecoder> mVpxDecoder;

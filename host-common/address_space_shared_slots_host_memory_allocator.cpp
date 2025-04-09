@@ -24,6 +24,10 @@
 #include <unordered_map>
 #include <utility>
 
+#if defined(__aarch64__) && defined(__linux__)
+#include <unistd.h>
+#endif
+
 namespace android {
 namespace emulation {
 namespace {
@@ -40,6 +44,12 @@ using base::Lock;
 
 #if defined(__APPLE__) && defined(__arm64__)
 constexpr uint32_t kAllocAlignment = 16384;
+#elif defined(__aarch64__) && defined(__linux__)
+static uint64_t GetPageSize() {
+    static int page_size = getpagesize();
+    return page_size;
+}
+#define kAllocAlignment GetPageSize()
 #else
 constexpr uint32_t kAllocAlignment = 4096;
 #endif
