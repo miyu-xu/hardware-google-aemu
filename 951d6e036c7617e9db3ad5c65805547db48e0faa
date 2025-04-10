@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "298b2f07_404b5357",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 3962345
+      },
+      "writtenOn": "2025-04-10T07:25:54Z",
+      "side": 1,
+      "message": "I\u0027ve uploaded this change in the context of https://issuetracker.google.com/issues/341266987 - this together with (https://android-review.googlesource.com/c/platform/external/qemu/+/3582170) allows emulator to to run on linux arm platforms with non 4k page sizes.\n\nThis was the minimum amount of changes that allowed me to run emulator on a rapsberry pi with debian, but there are some things i dislike (like the repeated GetPageSize() function), so i\u0027m happy to rework/change this to adhere to a better/nicer code layout, simply i\u0027m not aware what is the best place that logic should go into.",
+      "revId": "951d6e036c7617e9db3ad5c65805547db48e0faa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
