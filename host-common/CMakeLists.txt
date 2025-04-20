@@ -51,7 +51,6 @@ if (BUILD_STANDALONE)
         crash_reporter.cpp
         vm_operations.cpp
         feature_control.cpp
-        dma_device.cpp
         misc.cpp
         window_operations.cpp
 

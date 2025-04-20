@@ -21,7 +21,6 @@ cc_library_static {
         "vm_operations.cpp",
         "feature_control.cpp",
         "FeatureControlOverride.cpp",
-        "dma_device.cpp",
         "misc.cpp",
         "window_operations.cpp",
         "logging.cpp",
