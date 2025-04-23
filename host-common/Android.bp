@@ -20,7 +20,6 @@ cc_library_static {
         "crash_reporter.cpp",
         "feature_control.cpp",
         "FeatureControlOverride.cpp",
-        "misc.cpp",
         "window_operations.cpp",
         "logging.cpp",
         "GfxstreamFatalError.cpp",

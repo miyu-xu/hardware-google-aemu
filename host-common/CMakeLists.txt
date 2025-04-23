@@ -30,7 +30,8 @@ endif()
 add_library(aemu-host-common.headers INTERFACE)
 target_link_libraries(
     aemu-host-common.headers
-    INTERFACE)
+    INTERFACE
+    aemu-base.headers)
 target_include_directories(
     aemu-host-common.headers
     INTERFACE
@@ -50,7 +51,6 @@ if (BUILD_STANDALONE)
         empty-crash-handler.cpp
         crash_reporter.cpp
         feature_control.cpp
-        misc.cpp
         window_operations.cpp
 
         # What used to be android-emu
