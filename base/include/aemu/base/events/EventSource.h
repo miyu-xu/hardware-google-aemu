@@ -17,6 +17,7 @@
 #include <mutex>
 #include <vector>
 
+#include "aemu/base/events/policies/DispatchPolicies.h"
 #include "aemu/base/events/policies/PointerHandlers.h"
 /**
  * @file EventSource.h
@@ -45,19 +46,6 @@ class EventListener {
 
 // Host classes
 
-struct EventDispatcher {
-    template <typename Ptr, typename T>
-    static void dispatch(const Ptr& listener_ptr, const T& event) {
-        if constexpr (is_weak_ptr_v<Ptr>) {
-            if (auto locked_ptr = listener_ptr.lock()) {
-                locked_ptr->eventArrived(event);
-            }
-        } else {
-            listener_ptr->eventArrived(event);
-        }
-    }
-};
-
 /**
  * @brief An event dispatcher that uses a global `std::mutex` for thread safety.
  * @tparam T The event type.
@@ -67,7 +55,9 @@ struct EventDispatcher {
  * thread-safe operations. When firing an event, it creates a copy of the
  * listener list to avoid holding the lock during the callbacks, preventing deadlocks.
  */
-template <class T, class StoragePolicy>
+template <class T,
+          class StoragePolicy,
+          class DispatcherPolicy = NonBlockingDispatcher>
 class EventSource {
    public:
     /// @brief The pointer type for listeners, defined by the storage policy.
@@ -76,8 +66,12 @@ class EventSource {
    private:
     typename StoragePolicy::Container mListeners;
     std::mutex mListenerLock;
+    DispatcherPolicy mDispatcher;
 
    public:
+    template <typename... Args>
+    EventSource(Args&&... args) : mDispatcher(std::forward<Args>(args)...) {}
+
     /**
      * @brief Adds a listener to the source.
      * @param listener The listener to add.
@@ -101,14 +95,8 @@ class EventSource {
      * @param event The event data to send.
      */
     void fireEvent(const T& event) {
-        std::vector<Ptr> listeners_copy;
-        {
-            const std::lock_guard<std::mutex> lock(mListenerLock);
-            listeners_copy = StoragePolicy::copy(mListeners);
-        }
-        for (const auto& listener_ptr : listeners_copy) {
-            EventDispatcher::dispatch(listener_ptr, event);
-        }
+        mDispatcher.template dispatch<T, StoragePolicy>(event, mListeners,
+                                                        mListenerLock);
     }
 
     /**
@@ -187,68 +175,10 @@ class ConcurrentEventSource {
  * @brief An event dispatcher that holds a lock for the entire duration of event dispatch.
  * @tparam T The event type.
  * @tparam StoragePolicy A non-synchronized storage policy.
- * @warning This pattern can easily lead to **DEADLOCK** if any listener tries
- * to add or remove another listener from within its `eventArrived()` callback.
- * It iterates over the original container instead of a copy, which can offer
- * a slight performance benefit but comes with significant risk. Use with
- * extreme caution and only when you can guarantee no re-entrant modifications
- * will occur.
+ * @warning This is an alias for EventSource with a BlockingDispatcher policy.
+ * This pattern can easily lead to **DEADLOCK**. Use with extreme caution.
  */
 template <class T, class StoragePolicy>
-class BlockingEventSource {
-   private:
-    /// @brief The pointer type for listeners, defined by the storage policy.
-    using Ptr = typename StoragePolicy::Ptr;
-    typename StoragePolicy::Container mListeners;
-    std::mutex mListenerLock;
-
-   public:
-    /**
-     * @brief Adds a listener to the source.
-     * @param listener The listener to add.
-     */
-    void addListener(Ptr listener) {
-        const std::lock_guard<std::mutex> lock(mListenerLock);
-        StoragePolicy::add(mListeners, listener);
-    }
-
-    /**
-     * @brief Removes a listener from the source.
-     * @param listener The listener to remove.
-     */
-    void removeListener(Ptr listener) {
-        const std::lock_guard<std::mutex> lock(mListenerLock);
-        StoragePolicy::remove(mListeners, listener);
-    }
-
-    /**
-     * @brief Fires an event, notifying all registered listeners while holding a lock.
-     * @param event The event data to send.
-     */
-    void fireEvent(const T& event) {
-        const std::lock_guard<std::mutex> lock(mListenerLock);
-        // DANGER: The lock is held during the entire loop and callback execution.
-        for (const auto& listener_ptr : mListeners) {
-            EventDispatcher::dispatch(listener_ptr, event);
-        }
-    }
-
-    /**
-     * @brief Returns the number of listeners.
-     * @return The current number of registered listeners.
-     */
-    size_t size() {
-        const std::lock_guard<std::mutex> lock(mListenerLock);
-        return StoragePolicy::size(mListeners);
-    }
-
-    /**
-     * @brief Removes all listeners from the source.
-     */
-    void clear() {
-        const std::lock_guard<std::mutex> lock(mListenerLock);
-        StoragePolicy::clear(mListeners);
-    }
-};
+using BlockingEventSource = EventSource<T, StoragePolicy, BlockingDispatcher>;
 
 }  // namespace android::base::eventing
