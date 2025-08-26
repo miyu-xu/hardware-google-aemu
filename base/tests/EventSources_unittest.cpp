@@ -20,10 +20,20 @@
 #include <thread>
 #include <vector>
 
+#include "aemu/base/events/MultiEventSourceWaiter.h"
+
+using namespace android::base;
+using namespace android::base::eventing;
+
 // A simple event type for testing.
 struct TestEvent {
     int value;
     bool operator==(const TestEvent& other) const { return value == other.value; }
+};
+
+// A second event type for testing ambiguous sources.
+struct TestEvent2 {
+    std::string value;
 };
 
 // A mock listener that records received events in a thread-safe manner.
@@ -44,9 +54,8 @@ public:
 template <typename T>
 class EventSourceTest : public ::testing::Test {};
 
-using RawPointerSources = ::testing::Types<
-    android::base::eventing::FastEventSource<TestEvent>,
-    android::base::eventing::HighContentionEventSource<TestEvent>>;
+using RawPointerSources =
+        ::testing::Types<FastEventSource<TestEvent>, HighContentionEventSource<TestEvent>>;
 
 TYPED_TEST_SUITE(EventSourceTest, RawPointerSources);
 
@@ -94,7 +103,7 @@ TYPED_TEST(EventSourceTest, FireToMultipleListeners) {
 
 // A specific test to verify the basic thread safety of HighContentionEventSource.
 TEST(HighContentionEventSourceTest, BasicThreadSafety) {
-    android::base::eventing::HighContentionEventSource<TestEvent> source;
+    HighContentionEventSource<TestEvent> source;
     MockEventListener<TestEvent> listener;
     source.addListener(&listener);
 
@@ -119,7 +128,7 @@ TEST(HighContentionEventSourceTest, BasicThreadSafety) {
 
 // Tests for SafeEventSource, focusing on its weak_ptr behavior.
 TEST(SafeEventSourceTest, AddAndFireEvent) {
-    android::base::eventing::SafeEventSource<TestEvent> source;
+    SafeEventSource<TestEvent> source;
     auto listener = std::make_shared<MockEventListener<TestEvent>>();
     TestEvent event{42};
 
@@ -132,7 +141,7 @@ TEST(SafeEventSourceTest, AddAndFireEvent) {
 }
 
 TEST(SafeEventSourceTest, HandlesDestroyedListenerGracefully) {
-    android::base::eventing::SafeEventSource<TestEvent> source;
+    SafeEventSource<TestEvent> source;
     auto listener = std::make_shared<MockEventListener<TestEvent>>();
     TestEvent event{42};
 
@@ -153,12 +162,12 @@ TEST(SafeEventSourceTest, HandlesDestroyedListenerGracefully) {
 
 // Tests for CallbackEventSource, focusing on the WithCallbacks API.
 TEST(CallbackEventSourceTest, AddCallbackAndFire) {
-    android::base::eventing::CallbackEventSource<TestEvent> source;
+    CallbackEventSource<TestEvent> source;
     std::vector<TestEvent> received_events;
     TestEvent event{42};
 
-    auto handle = makeScopedCallback(
-            source, [&](const TestEvent& e) { received_events.push_back(e); });
+    auto handle =
+            makeScopedCallback(source, [&](const TestEvent& e) { received_events.push_back(e); });
 
     ASSERT_EQ(source.size(), 1);
 
@@ -168,7 +177,7 @@ TEST(CallbackEventSourceTest, AddCallbackAndFire) {
 }
 
 TEST(CallbackEventSourceTest, HandleUnsubscribesOnDestruction) {
-    android::base::eventing::CallbackEventSource<TestEvent> source;
+    CallbackEventSource<TestEvent> source;
     std::vector<TestEvent> received_events;
     TestEvent event{42};
 
@@ -182,4 +191,130 @@ TEST(CallbackEventSourceTest, HandleUnsubscribesOnDestruction) {
 
     source.fireEvent(event);
     EXPECT_TRUE(received_events.empty());
+}
+
+// --- Tests for MultiEventSourceWaiter ---
+
+TEST(MultiEventSourceWaiterTest, WaiterTimesOut) {
+    FastEventSource<TestEvent> source;
+    MultiEventSourceWaiter waiter;
+    waiter.listen(&source);
+
+    uint64_t lastEvent = waiter.getEventSequence();
+    EXPECT_FALSE(waiter.waitForNextEvent(absl::Milliseconds(1), lastEvent));
+}
+
+TEST(MultiEventSourceWaiterTest, WaiterUnblocksOnSingleSource) {
+    FastEventSource<TestEvent> source;
+    MultiEventSourceWaiter waiter;
+    waiter.listen(&source);
+
+    uint64_t lastEvent = waiter.getEventSequence();
+    source.fireEvent({123});
+
+    EXPECT_TRUE(waiter.waitForNextEvent(absl::Seconds(1), lastEvent));
+    EXPECT_EQ(waiter.getEventSequence(), lastEvent + 1);
+}
+
+TEST(MultiEventSourceWaiterTest, WaiterUnblocksOnMultipleSources) {
+    FastEventSource<TestEvent> source1;
+    SafeEventSource<TestEvent2> source2;
+    MultiEventSourceWaiter waiter;
+    waiter.listen(&source1);
+    waiter.listen(&source2);
+
+    uint64_t lastEvent = waiter.getEventSequence();
+
+    // Fire the first source
+    source1.fireEvent({1});
+    EXPECT_TRUE(waiter.waitForNextEvent(absl::Seconds(1), lastEvent));
+    EXPECT_EQ(waiter.getEventSequence(), lastEvent + 1);
+
+    // Fire the second source
+    lastEvent = waiter.getEventSequence();
+    source2.fireEvent({"hello"});
+    EXPECT_TRUE(waiter.waitForNextEvent(absl::Seconds(1), lastEvent));
+    EXPECT_EQ(waiter.getEventSequence(), lastEvent + 1);
+}
+
+TEST(MultiEventSourceWaiterTest, EventFiredBeforeWait) {
+    FastEventSource<TestEvent> source;
+    MultiEventSourceWaiter waiter;
+    waiter.listen(&source);
+
+    uint64_t lastEvent = waiter.getEventSequence();
+    source.fireEvent({123});
+
+    // Should return immediately since the sequence number has advanced.
+    EXPECT_TRUE(waiter.waitForNextEvent(absl::ZeroDuration(), lastEvent));
+}
+
+TEST(MultiEventSourceWaiterTest, CorrectlyUsesSequenceNumber) {
+    FastEventSource<TestEvent> source;
+    MultiEventSourceWaiter waiter;
+    waiter.listen(&source);
+
+    uint64_t seq1 = waiter.getEventSequence();
+    source.fireEvent({1});
+
+    // Wait should succeed because seq is now > seq1.
+    EXPECT_TRUE(waiter.waitForNextEvent(absl::Seconds(1), seq1));
+
+    uint64_t seq2 = waiter.getEventSequence();
+    EXPECT_GT(seq2, seq1);
+
+    // Wait should time out because seq is not > seq2.
+    EXPECT_FALSE(waiter.waitForNextEvent(absl::Milliseconds(1), seq2));
+}
+
+TEST(MultiEventSourceWaiterTest, HandlesMixedSourceTypes) {
+    FastEventSource<TestEvent> fastSource;    // Requires raw pointer
+    SafeEventSource<TestEvent2> safeSource;  // Requires weak_ptr
+    MultiEventSourceWaiter waiter;
+
+    waiter.listen(&fastSource);
+    waiter.listen(&safeSource);
+
+    uint64_t lastEvent = waiter.getEventSequence();
+    fastSource.fireEvent({1});
+    EXPECT_TRUE(waiter.waitForNextEvent(absl::Seconds(1), lastEvent));
+
+    lastEvent = waiter.getEventSequence();
+    safeSource.fireEvent({"test"});
+    EXPECT_TRUE(waiter.waitForNextEvent(absl::Seconds(1), lastEvent));
+}
+
+// A mock class that inherits from EventSource twice to create ambiguity.
+class AmbiguousSource : public FastEventSource<TestEvent>, public SafeEventSource<TestEvent2> {};
+
+TEST(MultiEventSourceWaiterTest, HandlesAmbiguousSource) {
+    AmbiguousSource source;
+    MultiEventSourceWaiter waiter;
+
+    // Must explicitly cast to the desired base class to resolve ambiguity.
+    waiter.listen<FastEventSource<TestEvent>>(
+            static_cast<FastEventSource<TestEvent>*>(&source));
+    waiter.listen<SafeEventSource<TestEvent2>>(
+            static_cast<SafeEventSource<TestEvent2>*>(&source));
+
+    uint64_t lastEvent = waiter.getEventSequence();
+    source.FastEventSource<TestEvent>::fireEvent({1});
+    EXPECT_TRUE(waiter.waitForNextEvent(absl::Seconds(1), lastEvent));
+
+    lastEvent = waiter.getEventSequence();
+    source.SafeEventSource<TestEvent2>::fireEvent({"test"});
+    EXPECT_TRUE(waiter.waitForNextEvent(absl::Seconds(1), lastEvent));
+}
+
+TEST(MultiEventSourceWaiterTest, UnsubscribesOnDestruction) {
+    FastEventSource<TestEvent> source;
+    {
+        MultiEventSourceWaiter waiter;
+        waiter.listen(&source);
+        ASSERT_EQ(source.size(), 1);
+    }  // Waiter is destroyed here, should unsubscribe.
+
+    ASSERT_EQ(source.size(), 0);
+    // Firing should not crash.
+    source.fireEvent({1});
 }

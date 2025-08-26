@@ -218,6 +218,7 @@ cc_library(
         "include/aemu/base/events/EventSources.h",
         "include/aemu/base/events/EventSupport.h",
         "include/aemu/base/events/EventWaiter.h",
+        "include/aemu/base/events/MultiEventSourceWaiter.h",
         "include/aemu/base/events/PolicyEventSupport.h",
         "include/aemu/base/events/PropertyChangeSupport.h",
         "include/aemu/base/events/WithCallbacks.h",

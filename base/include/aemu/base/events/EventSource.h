@@ -60,6 +60,8 @@ template <class T,
           class DispatcherPolicy = NonBlockingDispatcher>
 class EventSource {
    public:
+    /// @brief The event type T.
+    using EventType = T;
     /// @brief The pointer type for listeners, defined by the storage policy.
     using Ptr = typename StoragePolicy::Ptr;
 
@@ -130,6 +132,8 @@ class EventSource {
 template <class T, class SelfSyncStoragePolicy>
 class ConcurrentEventSource {
    public:
+    /// @brief The event type T.
+    using EventType = T;
     /// @brief The pointer type for listeners, defined by the storage policy.
     using Ptr = typename SelfSyncStoragePolicy::Ptr;
     typename SelfSyncStoragePolicy::Container mListeners;
