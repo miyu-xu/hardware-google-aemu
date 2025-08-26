@@ -14,6 +14,14 @@ namespace android::base::eventing {
 template <typename EventSourceType>
 struct event_source_traits;
 
+template <template <typename, typename, typename> class Host,
+          typename T,
+          typename Policy,
+          typename Dispatcher>
+struct event_source_traits<Host<T, Policy, Dispatcher>> {
+    using event_type = T;
+};
+
 template <template <typename, typename> class Host, typename T, typename Policy>
 struct event_source_traits<Host<T, Policy>> {
     using event_type = T;
@@ -88,6 +96,16 @@ class WithCallbacks : public EventSourceType {
             }
         }
     }
+
+    /**
+     * @brief Returns the number of listeners in the underlying event source.
+     */
+    size_t size() { return EventSourceType::size(); }
+
+    /**
+     * @brief Fires an event to all listeners in the underlying event source.
+     */
+    void fireEvent(const T& event) { EventSourceType::fireEvent(event); }
 
     /**
      * @brief Returns the number of active callbacks.
