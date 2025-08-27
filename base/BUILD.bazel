@@ -174,7 +174,7 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = [
         "//host-common:aemu-host-common-headers",
-        "@com_google_absl//absl/strings:str_format",
+        "@abseil-cpp//absl/strings:str_format",
     ] + select({
         "@platforms//os:windows": [
             "//windows:compat-hdrs",
@@ -204,8 +204,8 @@ cc_library(
     deps = [
         ":aemu-base-headers",
         ":aemu-base-logging",
-        "@com_google_absl//absl/log",
-        "@com_google_absl//absl/log:check",
+        "@abseil-cpp//absl/log",
+        "@abseil-cpp//absl/log:check",
     ],
 )
 
@@ -235,9 +235,9 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = [
         ":aemu-base-headers",
-        "@com_google_absl//absl/container:flat_hash_set",
-        "@com_google_absl//absl/log",
-        "@com_google_absl//absl/synchronization",
+        "@abseil-cpp//absl/container:flat_hash_set",
+        "@abseil-cpp//absl/log",
+        "@abseil-cpp//absl/synchronization",
     ],
 )
 
@@ -253,7 +253,7 @@ cc_test(
     ],
     deps = [
         ":event-support",
-        "@com_google_googletest//:gtest_main",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -408,7 +408,7 @@ cc_test(
     deps = [
         ":aemu-base",
         ":aemu-base-headers",
-        "@com_github_google_benchmark//:benchmark",
+        "@google_benchmark//:benchmark",
     ],
 )
 
@@ -449,10 +449,10 @@ cc_test(
         ":aemu-base-socket-utils",
         "//base:aemu-base-metrics",
         "//host-common:logging",
-        "@com_google_absl//absl/log",
-        "@com_google_absl//absl/strings",
-        "@com_google_absl//absl/strings:str_format",
-        "@com_google_googletest//:gtest_main",
+        "@abseil-cpp//absl/log",
+        "@abseil-cpp//absl/strings",
+        "@abseil-cpp//absl/strings:str_format",
+        "@googletest//:gtest_main",
     ],
 )
 
@@ -461,6 +461,6 @@ cc_test(
     srcs = ["EventSupport_benchmark.cpp"],
     deps = [
         ":event-support",
-        "@com_github_google_benchmark//:benchmark_main",
+        "@google_benchmark//:benchmark_main",
     ],
 )
