@@ -41,7 +41,7 @@ class EventListener {
      * @brief Called when an event has been fired from a source.
      * @param event The event data.
      */
-    virtual void eventArrived(const T& event) = 0;
+    virtual void eventArrived(typename event_param<T>::type event) = 0;
 };
 
 // Host classes

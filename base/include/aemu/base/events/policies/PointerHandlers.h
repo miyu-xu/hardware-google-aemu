@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <functional>
 #include <memory>
+#include <type_traits>
 
 /**
  * @file PointerHandlers.h
@@ -143,6 +144,17 @@ struct PointerHandlers<std::weak_ptr<T>> {
     static size_t count_live(const Container& c) {
         return std::count_if(c.begin(), c.end(), [](const Ptr& p) { return !p.expired(); });
     }
+};
+
+// A struct to determine if an event should be passed by value or const reference.
+// Pointers and fundamental types are passed by value, everything else by const
+// reference.
+template <typename T>
+struct event_param {
+    using type = typename std::conditional<
+        std::is_pointer_v<T> || std::is_fundamental_v<T>,
+        T,
+        const T&>::type;
 };
 
 }  // namespace android::base::eventing
