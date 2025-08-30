@@ -105,7 +105,9 @@ class WithCallbacks : public EventSourceType {
     /**
      * @brief Fires an event to all listeners in the underlying event source.
      */
-    void fireEvent(const T& event) { EventSourceType::fireEvent(event); }
+    void fireEvent(typename event_param<T>::type event) {
+        EventSourceType::fireEvent(event);
+    }
 
     /**
      * @brief Returns the number of active callbacks.
@@ -120,7 +122,9 @@ class WithCallbacks : public EventSourceType {
     class InternalListener : public eventing::EventListener<T> {
        public:
         explicit InternalListener(EventCallback cb) : mCallback(std::move(cb)) {}
-        void eventArrived(const T& event) override { mCallback(event); }
+        void eventArrived(typename event_param<T>::type event) override {
+            mCallback(event);
+        }
 
        private:
         EventCallback mCallback;
