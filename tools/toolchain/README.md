@@ -17,7 +17,8 @@ The tool is driven by a `JSONC` (JSON with Comments) file, typically named `buil
 
 ### 2. Toolchain Generation
 
-`amc` generates a set of wrapper scripts for the compiler, linker, and other toolchain utilities (e.g., `cc`, `c++`, `ar`, `nm`). These wrappers ensure that Meson uses the correct Clang toolchain and sysroots that are provided within the AOSP source tree, along with the necessary flags for the target platform.
+`amc` generates a set of wrapper scripts for the compiler, linker, and other toolchain utilities (e.g., `cc`, `c++`, `ar`, `nm`). These wrappers ensure that Meson uses the correct Clang toolchain and sysroots that are provided within the AOSP source tree, along with the necessary flags for the target platform. This will configure a cross compilation toolchain if neccessary.
+This process fully supports cross-compilation, allowing you to build for a target platform that is different from your host machine.
 
 ### 3. Dependency Management via pkg-config
 
@@ -28,6 +29,14 @@ Meson relies on the `pkg-config` utility to discover libraries and their require
 3.  Generating `.pc` (pkg-config) files that point to these Bazel-built artifacts.
 
 This allows Meson to seamlessly find and link against dependencies without needing to know that they were built by Bazel.
+
+**Note:** For `amc` to resolve dependencies correctly, your Bazel workspace must include the `goldfish_build` module. This is typically done by adding the following to your `MODULE.bazel` file:
+
+```bzl
+bazel_dep(name = "goldfish_build")
+```
+
+This module provides the necessary platform definitions and toolchains that `amc` relies on.
 
 ## Commands
 
