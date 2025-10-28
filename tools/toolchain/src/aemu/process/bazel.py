@@ -73,6 +73,34 @@ class Bazel:
     def host(self) -> str:
         return platform.system().lower()
 
+    def build_exe(
+        self,
+        bazel_target: str,
+    ) -> Path:
+        self.build_target(bazel_target, for_host=True)
+
+        build_options = self.build_options + [
+            "--verbose_explanations",
+        ]
+
+        if self.platform:
+            build_options += [
+                f"--platforms={self.platform}",
+            ]
+
+        files = check_output(
+            [self.exe]
+            + self.startup_options
+            + ["cquery"]
+            + build_options
+            + [bazel_target, "--output=files"],
+            cwd=self.aosp,
+        )
+
+        dest = self.aosp / files.splitlines()[0].strip()
+        return dest.absolute()
+
+
     def build_target(
         self,
         bazel_target: str,
