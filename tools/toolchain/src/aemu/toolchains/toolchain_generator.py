@@ -180,8 +180,8 @@ class ToolchainGenerator:
         return "", ""
 
     def pkg_config(self):
-        # Build pkg-config from source.
-        self.bazel.build_target("@pkg-config")
+        # Build pkg-config from source for the host.
+        self.bazel.build_target("@pkg-config", for_host=True)
         return (
             f'PKG_CONFIG_PATH={self.pkgconfig_directory}  PKG_CONFIG_LIBDIR="" '
             f"{self.bazel.info['bazel-bin']}/external/pkg-config+/pkg-config",

@@ -109,7 +109,7 @@ class MesonProjectBuilder:
         self.dest.mkdir(parents=True, exist_ok=True)
         self.target = target
         self.bazel = Bazel(
-            self.aosp, self.dest, bazel_startup_options, bazel_build_options
+            self.aosp, self.dest, bazel_startup_options, bazel_build_options, target
         )
         self.cmake = CMake(self.aosp, self.toolchain, self.dest)
 
