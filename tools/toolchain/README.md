@@ -11,6 +11,7 @@ The Android Meson Configurator (`amc`) is a Python-based command-line tool desig
 The tool is driven by a `JSONC` (JSON with Comments) file, typically named `build-config.jsonc`. This file defines all the necessary parameters for the build, including:
 
 -   **Dependencies**: A list of libraries required by the project.
+-   **Binaries**: A dictionary where each key is the name of an executable and the value is the corresponding Bazel target. `amc` generates wrapper scripts for these binaries, making them available to Meson's `find_program`. This is particularly useful for build tools and custom code generators.
 -   **Meson Options**: Feature flags and settings passed to the `meson setup` command.
 -   **Generated Files**: Any additional configuration files that need to be created for the build.
 -   **Platform-Specific Settings**: Overrides and additions for different host platforms (e.g., `linux-x64`, `mac-aarch64`, `windows-x64`).
@@ -58,6 +59,7 @@ The configuration file has two main sections: `common` for settings shared acros
 -   `project_name`: The name of the Meson project.
 -   `source_path`: The relative path to the project's source code, relative to the repository root.
 -   `dependencies`: A dictionary of libraries. Each entry specifies the `lib_type` (e.g., "bazel"), the `bazel_target`, and an optional `shim` object to customize the generated `.pc` file (e.g., to add extra linker flags).
+-   `binaries`: A dictionary of executables. Each entry specifies the name of the binary and the `bazel_target` that produces it.
 -   `meson_options`: A dictionary of Meson feature flags (e.g., `-Dalsa=enabled`).
 -   `generated_files`: A list of files to be generated from templates, such as QEMU's `config-host.mak`.
 
@@ -75,6 +77,16 @@ This example defines the `glib` dependency, which is built from the `@glib//glib
     "Requires": "pcre2, gmodule-export-2.0",
     "link_flags": "-pthread"
   }
+}
+```
+
+### Example Binary
+
+This example defines a binary named `my_generator` that is built from the `//tools:my_generator` Bazel target. Meson can then find this tool using `find_program('my_generator')`.
+
+```json
+"binaries": {
+  "my_generator": "//tools:my_generator"
 }
 ```
 
