@@ -77,7 +77,7 @@ class PackageConfigPc:
         else:
             self.include_dir = next(iter(includes))
             self.cflags = (
-                " ".join([f"-I{path.as_posix()}" for path in includes])
+                " ".join([f"-I{path.as_posix()}" for path in includes if path.exists()])
                 + f" {shim.get('cflags', '')}"
             )
 
