@@ -20,19 +20,28 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
-from typing import Tuple, List
+from typing import Tuple, List, Dict, Any, Callable
 
 from aemu.process.bazel import Bazel
 
 
 class ToolchainGenerator:
+    """A class for generating toolchain wrappers."""
+
     PKGCFG_DIR = "pc-config"
 
     def __init__(self, aosp: Path, dest: Path, prefix: str) -> None:
+        """Initializes a ToolchainGenerator object.
+
+        Args:
+            aosp: The path to the AOSP source tree.
+            dest: The destination directory for the toolchain.
+            prefix: The prefix for the toolchain binaries.
+        """
         self.aosp = aosp.absolute()
         # self.bazel = Bazel(self.aosp, dest)
         # This needs to be set externally now.
-        self.bazel = None
+        self.bazel: Bazel = None
 
         toolchain_json = (
             self.aosp / "build" / "bazel" / "toolchains" / "tool_versions.json"
@@ -44,7 +53,7 @@ class ToolchainGenerator:
             self.versions = json.load(f)
         self.dest: Path = dest
         self.prefix = prefix
-        self.toolchain_map = {}
+        self.toolchain_map: Dict[str, str] = {}
         self.dest.mkdir(exist_ok=True, parents=True)
         self.ccache = shutil.which("sccache") or shutil.which("ccache")
         self.py_exe = Path(sys.executable).absolute()
@@ -53,13 +62,16 @@ class ToolchainGenerator:
         self.pkgconfig_directory = self.dest / ToolchainGenerator.PKGCFG_DIR
         self.pkgconfig_directory.mkdir(parents=True, exist_ok=True)
 
-    def version(self):
+    def version(self) -> str:
+        """Returns the clang version."""
         return self.versions.get("clang", "clang-stable")
 
-    def rust_version(self):
+    def rust_version(self) -> str:
+        """Returns the rust version."""
         return self.versions.get("rust", "1.78.0")
 
-    def cc_version(self):
+    def cc_version(self) -> str:
+        """Returns the C compiler version."""
         logging.info("Using clang: %s", self.clang())
         result = subprocess.check_output(
             [str(self.clang() / "bin" / "clang"), "-v"],
@@ -69,11 +81,12 @@ class ToolchainGenerator:
         version = result.splitlines()[0]
         match = re.match(r".*clang version (\d+).(\d+).(\d).*", version)
         if match:
-            return match[1]
+            return match.group(1)
 
         raise ValueError(f"Could not find version string in {version}")
 
     def clang(self) -> Path:
+        """Returns the path to the clang directory."""
         return (
             self.aosp
             / "prebuilts"
@@ -83,7 +96,8 @@ class ToolchainGenerator:
             / self.version()
         )
 
-    def cmake(self) -> Path:
+    def cmake(self) -> Tuple[str, str]:
+        """Returns the cmake command and extra arguments."""
         cmake = (
             self.aosp / "prebuilts" / "cmake" / f"{self.host()}-x86" / "bin" / "cmake"
         )
@@ -93,36 +107,43 @@ class ToolchainGenerator:
         )
 
     def host(self) -> str:
+        """Returns the host operating system."""
         return platform.system().lower()
 
-    def nm(self) -> Tuple[str, str]:
+    def nm(self) -> Tuple[Path, str]:
+        """Returns the nm command and extra arguments."""
         return self.clang() / "bin" / "llvm-nm", ""
 
-    def ar(self) -> Tuple[str, str]:
+    def ar(self) -> Tuple[Path, str]:
+        """Returns the ar command and extra arguments."""
         return self.clang() / "bin" / "llvm-ar", ""
 
-    def objdump(self) -> Tuple[str, str]:
+    def objdump(self) -> Tuple[Path, str]:
+        """Returns the objdump command and extra arguments."""
         return self.clang() / "bin" / "llvm-objdump", ""
 
-    def strings(self) -> Tuple[str, str]:
+    def strings(self) -> Tuple[Path, str]:
+        """Returns the strings command and extra arguments."""
         return self.clang() / "bin" / "llvm-strings", ""
 
-    def ranlib(self) -> Tuple[str, str]:
+    def ranlib(self) -> Tuple[Path, str]:
+        """Returns the ranlib command and extra arguments."""
         return self.clang() / "bin" / "llvm-ranlib", ""
 
-    def cxx(self) -> Tuple[str, str]:
+    def cxx(self) -> Tuple[Path, str]:
+        """Returns the C++ compiler command and extra arguments."""
         return self.clang() / "bin" / "clang++", ""
 
-    def cc(self) -> Tuple[str, str]:
+    def cc(self) -> Tuple[Path, str]:
+        """Returns the C compiler command and extra arguments."""
         return self.clang() / "bin" / "clang", ""
 
-    def lld(self) -> Tuple[str, str]:
+    def lld(self) -> Tuple[Path, str]:
+        """Returns the lld command and extra arguments."""
         return self.clang() / "bin" / "lld", ""
 
-    def nm(self) -> Tuple[str, str]:
-        return self.clang() / "bin" / "llvm-nm", ""
-
-    def ninja(self) -> Tuple[str, str]:
+    def ninja(self) -> Tuple[Path, str]:
+        """Returns the ninja command and extra arguments."""
         return (
             self.aosp
             / "prebuilts"
@@ -134,9 +155,11 @@ class ToolchainGenerator:
         )
 
     def rust_flags(self) -> List[str]:
+        """Returns the rust flags."""
         return []
 
-    def rustc(self) -> Tuple[str, str]:
+    def rustc(self) -> Tuple[Path, str]:
+        """Returns the rustc command and extra arguments."""
         return (
             self.aosp
             / "prebuilts"
@@ -149,6 +172,7 @@ class ToolchainGenerator:
         )
 
     def cargo(self) -> Tuple[str, str]:
+        """Returns the cargo command and extra arguments."""
         rustc_bin = (
             self.aosp
             / "prebuilts"
@@ -172,14 +196,17 @@ class ToolchainGenerator:
         return script, ""
 
     def meson(self) -> Tuple[str, str]:
+        """Returns the meson command and extra arguments."""
         meson_py = self.aosp / "third_party" / "meson" / "meson.py"
         exe = f"{self.py_exe} {meson_py} "
         return exe, ""
 
-    def strip(self):
+    def strip(self) -> Tuple[str, str]:
+        """Returns the strip command and extra arguments."""
         return "", ""
 
-    def pkg_config(self):
+    def pkg_config(self) -> Tuple[str, str]:
+        """Returns the pkg-config command and extra arguments."""
         # Build pkg-config from source for the host.
         self.bazel.build_target("@pkg-config", for_host=True)
         return (
@@ -188,7 +215,14 @@ class ToolchainGenerator:
             "",
         )
 
-    def gen_script(self, name, exe: Path, cmd_generator_fn):
+    def gen_script(self, name: str, exe: Path, cmd_generator_fn: Callable[[], Tuple[Any, str]]) -> None:
+        """Generates a script.
+
+        Args:
+            name: The name of the script.
+            exe: The path to the script.
+            cmd_generator_fn: A function that returns the command and extra arguments.
+        """
         current_file = Path(__file__).resolve()
         self.toolchain_map[name] = exe.absolute().as_posix()
 
@@ -207,7 +241,8 @@ class ToolchainGenerator:
 
         exe.chmod(0o755)
 
-    def _get_toolchain_config(self):
+    def _get_toolchain_config(self) -> str:
+        """Returns the toolchain configuration."""
         result = f"# Auto generated by Android Meson Generator - do not modify\n"
         result += """[properties]
 [built-in options]
@@ -225,12 +260,12 @@ cpp_link_args = []
         result += f"c = '{cc}'\n"
         return result
 
-    def write_toolchain_config(self):
+    def write_toolchain_config(self) -> None:
         """Writes a toolchain configuration that can be consumed by meson."""
         with open(self.dest / "aosp-cl.ini", "w", encoding="utf-8") as f:
             f.write(self._get_toolchain_config())
 
-    def link_dirs(self):
+    def link_dirs(self) -> None:
         """Setup links to libc++.so etc.."""
         clang_lib = self.clang() / "lib"
         if not clang_lib.exists():
@@ -239,7 +274,13 @@ cpp_link_args = []
 
         (self.dest / "lib").symlink_to(clang_lib)
 
-    def gen_toolchain(self, packages=[], binaries={}):
+    def gen_toolchain(self, packages: List[Any] = [], binaries: Dict[str, str] = {}) -> None:
+        """Generates the toolchain.
+
+        Args:
+            packages: A list of packages to generate pkg-config files for.
+            binaries: A dictionary of binaries to generate wrappers for.
+        """
         cmds = {
             "nm": self.nm,
             "ar": self.ar,
@@ -272,7 +313,13 @@ cpp_link_args = []
         self.link_dirs()
         self.write_toolchain_config()
 
-    def _generate_bazel_binary_wrapper(self, name, target):
+    def _generate_bazel_binary_wrapper(self, name: str, target: str) -> None:
+        """Generates a wrapper for a Bazel binary.
+
+        Args:
+            name: The name of the binary.
+            target: The Bazel target.
+        """
         exe = self.dest / f"{self.prefix}{name}"
         self.toolchain_map[name] = exe.absolute().as_posix()
         bazel_exe = self.bazel.build_exe(target)
@@ -285,8 +332,12 @@ cpp_link_args = []
             f.write(script)
         exe.chmod(0o755)
 
-    def generate_pkg_config_files(self, packages):
-        '''Generates pkg-config files for all defined dependencies.'''
+    def generate_pkg_config_files(self, packages: List[Any]) -> None:
+        """Generates pkg-config files for all defined dependencies.
+
+        Args:
+            packages: A list of packages to generate pkg-config files for.
+        """
         for package in packages:
             package.generate_pkg_config(
                 self.dest,

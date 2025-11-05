@@ -16,6 +16,7 @@ import logging
 import re
 import shutil
 from pathlib import Path
+from typing import Dict, Tuple, List, Any
 
 from aemu.process.runner import check_output
 from aemu.toolchains.toolchain_generator import ToolchainGenerator
@@ -52,8 +53,8 @@ class DarwinToDarwinGenerator(ToolchainGenerator):
     configurations for the C and C++ compilers (cc and cxx).
 
     Attributes:
-        XCODE_VER_RE (str): Regular expression to extract Xcode version.
-        XCODE_BUILD_VER (str): Regular expression to extract Xcode build version.
+        XCODE_VER_RE (re.Pattern): Regular expression to extract Xcode version.
+        XCODE_BUILD_VER (re.Pattern): Regular expression to extract Xcode build version.
         MIN_VERSION (str): Minimum required Xcode version.
         OSX_DEPLOYMENT_TARGET (str): Minimum targeted macOS version for generated binaries.
         osx_sdk_root (pathlib.Path): Path to the macOS SDK used for building.
@@ -65,13 +66,29 @@ class DarwinToDarwinGenerator(ToolchainGenerator):
     MIN_VERSION = "11"
     OSX_DEPLOYMENT_TARGET = "11.0"
 
-    def __init__(self, aosp, dest, prefix, target_arch="arm64") -> None:
+    def __init__(self, aosp: Path, dest: Path, prefix: str, target_arch: str = "arm64") -> None:
+        """Initializes a DarwinToDarwinGenerator object.
+
+        Args:
+            aosp: The path to the AOSP source tree.
+            dest: The destination directory for the toolchain.
+            prefix: The prefix for the toolchain binaries.
+            target_arch: The target architecture.
+        """
         super().__init__(aosp, dest, prefix)
         self.target_arch = target_arch
 
         verinfo = check_output(["xcodebuild", "-version"]).splitlines()
-        version = self.XCODE_VER_RE.match(verinfo[0])[1]
-        build = self.XCODE_BUILD_VER.match(verinfo[1])[1]
+        version_match = self.XCODE_VER_RE.match(verinfo[0])
+        if not version_match:
+            raise ValueError(f"Could not parse Xcode version from: {verinfo[0]}")
+        version = version_match[1]
+
+        build_match = self.XCODE_BUILD_VER.match(verinfo[1])
+        if not build_match:
+            raise ValueError(f"Could not parse Xcode build version from: {verinfo[1]}")
+        build = build_match[1]
+
 
         if compare_versions(version, self.MIN_VERSION) == -1:
             raise ValueError(f"You need at least XCode 10, not {version}")
@@ -88,7 +105,15 @@ class DarwinToDarwinGenerator(ToolchainGenerator):
         logging.info("OSX: Using Xcode: %s (%s)", version, build)
         logging.info("OSX: XCode path: %s", self.osx_sdk_root)
 
-    def _base_script(self, clang):
+    def _base_script(self, clang: str) -> str:
+        """Generates the base script for the C and C++ compilers.
+
+        Args:
+            clang: The name of the clang binary.
+
+        Returns:
+            The base script.
+        """
         cache = f"{self.ccache}" if self.ccache else ""
         script = (
             f"{cache} {self.clang()}/bin/{clang} "
@@ -100,23 +125,27 @@ class DarwinToDarwinGenerator(ToolchainGenerator):
         )
         return script
 
-    def strip(self):
+    def strip(self) -> Tuple[str, str]:
+        """Generates the script for the strip command."""
         script = "target=$(basename $1)\n"
         script += f"{self.clang() / 'bin' / 'dsymutil'} --out build/debug_info/$target.dSYM $1\n"
         script += "# EXPLICITLY DISABLE ARBITRARY ARGUMENTS"
         return script, ""
 
-    def cc(self):
+    def cc(self) -> Tuple[str, str]:
+        """Generates the script for the C compiler."""
         script = self._base_script("clang")
         extra = "-Wno-unused-command-line-argument"
         return script, extra
 
-    def cxx(self):
+    def cxx(self) -> Tuple[str, str]:
+        """Generates the script for the C++ compiler."""
         script = self._base_script("clang++") + " -stdlib=libc++"
         extra = "-Wno-unused-command-line-argument"
         return script, extra
 
-    def rustc(self):
+    def rustc(self) -> Tuple[str, str]:
+        """Gets the path to the rustc compiler."""
         rustc = shutil.which("rustc")
         if not rustc:
             raise FileNotFoundError(
@@ -124,7 +153,8 @@ class DarwinToDarwinGenerator(ToolchainGenerator):
             )
         return rustc, ""
 
-    def cargo(self):
+    def cargo(self) -> Tuple[str, str]:
+        """Gets the path to the cargo command."""
         cargo = shutil.which("cargo")
         if not cargo:
             raise FileNotFoundError(
@@ -132,11 +162,17 @@ class DarwinToDarwinGenerator(ToolchainGenerator):
             )
         return cargo, ""
 
-    def gen_toolchain(self, packages, binaries):
+    def gen_toolchain(self, packages: List[Any], binaries: Dict[str, str]) -> None:
+        """Generates the toolchain.
+
+        Args:
+            packages: A list of packages to generate pkg-config files for.
+            binaries: A dictionary of binaries to generate wrappers for.
+        """
         super().gen_toolchain(packages, binaries)
         self.gen_script("objc", self.dest / f"{self.prefix}objc", self.cc)
 
-    def parse_xcode_sdks(self):
+    def parse_xcode_sdks(self) -> Dict[str, Dict[str, str]]:
         """
         Runs and parses the output of 'xcodebuild -showsdks' and return a dictionary of installed SDKs.
 
@@ -162,7 +198,7 @@ class DarwinToDarwinGenerator(ToolchainGenerator):
         # 	watchOS 10.0                  	-sdk watchos10.0
 
         output = check_output(["xcodebuild", "-showsdks"])
-        sdk_dict = {}
+        sdk_dict: Dict[str, Dict[str, str]] = {}
         current_sdk_type = None
 
         # Split the output into lines and iterate through each line
@@ -193,5 +229,14 @@ class DarwinToDarwinGenerator(ToolchainGenerator):
 
 
 class DarwinToDarwinX64Generator(DarwinToDarwinGenerator):
-    def __init__(self, aosp, dest, prefix) -> None:
+    """A toolchain generator for building on Darwin for x86_64."""
+
+    def __init__(self, aosp: Path, dest: Path, prefix: str) -> None:
+        """Initializes a DarwinToDarwinX64Generator object.
+
+        Args:
+            aosp: The path to the AOSP source tree.
+            dest: The destination directory for the toolchain.
+            prefix: The prefix for the toolchain binaries.
+        """
         super().__init__(aosp, dest, prefix, "x86_64")

@@ -16,7 +16,7 @@ import logging
 import re
 import shutil
 from pathlib import Path
-from typing import Dict, Set
+from typing import Dict, Set, Optional
 
 from aemu.process.runner import check_output, run
 
@@ -42,9 +42,19 @@ class PackageConfigPc:
         version: str,
         release_dir: Path,
         archive: Path,
-        includes: Set[Path],
+        includes: Optional[Set[Path]],
         shim: Dict[str, str],
-    ):
+    ) -> None:
+        """Initializes a PackageConfigPc object.
+
+        Args:
+            name: The name of the package.
+            version: The version of the package.
+            release_dir: The release directory.
+            archive: The path to the archive file.
+            includes: A set of include paths.
+            shim: A dictionary of shims to apply.
+        """
         self.name = shim.get("name", name)
         self.release_dir = release_dir.as_posix()
         self.version = version
@@ -81,15 +91,17 @@ class PackageConfigPc:
                 + f" {shim.get('cflags', '')}"
             )
 
-    def is_static(self):
+    def is_static(self) -> bool:
+        """Returns True if the library is static, False otherwise."""
         return self.archive.suffix == ".a"
 
     @property
-    def extra_args(self):
+    def extra_args(self) -> str:
         """Returns the extra variables in a format suitable for a .pc file."""
         return "\n".join([f"{k}={v}" for k, v in self.extra_vars.items()])
 
-    def _template(self):
+    def _template(self) -> str:
+        """Returns the template for the .pc file."""
         return f"""prefix={self.release_dir}
     includedir={self.include_dir}
     libdir={self.libdir}
@@ -105,7 +117,7 @@ class PackageConfigPc:
     Libs: {self.libs}
     """
 
-    def _shim_link(self, archive, shim):
+    def _shim_link(self, archive: Path, shim: Dict[str, str]) -> None:
         """
         Create a symbolic link to the library if specified in the shim.
 
@@ -122,10 +134,15 @@ class PackageConfigPc:
             if not shim_link.exists():
                 archive.link_to(shim_link)
 
-    def _patch_dylib(self, dylib: Path):
+    def _patch_dylib(self, dylib: Path) -> None:
+        """Patches a dylib to work around b/331243894.
+
+        Args:
+            dylib: The path to the dylib.
+        """
         # Workaround for b/331243894
         rpath_regex = re.compile(r"^.*@rpath\/([^\s]+)")
-        result = check_output(["otool", "-L", dylib])
+        result = check_output(["otool", "-L", str(dylib)])
         rpathline = result.splitlines()[1]
         match = rpath_regex.match(rpathline)
         if match:
@@ -136,9 +153,14 @@ class PackageConfigPc:
         else:
             logging.info("Not patching %s", dylib)
 
-    def _patch_solib(self, solib: Path):
+    def _patch_solib(self, solib: Path) -> None:
+        """Patches a shared library to set up the SONAME.
+
+        Args:
+            solib: The path to the shared library.
+        """
         # Run the objdump command to extract SONAME
-        objdump_output = run(["objdump", "-p", solib])
+        objdump_output = run(["objdump", "-p", str(solib)])
 
         # Find the line containing SONAME
         soname_line = next((line for line in objdump_output if "SONAME" in line), None)
@@ -149,7 +171,7 @@ class PackageConfigPc:
             target_relative = solib.relative_to(soname.parent)
             soname.symlink_to(target_relative)
 
-    def binplace(self, dest_dir: Path):
+    def binplace(self, dest_dir: Path) -> None:
         """Binplace the shared libraries to the given location."""
         so_ext = [".so", ".dylib", ".dll"]
         for ext in so_ext:
@@ -172,7 +194,7 @@ class PackageConfigPc:
 
                     return
 
-    def write(self, dest_dir: Path):
+    def write(self, dest_dir: Path) -> None:
         """
         Write the generated pkg-config file to the specified destination directory.
 

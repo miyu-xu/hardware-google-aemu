@@ -24,6 +24,7 @@ import tempfile
 import time
 import zipfile
 from pathlib import Path
+from typing import List, Optional
 
 from aemu.configure.meson_project_builder import MesonProjectBuilder
 from aemu.configure.shim import create_shim
@@ -37,14 +38,31 @@ from aemu.util import find_aosp_root, mkdirs
 class CustomFormatter(
     argparse.RawTextHelpFormatter, argparse.ArgumentDefaultsHelpFormatter
 ):
+    """A custom formatter for argparse that combines RawTextHelpFormatter and ArgumentDefaultsHelpFormatter."""
     pass
 
 
-def _split_list(s):
+def _split_list(s: Optional[str]) -> List[str]:
+    """Splits a comma-separated string into a list of strings.
+
+    Args:
+        s: The string to split.
+
+    Returns:
+        A list of strings.
+    """
     return s.split(",") if s else []
 
 
-def setup_command(args):
+def setup_command(args: argparse.Namespace) -> MesonProjectBuilder:
+    """Sets up a Meson project.
+
+    Args:
+        args: The command-line arguments.
+
+    Returns:
+        A MesonProjectBuilder object.
+    """
     mkdirs(Path(args.out).absolute(), args.force)
     toolchain_generator = get_toolchain_generator(
         args.target,
@@ -67,15 +85,36 @@ def setup_command(args):
     return builder
 
 
-def get_build_dir(base_dir):
+def get_build_dir(base_dir: str) -> Path:
+    """Gets the build directory.
+
+    Args:
+        base_dir: The base directory.
+
+    Returns:
+        The build directory.
+    """
     return Path(base_dir) / "build"
 
 
-def get_toolchain_dir(base_dir):
+def get_toolchain_dir(base_dir: str) -> Path:
+    """Gets the toolchain directory.
+
+    Args:
+        base_dir: The base directory.
+
+    Returns:
+        The toolchain directory.
+    """
     return Path(base_dir) / "toolchain"
 
 
-def toolchain_command(args):
+def toolchain_command(args: argparse.Namespace) -> None:
+    """Creates the toolchain.
+
+    Args:
+        args: The command-line arguments.
+    """
     mkdirs(Path(args.out).absolute(), args.force)
     toolchain_dir = get_toolchain_dir(args.out)
     toolchain = get_toolchain_generator(
@@ -110,10 +149,11 @@ def toolchain_command(args):
         builder.generate_pkg_config_files()
 
 
-def compile_command(args):
-    """Compile the QEMU source by invoking Meson.
+def compile_command(args: argparse.Namespace) -> None:
+    """Compiles the source code.
 
-    This method compiles the QEMU source by invoking Meson's compile command.
+    Args:
+        args: The command-line arguments.
     """
     build_dir = get_build_dir(args.out)
     toolchain_dir = get_toolchain_dir(args.out)
@@ -131,8 +171,12 @@ def compile_command(args):
     )
 
 
-def test_command(args):
-    """Run the QEMU tests by invoking Meson."""
+def test_command(args: argparse.Namespace) -> None:
+    """Runs the tests.
+
+    Args:
+        args: The command-line arguments.
+    """
     build_dir = get_build_dir(args.out)
     toolchain_dir = get_toolchain_dir(args.out)
     cmd = [
@@ -150,8 +194,12 @@ def test_command(args):
     )
 
 
-def release_command(args):
-    """Run the QEMU tests by invoking Meson."""
+def release_command(args: argparse.Namespace) -> None:
+    """Creates a release zip file.
+
+    Args:
+        args: The command-line arguments.
+    """
     build_dir = get_build_dir(args.out)
     toolchain_dir = get_toolchain_dir(args.out)
     cmd = [
@@ -178,7 +226,12 @@ def release_command(args):
             zipf.write(fname, arcname)
 
 
-def bazel_command(args):
+def bazel_command(args: argparse.Namespace) -> None:
+    """Generates a Bazel repository for the project.
+
+    Args:
+        args: The command-line arguments.
+    """
     bazel_out = Path(args.out)
     bazel_out.mkdir(parents=True, exist_ok=True)
 
@@ -269,7 +322,8 @@ def bazel_command(args):
         temp_build.__exit__(None, None, None)
 
 
-def main():
+def main() -> None:
+    """The main entry point of the script."""
     aosp_root = find_aosp_root()
     parser = argparse.ArgumentParser(
         formatter_class=CustomFormatter,

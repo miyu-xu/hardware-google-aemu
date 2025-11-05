@@ -17,11 +17,12 @@ import logging
 import platform
 from functools import lru_cache
 from pathlib import Path
-from typing import Dict, List, Set
+from typing import Dict, List, Set, Optional
 from aemu.process.runner import check_output, run
 
 
 class Bazel:
+    """A class for interacting with the Bazel build system."""
 
     PLATFORM_MAP = {
         "windows-x64": "@goldfish_build//platforms:windows_x64",
@@ -35,10 +36,19 @@ class Bazel:
         self,
         aosp: Path,
         dist: Path,
-        startup_options: list[str] = [],
-        build_options: list[str] = [],
-        target: str = None,
-    ):
+        startup_options: List[str] = [],
+        build_options: List[str] = [],
+        target: Optional[str] = None,
+    ) -> None:
+        """Initializes a Bazel object.
+
+        Args:
+            aosp: The path to the AOSP source tree.
+            dist: The distribution directory.
+            startup_options: A list of Bazel startup options.
+            build_options: A list of Bazel build options.
+            target: The target platform.
+        """
         self.aosp = aosp.absolute()
         self.log_dir = dist.absolute() / "bazel-logs"
         self.log_dir.mkdir(parents=True, exist_ok=True)
@@ -54,7 +64,15 @@ class Bazel:
         assert "workspace" in self.info
         assert "output_path" in self.info
 
-    def _set_platform(self, target):
+    def _set_platform(self, target: str) -> str:
+        """Sets the target platform for the build.
+
+        Args:
+            target: The target platform.
+
+        Returns:
+            The Bazel platform string.
+        """
         platform = self.PLATFORM_MAP[target]
         try:
             run([self.exe, "query", platform], cwd=self.aosp)
@@ -71,12 +89,21 @@ class Bazel:
             raise
 
     def host(self) -> str:
+        """Returns the host operating system."""
         return platform.system().lower()
 
     def build_exe(
         self,
         bazel_target: str,
     ) -> Path:
+        """Builds a Bazel target that produces an executable.
+
+        Args:
+            bazel_target: The Bazel target to build.
+
+        Returns:
+            The path to the built executable.
+        """
         self.build_target(bazel_target, for_host=True)
 
         build_options = self.build_options + [
@@ -106,17 +133,16 @@ class Bazel:
         bazel_target: str,
         build_for_includes: bool = False,
         for_host: bool = False,
-    ) -> str:
+    ) -> List[str]:
         """Builds the specified Bazel target.
 
-        Run the Bazel build command for the specified target using the
-        stored Bazel executable.
-
         Args:
-            bazel_target (str): The Bazel target to build.
+            bazel_target: The Bazel target to build.
+            build_for_includes: Whether to build for includes.
+            for_host: Whether to build for the host.
 
         Returns:
-            List of targets that were build.
+            A list of the built targets.
         """
         if ":" in bazel_target:
             label = bazel_target[bazel_target.rfind(":") + 1 :]
@@ -148,7 +174,7 @@ class Bazel:
         return [x for x in output if x.startswith("bazel")]
 
     def _replace_labels(self, package_info_result: str) -> str:
-        """Replace labels from the package info script."""
+        """Replaces labels from the package info script."""
         # Concatenate includes and shim, then replace labels with actual values.
         return (
             package_info_result.replace("${output_base}", self.info["output_base"])
@@ -163,13 +189,13 @@ class Bazel:
 
     @lru_cache(maxsize=None)
     def package_info(self, bazel_target: str) -> Dict[str, List[str]]:
-        """Retrieve information about the Bazel target with paths normalized.
+        """Retrieves information about the Bazel target with paths normalized.
 
         Args:
-            bazel_target (str): The Bazel target to query.
+            bazel_target: The Bazel target to query.
 
         Returns:
-            Dict[str, [str]]: A dictionary containing information about the Bazel target.
+            A dictionary containing information about the Bazel target.
         """
         # Load information about Bazel target using 'cquery' and retrieve
         # A json string that looks like:
@@ -218,7 +244,7 @@ class Bazel:
         )
 
     def _load_bazel_info(self) -> Dict[str, str]:
-        """Retrieve the bazel configuration."""
+        """Retrieves the bazel configuration."""
 
         # Bazel info gives:
         # key: value

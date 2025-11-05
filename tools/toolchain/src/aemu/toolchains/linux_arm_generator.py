@@ -16,6 +16,7 @@
 from aemu.toolchains.toolchain_generator import ToolchainGenerator
 from pathlib import Path
 import shutil
+from typing import Tuple
 
 
 class LinuxToLinuxAarch64Generator(ToolchainGenerator):
@@ -28,11 +29,23 @@ class LinuxToLinuxAarch64Generator(ToolchainGenerator):
     GCC_VER = 10
     GCC_PREFIX = "aarch64-linux-gnu-"
 
-    def __init__(self, aosp, dest, prefix):
+    def __init__(self, aosp: Path, dest: Path, prefix: str) -> None:
+        """Initializes a LinuxToLinuxAarch64Generator object.
+
+        Args:
+            aosp: The path to the AOSP source tree.
+            dest: The destination directory for the toolchain.
+            prefix: The prefix for the toolchain binaries.
+        """
         super().__init__(aosp, dest, prefix)
         self.target_arch = "aarch64"
 
-    def _fetch_toolchain(self):
+    def _fetch_toolchain(self) -> Path:
+        """Fetches the toolchain and sysroot.
+
+        Returns:
+            The path to the sysroot.
+        """
         # Make sure we have the sysroot.
         sysroot = Path(self.dest) / "sysroot"
         if not sysroot.exists():
@@ -44,7 +57,8 @@ class LinuxToLinuxAarch64Generator(ToolchainGenerator):
 
         return sysroot
 
-    def cc(self):
+    def cc(self) -> Tuple[str, str]:
+        """Generates the script for the C compiler."""
         cache = f"{self.ccache}" if self.ccache else ""
         toolchain = self._fetch_toolchain()
         sysroot = toolchain / "aarch64-none-linux-gnu" / "libc"
@@ -56,16 +70,20 @@ class LinuxToLinuxAarch64Generator(ToolchainGenerator):
         )
         return script, ""
 
-    def cxx(self):
+    def cxx(self) -> Tuple[str, str]:
+        """Generates the script for the C++ compiler."""
         return self.cc()
 
-    def rustc(self):
+    def rustc(self) -> Tuple[str, str]:
+        """Gets the path to the rustc compiler."""
         return "echo <not yet implemented>", ""
 
-    def cargo(self):
+    def cargo(self) -> Tuple[str, str]:
+        """Gets the path to the cargo command."""
         return "echo <not yet implemented>", ""
 
-    def strip(self):
+    def strip(self) -> Tuple[str, str]:
+        """Generates the script for the strip command."""
         objcopy = self.clang() / "bin" / "llvm-objcopy"
         script = "mkdir -p build/debug_info\n"
         script += "target=$(basename $1)\n"

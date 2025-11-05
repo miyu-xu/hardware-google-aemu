@@ -16,10 +16,13 @@ import sys
 import os
 import platform
 from pathlib import Path
+from typing import Any, List
 from aemu.process.runner import run
 
 
 class ColorFormatter(logging.Formatter):
+    """A logging formatter that adds color to the output."""
+
     # See https://chrisyeh96.github.io/2020/03/28/terminal-colors.html
 
     yellow = "\N{ESC}[33;20m"
@@ -35,7 +38,15 @@ class ColorFormatter(logging.Formatter):
         logging.CRITICAL: red + format + reset,
     }
 
-    def format(self, record):
+    def format(self, record: logging.LogRecord) -> str:
+        """Formats a log record with color.
+
+        Args:
+            record: The log record to format.
+
+        Returns:
+            The formatted log record as a string.
+        """
         log_fmt = self.FORMATS.get(record.levelno)
         formatter = logging.Formatter(log_fmt)
         return formatter.format(record)
@@ -44,19 +55,33 @@ class ColorFormatter(logging.Formatter):
 class LogBelowLevel(logging.Filter):
     """A logging filter that only logs a line if it is below the given level."""
 
-    def __init__(self, exclusive_maximum, name=""):
+    def __init__(self, exclusive_maximum: int, name: str = "") -> None:
+        """Initializes a LogBelowLevel filter.
+
+        Args:
+            exclusive_maximum: The exclusive maximum logging level.
+            name: The name of the filter.
+        """
         super(LogBelowLevel, self).__init__(name)
         self.max_level = exclusive_maximum
 
-    def filter(self, record):
+    def filter(self, record: logging.LogRecord) -> bool:
+        """Determines if a log record should be logged.
+
+        Args:
+            record: The log record to filter.
+
+        Returns:
+            True if the record should be logged, False otherwise.
+        """
         return True if record.levelno < self.max_level else False
 
 
-def configure_logging(logging_level):
-    """Configures the logging system to log at the given level
+def configure_logging(logging_level: int) -> None:
+    """Configures the logging system to log at the given level.
 
     Args:
-        logging_level (_type_): A logging level, or number.
+        logging_level: A logging level, or number.
     """
     logging_handler_out = logging.StreamHandler(sys.stdout)
     logging_handler_out.setLevel(logging.DEBUG)
@@ -78,13 +103,13 @@ def configure_logging(logging_level):
     logging.root.addHandler(logging_handler_err)
 
 
-def run_meson_command(cmd, build_dir, **kwargs):
+def run_meson_command(cmd: List[str], build_dir: Path, **kwargs: Any) -> None:
     """Runs a meson command and logs the meson log file on failure if verbose.
 
     Args:
         cmd: The command to execute.
         build_dir: The Meson build directory.
-        **kwargs: Additional arguments to pass to the run command.
+        kwargs: Additional arguments to pass to the run command.
     """
     try:
         run(cmd, **kwargs)
@@ -93,7 +118,7 @@ def run_meson_command(cmd, build_dir, **kwargs):
         raise
 
 
-def log_meson_log_if_verbose(build_dir):
+def log_meson_log_if_verbose(build_dir: Path) -> None:
     """If verbose logging is enabled, log the contents of meson-log.txt.
 
     Args:

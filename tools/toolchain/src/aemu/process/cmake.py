@@ -22,11 +22,12 @@ from aemu.process.runner import run
 class CMake:
     """Class for managing CMake builds and installations within an AOSP context."""
 
-    def __init__(self, aosp: Path, toolchain: Path, dist: Path):
+    def __init__(self, aosp: Path, toolchain: Path, dist: Path) -> None:
         """Initializes a CMake object for managing builds.
 
         Args:
             aosp: Path to the AOSP (Android Open Source Project) root directory.
+            toolchain: Path to the toolchain directory.
             dist: Path to the installation distribution directory.
         """
         self.aosp = aosp
@@ -38,7 +39,7 @@ class CMake:
         """Returns the lowercase name of the host operating system."""
         return platform.system().lower()
 
-    def build_target(self, cmake_target: str) -> str:
+    def build_target(self, cmake_target: str) -> Path:
         """Configures, builds, and installs a specified CMake target.
 
         Args:

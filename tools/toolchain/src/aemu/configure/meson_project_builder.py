@@ -14,10 +14,11 @@
 # limitations under the License.
 import platform
 from pathlib import Path
-from aemu import jsonc
+from typing import Any, Dict, List, Optional
 
+from aemu import jsonc
 from aemu.process.bazel import Bazel
-from aemu.configure.libraries import BazelLib, CMakeLib
+from aemu.configure.libraries import BazelLib, CMakeLib, Lib
 from aemu.toolchains.toolchain_generator import ToolchainGenerator
 from aemu.process.runner import run
 from aemu.process.cmake import CMake
@@ -80,15 +81,15 @@ class MesonProjectBuilder:
 
     def __init__(
         self,
-        config_file,
-        aosp,
-        dest,
-        toolchain_dir,
-        ccache,
-        generator,
-        bazel_startup_options,
-        bazel_build_options,
-        target,
+        config_file: str,
+        aosp: str,
+        dest: str,
+        toolchain_dir: str,
+        ccache: Optional[str],
+        generator: ToolchainGenerator,
+        bazel_startup_options: List[str],
+        bazel_build_options: List[str],
+        target: str,
     ) -> None:
         """Initializes the MesonProjectBuilder and sets up the build environment.
 
@@ -120,7 +121,7 @@ class MesonProjectBuilder:
 
         self._load_config(config_file)
 
-    def _load_config(self, config_file):
+    def _load_config(self, config_file: str) -> None:
         """Loads and parses the JSONC build configuration file.
 
         Args:
@@ -129,7 +130,7 @@ class MesonProjectBuilder:
         with open(config_file, "r") as f:
             self.config = jsonc.load(f)
 
-    def _get_merged_config(self, key: str, default_value):
+    def _get_merged_config(self, key: str, default_value: Any) -> Any:
         """Merges a configuration section from "common" and platform-specific settings.
 
         This method retrieves a configuration section (e.g., "dependencies",
@@ -161,7 +162,7 @@ class MesonProjectBuilder:
         else:
             return platform_config
 
-    def configure_meson(self, meson_flags):
+    def configure_meson(self, meson_flags: Optional[List[str]]) -> None:
         """Orchestrates the Meson build configuration process.
 
         This method performs the following steps:
@@ -196,7 +197,7 @@ class MesonProjectBuilder:
 
         run_meson_command(cmd, self.dest, cwd=source_path, toolchain_path=self.toolchain)
 
-    def packages(self):
+    def packages(self) -> List[Lib]:
         """Constructs a list of dependency library objects for the current target.
 
         This method merges the "dependencies" dictionaries from the "common" and
@@ -233,11 +234,11 @@ class MesonProjectBuilder:
             )
         return platform_deps_list
 
-    def binaries(self):
+    def binaries(self) -> Dict[str, str]:
         """Constructs a dictionary of custom binaries for the current target."""
         return self._get_merged_config("binaries", {})
 
-    def meson_config(self):
+    def meson_config(self) -> Dict[str, str]:
         """Constructs the final Meson options dictionary for the current target.
 
         Merges the "meson_options" from the "common" and platform-specific
@@ -248,7 +249,7 @@ class MesonProjectBuilder:
         """
         return self._get_merged_config("meson_options", {})
 
-    def generate_files(self):
+    def generate_files(self) -> None:
         """Generates files based on the 'generated_files' section of the config.
 
         Merges the "generated_files" lists from "common" and platform-specific
@@ -287,7 +288,7 @@ class MesonProjectBuilder:
                 with open(output_path, "w") as f:
                     f.write(content)
 
-    def _get_platform_config_from_def(self, config_def):
+    def _get_platform_config_from_def(self, config_def: Dict[str, Any]) -> Dict[str, str]:
         """Merges "common" and platform-specific dicts from a file definition.
 
         This is a helper for `generate_files` to construct the final content
