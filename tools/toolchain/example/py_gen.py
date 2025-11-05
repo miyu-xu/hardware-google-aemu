@@ -18,11 +18,15 @@ from pathlib import Path
 
 def main():
     parser = argparse.ArgumentParser(description='Generate a C++ header file with a message.')
-    parser.add_argument('-m', '--message', required=True, help='The message to include in the header file.')
+    parser.add_argument('-m', '--message', required=True,
+                        help='The message to include in the header file.')
     parser.add_argument('-o', '--output', required=True, help='The output header file path.')
+    parser.add_argument('-d', '--depfile', required=True, help='The output dependency file.')
     args = parser.parse_args()
 
     out = Path(args.output).absolute()
+    depfile = Path(args.depfile).absolute()
+    py_gen_file = Path(__file__).absolute()
 
     print(f"Writing {out}")
     with open(out, 'w') as f:
@@ -31,5 +35,9 @@ def main():
         f.write(f'  std::string msg = "{args.message}";\n')
         f.write(f'}}\n')
 
+    with open(depfile, 'w') as f:
+        # Make py_gen.py a dependency of message.h so a build gets trigger when this file is
+        # modified.
+        f.write(f'{str(out)}: {str(py_gen_file)}')
 if __name__ == '__main__':
     main()
