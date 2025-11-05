@@ -19,6 +19,8 @@ def main():
     parser = argparse.ArgumentParser(description='Generate a C++ header file with a message.')
     parser.add_argument('-m', '--message', required=True,
                         help='The message to include in the header file.')
+    parser.add_argument('--msg-var', required=True,
+                        help='The name of the message variable in the header file')
     parser.add_argument('-o', '--output', required=True, help='The output header file path.')
     parser.add_argument('-d', '--depfile', required=True, help='The output dependency file.')
     args = parser.parse_args()
@@ -31,7 +33,7 @@ def main():
     with open(out, 'w') as f:
         f.write(f'#include <string>\n\n')
         f.write(f'namespace generated {{\n')
-        f.write(f'  std::string msg = "{args.message}";\n')
+        f.write(f'  std::string {args.msg_var} = "From prog_py_gen: {args.message}";\n')
         f.write(f'}}\n')
 
     with open(depfile, 'w') as f:

@@ -1,8 +1,10 @@
 #include "message.h"
+#include "msg_1.h"
 
-#include <cstdio>
+#include <iostream>
 
 int main(int argc, char *argv[]) {
-  std::cout << generated << std::endl;
+  std::cout << generated::msg0 << std::endl;
+  std::cout << generated::msg1 << std::endl;
   return 0;
 }
