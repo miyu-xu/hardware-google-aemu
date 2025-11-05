@@ -1,0 +1,14 @@
+{
+    "project_name": "custom_target_project",
+    "source_path": "%AOSP_ROOT%/hardware/google/aemu/tools/toolchain/tests/amc/custom_target",
+    "common": {
+        "dependencies": {
+        },
+        "meson_options": {
+            "-Dmessage": "'A common message.'"
+        },
+        "binaries": {
+            "py_gen": "//hardware/google/aemu/tools/toolchain/tests/amc/custom_target/binaries:py_gen"
+        }
+    }
+}
