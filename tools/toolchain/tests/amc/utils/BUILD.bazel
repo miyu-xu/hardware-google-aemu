@@ -12,20 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@rules_python//python:defs.bzl", "py_binary")
-
 exports_files(
     [
         "amc_test_wrapper.sh",
         "amc_test.py",
-        "prepare_config.py",
     ],
     visibility = ["//visibility:public"],
-)
-
-py_binary(
-    name = "prepare_config",
-    srcs = ["prepare_config.py"],
-    visibility = ["//visibility:public"],
-    deps = ["@aemu//tools/toolchain:amc_common_lib"],
 )

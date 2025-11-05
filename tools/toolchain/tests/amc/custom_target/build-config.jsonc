@@ -1,6 +1,6 @@
 {
     "project_name": "custom_target_project",
-    "source_path": "%AOSP_ROOT%/hardware/google/aemu/tools/toolchain/tests/amc/custom_target",
+    "source_path": "hardware/google/aemu/tools/toolchain/tests/amc/custom_target",
     "common": {
         "dependencies": {
         },

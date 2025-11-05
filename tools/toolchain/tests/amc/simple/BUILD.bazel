@@ -12,20 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("//hardware/google/aemu/tools/toolchain/tests/amc/utils:amc_test.bzl", "prepare_build_config")
-
 package(default_visibility = ["//hardware/google/aemu/tools/toolchain/tests/amc:__subpackages__"])
-
-prepare_build_config(
-    name = "build_config",
-    output = "build-config.jsonc",
-    template = "build-config-template.jsonc",
-)
 
 exports_files([
     "main.cpp",
     "meson.build",
-    "build-config-template.jsonc",
+    "build-config.jsonc",
     "shim.jsonc",
-    "build_config.h",
 ])

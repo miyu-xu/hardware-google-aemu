@@ -20,7 +20,7 @@ amc_test(
         "//hardware/google/aemu/tools/toolchain/tests/amc/simple:main.cpp",
         "//hardware/google/aemu/tools/toolchain/tests/amc/simple:meson.build",
     ],
-    build_config = "//hardware/google/aemu/tools/toolchain/tests/amc/simple:build_config",
+    build_config = "//hardware/google/aemu/tools/toolchain/tests/amc/simple:build-config.jsonc",
     shim = "//hardware/google/aemu/tools/toolchain/tests/amc/simple:shim.jsonc",
 )
 
@@ -32,6 +32,6 @@ amc_test(
         "//hardware/google/aemu/tools/toolchain/tests/amc/custom_target:meson_options.txt",
         "//hardware/google/aemu/tools/toolchain/tests/amc/custom_target/binaries:py_gen",
     ],
-    build_config = "//hardware/google/aemu/tools/toolchain/tests/amc/custom_target:build_config",
+    build_config = "//hardware/google/aemu/tools/toolchain/tests/amc/custom_target:build-config.jsonc",
     shim = "//hardware/google/aemu/tools/toolchain/tests/amc/custom_target:shim.jsonc",
 )

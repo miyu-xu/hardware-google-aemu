@@ -45,19 +45,3 @@ def amc_test(name, build_config, shim, srcs = []):
         ] + srcs,
         local = True,
     )
-
-def prepare_build_config(name, template, output):
-    """A macro that prepares the build-config.jsonc file.
-
-    Args:
-        name: The name of the rule.
-        template: The template file.
-        output: The output file.
-    """
-    native.genrule(
-        name = name,
-        srcs = [template],
-        outs = [output],
-        cmd = "$(location @aemu//tools/toolchain/tests/amc/utils:prepare_config) --template=$(location %s) --output=$(location %s)" % (template, output),
-        tools = ["@aemu//tools/toolchain/tests/amc/utils:prepare_config"],
-    )
