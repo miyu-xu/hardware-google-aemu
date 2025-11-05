@@ -14,11 +14,20 @@
 # limitations under the License.
 import json
 import re
+from typing import TextIO, Any
 
 
-def load(fp):
-    """
-    Loads a JSON with comments (JSONC) file, stripping comments before parsing.
+def load(fp: TextIO) -> Any:
+    """Loads a JSON with comments (JSONC) file.
+
+    This function strips comments from a JSONC file and parses the result
+    as a standard JSON file.
+
+    Args:
+        fp: A file-like object representing the JSONC file.
+
+    Returns:
+        The parsed JSON object.
     """
     content = fp.read()
 

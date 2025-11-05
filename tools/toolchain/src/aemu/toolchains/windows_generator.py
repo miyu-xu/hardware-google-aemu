@@ -18,30 +18,43 @@ import os
 import shutil
 import subprocess
 from pathlib import Path
+from typing import Dict, List, Tuple, Any, Callable
 
 from aemu.toolchains.toolchain_generator import ToolchainGenerator
 from aemu.toolchains.mingw_to_msvc_lib import convert_mingw_to_msvc_lib
 
 
 class VisualStudioNotFoundException(Exception):
+    """Raised when Visual Studio is not found."""
     pass
 
 
 class VisualStudioMissingVarException(Exception):
+    """Raised when a required Visual Studio environment variable is missing."""
     pass
 
 
 class VisualStudioNativeWorkloadNotFoundException(Exception):
+    """Raised when the Visual Studio native workload is not found."""
     pass
 
 
 class WindowsToWindowsGenerator(ToolchainGenerator):
+    """A toolchain generator for building on Windows for Windows."""
+
     COMPAT_ARCHIVE = "//third_party/qemu/google/compat/windows:compat"
 
-    def __init__(self, aosp, dest, prefix):
+    def __init__(self, aosp: Path, dest: Path, prefix: str) -> None:
+        """Initializes a WindowsToWindowsGenerator object.
+
+        Args:
+            aosp: The path to the AOSP source tree.
+            dest: The destination directory for the toolchain.
+            prefix: The prefix for the toolchain binaries.
+        """
         super().__init__(aosp, dest, prefix)
         self.target_arch = "x86_64"
-        self.env = {}
+        self.env: Dict[str, str] = {}
         for key in os.environ:
             self.env[key.upper()] = os.environ[key]
         logging.info("Starting environment: %s", self.env)
@@ -68,7 +81,8 @@ class WindowsToWindowsGenerator(ToolchainGenerator):
             .as_posix()
         )
 
-    def initialize(self):
+    def initialize(self) -> None:
+        """Initializes the toolchain generator."""
         if hasattr(self, "initialized"):
             return
         self._load_visual_studio_env()
@@ -76,11 +90,12 @@ class WindowsToWindowsGenerator(ToolchainGenerator):
         self.bazel.build_target(self.COMPAT_ARCHIVE)
         self.initialized = True
 
-    def _load_visual_studio_env(self):
+    def _load_visual_studio_env(self) -> None:
+        """Loads the Visual Studio environment variables."""
         vs = self._visual_studio()
         logging.info("Loading environment from %s", vs)
         env_lines = subprocess.check_output(
-            [vs, "&&", "set"], encoding="utf-8"
+            [str(vs), "&&", "set"], encoding="utf-8"
         ).splitlines()
         for line in env_lines:
             if "=" in line:
@@ -96,7 +111,8 @@ class WindowsToWindowsGenerator(ToolchainGenerator):
                 "Missing VCTOOLSINSTALLDIR in environment"
             )
 
-    def _get_toolchain_config(self):
+    def _get_toolchain_config(self) -> str:
+        """Returns the toolchain configuration."""
         result = super()._get_toolchain_config()
         result += "\n"
         result += "[host_machine]\n"
@@ -106,7 +122,7 @@ class WindowsToWindowsGenerator(ToolchainGenerator):
         result += "endian = 'little'\n"
         return result
 
-    def _visual_studio(self):
+    def _visual_studio(self) -> Path:
         """Finds the visual studio installation
 
         Raises:
@@ -114,7 +130,7 @@ class WindowsToWindowsGenerator(ToolchainGenerator):
             VisualStudioNativeWorkloadNotFoundException: When the native workload was not found
 
         Returns:
-            _type_: _description_
+            Path: The path to the vcvars64.bat file.
         """
         prgrfiles = Path(os.getenv("ProgramFiles(x86)", "C:\\Program Files (x86)"))
         res = subprocess.check_output(
@@ -128,7 +144,8 @@ class WindowsToWindowsGenerator(ToolchainGenerator):
                 "-format",
                 "json",
                 "-utf8",
-            ]
+            ],
+            encoding="utf-8",
         )
         vsresult = json.loads(res)
         if len(vsresult) == 0:
@@ -148,7 +165,14 @@ class WindowsToWindowsGenerator(ToolchainGenerator):
             f"Unable to detect a visual studio installation with the native desktop workload from {res}."
         )
 
-    def gen_script(self, name, location: Path, cmd_generator_fn):
+    def gen_script(self, name: str, location: Path, cmd_generator_fn: Callable[[], Tuple[str, str]]) -> None:
+        """Generates a script.
+
+        Args:
+            name: The name of the script.
+            location: The path to the script.
+            cmd_generator_fn: A function that returns the command and extra arguments.
+        """
         # Generate windows version of the scripts.
         current_file = Path(__file__).resolve()
         exe = location.with_suffix(".cmd")
@@ -168,7 +192,13 @@ class WindowsToWindowsGenerator(ToolchainGenerator):
 
         exe.chmod(0o755)
 
-    def _generate_bazel_binary_wrapper(self, name, target):
+    def _generate_bazel_binary_wrapper(self, name: str, target: str) -> None:
+        """Generates a wrapper for a Bazel binary.
+
+        Args:
+            name: The name of the binary.
+            target: The Bazel target.
+        """
         exe = self.dest / f"{self.prefix}{name}"
         self.toolchain_map[name] = exe.absolute().as_posix()
 
@@ -182,7 +212,13 @@ rem Bazel: {target}
             f.write(script)
         exe.chmod(0o755)
 
-    def gen_toolchain(self, packages, binaries):
+    def gen_toolchain(self, packages: List[Any], binaries: Dict[str, str]) -> None:
+        """Generates the toolchain.
+
+        Args:
+            packages: A list of packages to generate pkg-config files for.
+            binaries: A dictionary of binaries to generate wrappers for.
+        """
         super().gen_toolchain(packages, binaries)
 
         # Generate the resource compilers.
@@ -190,7 +226,8 @@ rem Bazel: {target}
         self.gen_script("windmc", self.dest / "rc", self.windres)
         self.gen_script("ld-rust", self.dest / "ld-rust", self.rust_link_script)
 
-    def ninja(self):
+    def ninja(self) -> Tuple[str, str]:
+        """Returns the ninja command and extra arguments."""
         # We do not have ninja for windows in AOSP, so we will pick up the one that ships
         # with visual studio.
         ninja = shutil.which("ninja", path=self.env["PATH"])
@@ -201,7 +238,8 @@ rem Bazel: {target}
 
         return f'"{ninja}"', ""
 
-    def cmake(self) -> Path:
+    def cmake(self) -> Tuple[str, str]:
+        """Returns the cmake command and extra arguments."""
         vs = self._visual_studio()
         cmake = (
             self.aosp / "prebuilts" / "cmake" / f"{self.host()}-x86" / "bin" / "cmake"
@@ -213,7 +251,8 @@ rem Bazel: {target}
             "",
         )
 
-    def rust_link_script(self):
+    def rust_link_script(self) -> Tuple[str, str]:
+        """Returns the rust link script and extra arguments."""
         cl = self.clang() / "bin" / "clang"
 
         rust_lib_dir = self.dest / "rust_libs"
@@ -256,10 +295,12 @@ rem Bazel: {target}
         )
         return script, ""
 
-    def rust_flags(self) -> [str]:
+    def rust_flags(self) -> List[str]:
+        """Returns the rust flags."""
         return ["--target=x86_64-pc-windows-gnu"]
 
-    def rustc(self) -> (str, str):
+    def rustc(self) -> Tuple[str, str]:
+        """Returns the rustc command and extra arguments."""
         mingw = self.mingw_dir / "x86_64-w64-mingw32"
         rustc_bin = self.rust_bin_dir / "rustc"
         script = (
@@ -269,7 +310,8 @@ rem Bazel: {target}
         )
         return script, ""
 
-    def cargo(self) -> (str, str):
+    def cargo(self) -> Tuple[str, str]:
+        """Returns the cargo command and extra arguments."""
         rust_linker = (self.dest / "ld-rust.cmd").as_posix()
         mingw = self.mingw_dir / "x86_64-w64-mingw32"
         rustc_bin = self.rust_bin_dir / "rustc"
@@ -293,7 +335,8 @@ rem Bazel: {target}
         )
         return script, ""
 
-    def pkg_config(self):
+    def pkg_config(self) -> Tuple[str, str]:
+        """Returns the pkg-config command and extra arguments."""
         # Build pkg-config from source.
         self.bazel.build_target("@pkg-config")
         pkg_exe = (
@@ -308,7 +351,8 @@ rem Bazel: {target}
             "",
         )
 
-    def cc(self, clang="clang"):
+    def cc(self, clang: str = "clang") -> Tuple[str, str]:
+        """Returns the C compiler command and extra arguments."""
         self.initialize()
         compat_lib_dir = self.bazel.get_archive(self.COMPAT_ARCHIVE).parent
         rust_lib_dir = self.dest / "lib"
@@ -334,10 +378,12 @@ rem Bazel: {target}
             f"{flags}",
         )
 
-    def cxx(self):
+    def cxx(self) -> Tuple[str, str]:
+        """Returns the C++ compiler command and extra arguments."""
         return self.cc("clang++")
 
-    def windres(self):
+    def windres(self) -> Tuple[str, str]:
+        """Returns the windres command and extra arguments."""
         winsdk_rc_bin = (
             Path(self.env["WINDOWSSDKDIR"])
             / "bin"
@@ -347,7 +393,8 @@ rem Bazel: {target}
         )
         return f'"{winsdk_rc_bin}"', ""
 
-    def lld(self):
+    def lld(self) -> Tuple[str, str]:
+        """Returns the lld command and extra arguments."""
         winsdk_lib = (
             Path(self.env["WINDOWSSDKDIR"])
             / "Lib"

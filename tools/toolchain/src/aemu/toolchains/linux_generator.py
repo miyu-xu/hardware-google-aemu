@@ -14,16 +14,28 @@
 # limitations under the License.
 
 from aemu.toolchains.toolchain_generator import ToolchainGenerator
+from pathlib import Path
+from typing import Tuple
 
 
 class LinuxToLinuxGenerator(ToolchainGenerator):
+    """A toolchain generator for building on Linux for Linux."""
+
     COMPAT_ARCHIVE = "//third_party/qemu/google/compat/linux:compat"
 
-    def __init__(self, aosp, dest, prefix):
+    def __init__(self, aosp: Path, dest: Path, prefix: str) -> None:
+        """Initializes a LinuxToLinuxGenerator object.
+
+        Args:
+            aosp: The path to the AOSP source tree.
+            dest: The destination directory for the toolchain.
+            prefix: The prefix for the toolchain binaries.
+        """
         super().__init__(aosp, dest, prefix)
         self.target_arch = "x86_64"
 
-    def initialize(self):
+    def initialize(self) -> None:
+        """Initializes the toolchain generator."""
         if hasattr(self, "initialized"):
             return
 
@@ -75,7 +87,8 @@ class LinuxToLinuxGenerator(ToolchainGenerator):
 
         self.initialized = True
 
-    def strip(self):
+    def strip(self) -> Tuple[str, str]:
+        """Generates the script for the strip command."""
         objcopy = self.clang() / "bin" / "llvm-objcopy"
         script = "target=$(basename $1)\n"
         script += f'{objcopy} --only-keep-debug  $1 "build/debug_info/$target.debug" \n'
@@ -84,7 +97,8 @@ class LinuxToLinuxGenerator(ToolchainGenerator):
         script += "# EXPLICITLY DISABLED ARBITRARY ARGUMENTS: "
         return script, ""
 
-    def cc(self):
+    def cc(self) -> Tuple[str, str]:
+        """Generates the script for the C compiler."""
         self.initialize()
         cache = f"{self.ccache}" if self.ccache else ""
         script = (
@@ -97,7 +111,8 @@ class LinuxToLinuxGenerator(ToolchainGenerator):
             extra += "-lcompat "
         return script, extra
 
-    def cxx(self):
+    def cxx(self) -> Tuple[str, str]:
+        """Generates the script for the C++ compiler."""
         self.initialize()
         cache = f"{self.ccache}" if self.ccache else ""
         script = (
@@ -112,7 +127,7 @@ class LinuxToLinuxGenerator(ToolchainGenerator):
             extra += "-lcompat "
         return script, extra
 
-    def link_dirs(self):
+    def link_dirs(self) -> None:
         """Setup links to libc++.so etc.."""
         super().link_dirs()
         (self.dest / "sysroot").symlink_to(self.system_root)

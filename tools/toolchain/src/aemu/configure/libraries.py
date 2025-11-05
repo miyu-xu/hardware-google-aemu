@@ -14,30 +14,41 @@
 # limitations under the License.
 import shutil
 from pathlib import Path
-from typing import Dict, Set, Tuple
+from typing import Dict, List, Tuple, Any
 
 from aemu.toolchains.package_config_pc import PackageConfigPc
 
 
 # Base class for shared properties
 class Lib:
-    def __init__(self, builder, target, version, shim):
+    """A base class for representing a library dependency."""
+
+    def __init__(self, builder: Any, target: str, version: str, shim: Dict[str, str]) -> None:
+        """Initializes a Lib object.
+
+        Args:
+            builder: The build system to use for building the library.
+            target: The build target for the library.
+            version: The version of the library.
+            shim: A dictionary of shims to apply.
+        """
         self.builder = builder
         self.version = version
         self.shim = shim
         self.target = target
 
     def get_library_config(
-        self, builder, bazel_target: str, shim: Dict[str, str]
-    ) -> Tuple[Set[Path], Path]:
+        self, builder: Any, bazel_target: str, shim: Dict[str, str]
+    ) -> Tuple[List[Path], Path]:
         """Get the public includes and archive path exported by the given Bazel target.
 
         Args:
-            bazel_target (str): The Bazel target to query.
-            shim (Dict[str, str]): Additional shims we wish to apply
+            builder: The builder object.
+            bazel_target: The Bazel target to query.
+            shim: Additional shims we wish to apply.
 
         Returns:
-            Tuple[Set[Path], Path]: A tuple containing a set of include paths and the archive path.
+            A tuple containing a list of include paths and the archive path.
         """
         if "archive" in shim:
             archive = Path(shim["archive"])
@@ -64,18 +75,17 @@ class Lib:
 
         return includes, archive
 
-    def generate_pkg_config(self, dest, pkg_config_dir):
-        """Generate a pkgconfig .pc file for the given Bazel target,
-          registering it with a provided version.
+    def generate_pkg_config(self, dest: Path, pkg_config_dir: Path) -> None:
+        """Generate a pkgconfig .pc file for the given Bazel target.
 
-        Apply specified shims if needed, including building the target,
-        retrieving the archive,
-        obtaining library includes, and creating the pkg-config discovery file.
+        This method registers the library with a provided version and applies
+        specified shims if needed. This includes building the target, retrieving
+        the archive, obtaining library includes, and creating the pkg-config
+        discovery file.
 
         Args:
-            target (str): The Bazel target to generate the pkg-config file for.
-            version (str): The version to register in the pkg-config file.
-            shim (Dict[str, str]): Shims to apply during the generation process.
+            dest: The destination directory for the release.
+            pkg_config_dir: The directory to write the .pc file to.
         """
         # Build the specified Bazel target.
         builder = self.builder
@@ -100,18 +110,42 @@ class Lib:
             cfg.binplace(dest)
 
 
-# BazelLib class with additional Bazel-specific property
 class BazelLib(Lib):
-    def __init__(self, builder, target, version, shim):
+    """A library dependency that is built with Bazel."""
+
+    def __init__(self, builder: Any, target: str, version: str, shim: Dict[str, str]) -> None:
+        """Initializes a BazelLib object.
+
+        Args:
+            builder: The Bazel build system to use.
+            target: The Bazel target for the library.
+            version: The version of the library.
+            shim: A dictionary of shims to apply.
+        """
         super().__init__(builder, target, version, shim)
 
 
-# CMakeLib class inherits from Lib
 class CMakeLib(Lib):
-    def __init__(self, builder, target, version, shim):
+    """A library dependency that is built with CMake."""
+
+    def __init__(self, builder: Any, target: str, version: str, shim: Dict[str, str]) -> None:
+        """Initializes a CMakeLib object.
+
+        Args:
+            builder: The CMake build system to use.
+            target: The CMake target for the library.
+            version: The version of the library.
+            shim: A dictionary of shims to apply.
+        """
         super().__init__(builder, target, version, shim)
 
-    def generate_pkg_config(self, dest, pkg_config_dir):
+    def generate_pkg_config(self, dest: Path, pkg_config_dir: Path) -> None:
+        """Generate a pkgconfig .pc file for the given CMake target.
+
+        Args:
+            dest: The destination directory for the release.
+            pkg_config_dir: The directory to write the .pc file to.
+        """
         builder = self.builder
         output = builder.build_target(self.target)
         pkglib_name = self.target[self.target.rfind(":") + 1 :]

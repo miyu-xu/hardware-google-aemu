@@ -14,6 +14,7 @@
 import tempfile
 import os
 import logging
+from typing import Optional
 
 
 class TemporaryBuildBotDirectory(tempfile.TemporaryDirectory):
@@ -36,8 +37,12 @@ class TemporaryBuildBotDirectory(tempfile.TemporaryDirectory):
     """
 
     def __init__(
-        self, suffix=None, prefix="tmp_buildbot_", dir=None, ignore_cleanup_errors=False
-    ):
+        self,
+        suffix: Optional[str] = None,
+        prefix: str = "tmp_buildbot_",
+        dir: Optional[str] = None,
+        ignore_cleanup_errors: bool = False,
+    ) -> None:
         self._build_context_active = os.environ.get("BUILD_CONTEXT") is not None
         self._cleanup_deliberately_skipped = False
 
@@ -86,7 +91,7 @@ class TemporaryBuildBotDirectory(tempfile.TemporaryDirectory):
                 )
             self._cleanup_deliberately_skipped = True
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         """
         Performs cleanup of the temporary directory.
         If BUILD_CONTEXT was set at initialization, this method does nothing.
