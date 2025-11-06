@@ -26,16 +26,19 @@ from aemu.toolchains.mingw_to_msvc_lib import convert_mingw_to_msvc_lib
 
 class VisualStudioNotFoundException(Exception):
     """Raised when Visual Studio is not found."""
+
     pass
 
 
 class VisualStudioMissingVarException(Exception):
     """Raised when a required Visual Studio environment variable is missing."""
+
     pass
 
 
 class VisualStudioNativeWorkloadNotFoundException(Exception):
     """Raised when the Visual Studio native workload is not found."""
+
     pass
 
 
@@ -165,7 +168,9 @@ class WindowsToWindowsGenerator(ToolchainGenerator):
             f"Unable to detect a visual studio installation with the native desktop workload from {res}."
         )
 
-    def gen_script(self, name: str, location: Path, cmd_generator_fn: Callable[[], Tuple[str, str]]) -> None:
+    def gen_script(
+        self, name: str, location: Path, cmd_generator_fn: Callable[[], Tuple[str, str]]
+    ) -> None:
         """Generates a script.
 
         Args:
@@ -225,18 +230,6 @@ rem Bazel: {target}
         self.gen_script("windres", self.dest / "rc", self.windres)
         self.gen_script("windmc", self.dest / "rc", self.windres)
         self.gen_script("ld-rust", self.dest / "ld-rust", self.rust_link_script)
-
-    def ninja(self) -> Tuple[str, str]:
-        """Returns the ninja command and extra arguments."""
-        # We do not have ninja for windows in AOSP, so we will pick up the one that ships
-        # with visual studio.
-        ninja = shutil.which("ninja", path=self.env["PATH"])
-        if not ninja:
-            raise FileNotFoundError(
-                f"Ninja was not found on the path: {self.env['PATH']}, please install visual studio with Ninja."
-            )
-
-        return f'"{ninja}"', ""
 
     def cmake(self) -> Tuple[str, str]:
         """Returns the cmake command and extra arguments."""
