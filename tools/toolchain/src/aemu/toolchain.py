@@ -128,11 +128,11 @@ def toolchain_command(args: argparse.Namespace) -> None:
         toolchain_dir,
         _split_list(args.bazel_startup_options),
         _split_list(args.bazel_build_options),
-        args.target,
+        get_target_alias(args.target),
     )
 
-    toolchain.gen_toolchain()
-
+    packages = []
+    binaries = {}
     if args.config:
         # If a config file is provided, also generate pkg-config files.
         builder = MesonProjectBuilder(
@@ -146,7 +146,10 @@ def toolchain_command(args: argparse.Namespace) -> None:
             bazel_build_options=_split_list(args.bazel_build_options),
             target=get_target_alias(args.target),
         )
-        builder.generate_pkg_config_files()
+        packages = builder.packages()
+        binaries = builder.binaries()
+
+    toolchain.gen_toolchain(packages, binaries)
 
 
 def compile_command(args: argparse.Namespace) -> None:

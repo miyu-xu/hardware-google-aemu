@@ -66,7 +66,9 @@ class DarwinToDarwinGenerator(ToolchainGenerator):
     MIN_VERSION = "11"
     OSX_DEPLOYMENT_TARGET = "11.0"
 
-    def __init__(self, aosp: Path, dest: Path, prefix: str, target_arch: str = "arm64") -> None:
+    def __init__(
+        self, aosp: Path, dest: Path, prefix: str, target_arch: str = "arm64"
+    ) -> None:
         """Initializes a DarwinToDarwinGenerator object.
 
         Args:
@@ -88,7 +90,6 @@ class DarwinToDarwinGenerator(ToolchainGenerator):
         if not build_match:
             raise ValueError(f"Could not parse Xcode build version from: {verinfo[1]}")
         build = build_match[1]
-
 
         if compare_versions(version, self.MIN_VERSION) == -1:
             raise ValueError(f"You need at least XCode 10, not {version}")
@@ -119,9 +120,11 @@ class DarwinToDarwinGenerator(ToolchainGenerator):
             f"{cache} {self.clang()}/bin/{clang} "
             f"-arch {self.target_arch} "
             f"-isysroot {self.osx_sdk_root} "
+            f"-isystem {self.osx_sdk_root}/usr/include/c++/v1 "
+            f"-isystem {self.clang()}/lib/clang/21/include "
+            f"-F {self.osx_sdk_root}/System/Library/Frameworks "
+            f"-no-canonical-prefixes -nostdinc++ "
             f"-mmacosx-version-min={self.OSX_DEPLOYMENT_TARGET} "
-            "-D__ENVIRONMENT_OS_VERSION_MIN_REQUIRED__=__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ "
-            "-B/usr/bin "
         )
         return script
 
@@ -161,6 +164,11 @@ class DarwinToDarwinGenerator(ToolchainGenerator):
                 "The system rust compiler is needed on darwin! Please install one"
             )
         return cargo, ""
+
+    def link_dirs(self):
+        """Setup symlink to macos sdk."""
+        super().link_dirs()
+        (self.dest / "sysroot").symlink_to(self.osx_sdk_root)
 
     def gen_toolchain(self, packages: List[Any], binaries: Dict[str, str]) -> None:
         """Generates the toolchain.
