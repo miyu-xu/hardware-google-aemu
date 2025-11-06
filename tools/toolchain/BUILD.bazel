@@ -33,8 +33,12 @@ py_library(
         "src/aemu/toolchains/toolchain_generator.py",
         "src/aemu/toolchains/windows_generator.py",
     ],
+    data = ["src/aemu/process/introspection.cquery.bzl"],
     imports = ["src"],
-    deps = [":amc_common_lib"],
+    deps = [
+        ":amc_common_lib",
+        "@bazel_tools//tools/python/runfiles",
+    ],
 )
 
 py_library(

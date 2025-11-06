@@ -168,7 +168,7 @@ class Bazel:
             + self.startup_options
             + ["build"]
             + build_options
-            + [bazel_target],
+    + [bazel_target],
             cwd=self.aosp,
         )
         return [x for x in output if x.startswith("bazel")]
@@ -186,6 +186,30 @@ class Bazel:
         return target.replace("bazel-out", self.info["output_path"]).replace(
             "bazel-bin", self.info["bazel-bin"]
         )
+
+    @lru_cache(maxsize=None)
+    def get_introspection_file(self) -> Path:
+        """
+        Locates the path to the Bazel introspection cquery file (`introspection.cquery.bzl`).
+
+        The location is determined based on the execution environment:
+        1. **Inside Bazel (Runfiles):** It attempts to use the `Runfiles` library
+           to find the file using its Bazel runfile path (`aemu+/tools/toolchain/src/aemu/process/introspection.cquery.bzl`).
+        2. **Outside Bazel (Standalone/Scripting):** If the `Runfiles` import
+           or path resolution fails, it assumes the file is located alongside
+           the current Python script.
+
+        Returns:
+            Path: An absolute path object pointing to the 'introspection.cquery.bzl' file.
+        """
+        try:
+            from python.runfiles import Runfiles
+            r = Runfiles.Create()
+            return Path(r.Rlocation("aemu+/tools/toolchain/src/aemu/process/introspection.cquery.bzl"))
+        except:
+            # Likely outside of bazel, the introspection file is next to us.
+            return Path(__file__).parent.absolute() / "introspection.cquery.bzl"
+        
 
     @lru_cache(maxsize=None)
     def package_info(self, bazel_target: str) -> Dict[str, List[str]]:
@@ -209,7 +233,7 @@ class Bazel:
         # First make sure that the virtual includes are actually generated.
         self.build_target(bazel_target, build_for_includes=True)
 
-        query_script = self.aosp / "build" / "bazel" / "utils" / "cmake.cquery.bzl"
+        query_script = self.get_introspection_file()
 
         build_options = self.build_options + [
             f"--starlark:file={query_script}",
