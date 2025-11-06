@@ -103,6 +103,7 @@ class Lib:
             archive=archive,
             includes=includes,
             shim=self.shim,
+            target=self.target,
         )
 
         cfg.write(pkg_config_dir)
@@ -158,6 +159,7 @@ class CMakeLib(Lib):
             / self.shim.get("archive", "unknown"),  # For now we will use shims.
             includes=None,
             shim=self.shim,
+            target=self.target,
         )
 
         cfg.write(pkg_config_dir)
