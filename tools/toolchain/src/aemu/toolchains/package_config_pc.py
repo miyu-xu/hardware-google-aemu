@@ -66,7 +66,7 @@ class PackageConfigPc:
         if not archive.name:
             if "Libs" not in shim:
                 raise KeyError(
-                    "The archive name cannot be derived, so a 'Libs' shim is required"
+                    f"The archive name for {self.name} cannot be derived, so a 'Libs' shim is required"
                 )
             self.libs = shim.get("Libs")
             self.lib = self.name
