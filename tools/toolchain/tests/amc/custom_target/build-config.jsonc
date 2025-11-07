@@ -8,7 +8,7 @@
             "-Dmessage": "'A common message.'"
         },
         "binaries": {
-            "py_gen": "//hardware/google/aemu/tools/toolchain/tests/amc/custom_target/binaries:py_gen"
+            "prog_py_gen": "//hardware/google/aemu/tools/toolchain/tests/amc/custom_target/binaries:prog_py_gen"
         }
     }
 }

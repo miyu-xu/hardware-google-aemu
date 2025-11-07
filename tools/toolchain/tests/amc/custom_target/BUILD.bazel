@@ -20,4 +20,5 @@ exports_files([
     "meson_options.txt",
     "build-config.jsonc",
     "shim.jsonc",
+    "py_gen.py",
 ])
