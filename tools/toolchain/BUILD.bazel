@@ -1,5 +1,6 @@
 load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
-load("@rules_python//python:defs.bzl", "py_binary", "py_library")
+load("@rules_python//python:defs.bzl", "py_library")
+load(":self.bzl", "py_binary_with_self_label")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -7,6 +8,7 @@ py_library(
     name = "amc_common_lib",
     srcs = [
         "src/aemu/__init__.py",
+        "src/aemu/command.py",
         "src/aemu/jsonc.py",
         "src/aemu/log.py",
         "src/aemu/process/__init__.py",
@@ -53,7 +55,7 @@ py_library(
     deps = [":amc_common_lib"],
 )
 
-py_binary(
+py_binary_with_self_label(
     name = "amc",
     srcs = ["src/amc.py"],
     main = "src/amc.py",

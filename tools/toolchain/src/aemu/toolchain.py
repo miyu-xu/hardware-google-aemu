@@ -14,11 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import argparse
+import configparser
 import datetime
 import json
 import logging
 import platform
 import shutil
+import shlex
 import sys
 import tempfile
 import time
@@ -26,6 +28,7 @@ import zipfile
 from pathlib import Path
 from typing import List, Optional
 
+from aemu.command import CommandLineReconstructor
 from aemu.configure.meson_project_builder import MesonProjectBuilder
 from aemu.configure.shim import create_shim
 from aemu.log import configure_logging, run_meson_command
@@ -39,6 +42,7 @@ class CustomFormatter(
     argparse.RawTextHelpFormatter, argparse.ArgumentDefaultsHelpFormatter
 ):
     """A custom formatter for argparse that combines RawTextHelpFormatter and ArgumentDefaultsHelpFormatter."""
+
     pass
 
 
@@ -115,8 +119,45 @@ def toolchain_command(args: argparse.Namespace) -> None:
     Args:
         args: The command-line arguments.
     """
-    mkdirs(Path(args.out).absolute(), args.force)
     toolchain_dir = get_toolchain_dir(args.out)
+    if args.update:
+        config = configparser.ConfigParser()
+        config.read(toolchain_dir / "aosp-cl.ini")
+        if "amc" in config and "cmd" in config["amc"]:
+            cmd_parts = json.loads(config["amc"]["cmd"])
+            cwd = config["amc"].get("cwd")
+
+            if cwd and not Path(cwd).exists():
+                if not args.force:
+                    logging.error(
+                        "The original working directory '%s' does not exist. "
+                        "This can lead to unexpected behavior. "
+                        "Use the -f/--force flag to use the current working directory instead.",
+                        cwd,
+                    )
+                    sys.exit(1)
+                else:
+                    logging.warning(
+                        "The original working directory '%s' does not exist. "
+                        "Using current working directory instead due to -f/--force flag.",
+                        cwd,
+                    )
+                    reconstructor = CommandLineReconstructor()
+                    cwd = reconstructor.get_cwd()
+
+            logging.info(
+                "Running: %s in %s",
+                " ".join(shlex.quote(p) for p in cmd_parts),
+                cwd,
+            )
+            run(cmd_parts, cwd=Path(cwd))
+        else:
+            logging.warning(
+                "No [amc] section with 'cmd' in aosp-cl.ini, cannot update."
+            )
+        return
+
+    mkdirs(Path(args.out).absolute(), args.force)
     toolchain = get_toolchain_generator(
         args.target,
         toolchain_dir,
@@ -150,6 +191,18 @@ def toolchain_command(args: argparse.Namespace) -> None:
         binaries = builder.binaries()
 
     toolchain.gen_toolchain(packages, binaries)
+
+    # Persist the command used to create this toolchain.
+    config = configparser.ConfigParser()
+    config.read(toolchain_dir / "aosp-cl.ini")
+    if "amc" not in config:
+        config["amc"] = {}
+
+    reconstructor = CommandLineReconstructor()
+    config["amc"]["cmd"] = json.dumps(reconstructor.get_command_parts())
+    config["amc"]["cwd"] = reconstructor.get_cwd()
+    with open(toolchain_dir / "aosp-cl.ini", "w") as configfile:
+        config.write(configfile)
 
 
 def compile_command(args: argparse.Namespace) -> None:
@@ -418,6 +471,14 @@ def main() -> None:
         "--config",
         type=str,
         help="Path to the build-config.jsonc file for the project (optional).",
+    )
+    toolchain_parser.add_argument(
+        "-u",
+        "--update",
+        dest="update",
+        default=False,
+        action="store_true",
+        help="Update the toolchain by re-running the creation command.",
     )
 
     # Subparser for 'setup' command
