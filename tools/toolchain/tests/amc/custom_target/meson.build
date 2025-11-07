@@ -33,11 +33,42 @@ my_pkgconfig_header = custom_target('my_pkgconfig_header.h',
   command : [my_pkgconfig_prog, '@OUTPUT@'],
   install: false)
 
+# Test custom_target with multiple inputs and indexed @INPUT@ variables
+my_inputs = ['py_gen.py', 'input0.txt', 'input1.txt']
+
+msg_2_header = custom_target(
+  'msg_2.h',
+  input: my_inputs,
+  output : 'msg_2.h',
+  command : [
+    prog_python, '@INPUT0@',
+    '--msg-file', '@INPUT1@',
+    '--msg-var', 'msg2',
+    '-o', '@OUTPUT@',
+    '-d', '@DEPFILE@'],
+  depfile: 'msg_2.h.d',
+  install: false)
+
+msg_3_header = custom_target(
+  'msg_3.h',
+  input: my_inputs,
+  output : 'msg_3.h',
+  command : [
+    prog_python, '@INPUT0@',
+    '--msg-file', '@INPUT2@',
+    '--msg-var', 'msg3',
+    '-o', '@OUTPUT@',
+    '-d', '@DEPFILE@'],
+  depfile: 'msg_3.h.d',
+  install: false)
+
 executable(
   'custom_target_exe',
   'main.cpp',
   sources: [
     message_header,
     msg_1_header,
-    my_pkgconfig_header
+    my_pkgconfig_header,
+    msg_2_header,
+    msg_3_header
   ])
