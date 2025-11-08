@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
 load("@rules_python//python:defs.bzl", "py_binary")
 
 package(default_visibility = ["//hardware/google/aemu/tools/toolchain/tests/amc:__subpackages__"])
@@ -21,4 +22,9 @@ package(default_visibility = ["//hardware/google/aemu/tools/toolchain/tests/amc:
 py_binary(
     name = "prog_py_gen",
     srcs = ["prog_py_gen.py"],
+)
+
+cc_binary(
+    name = "my_pkgconfig_prog",
+    srcs = ["my_pkgconfig_prog.cpp"],
 )

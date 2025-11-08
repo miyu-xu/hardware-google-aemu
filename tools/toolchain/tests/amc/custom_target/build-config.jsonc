@@ -3,6 +3,17 @@
     "source_path": "hardware/google/aemu/tools/toolchain/tests/amc/custom_target",
     "common": {
         "dependencies": {
+            "my-pkgconfig-prog": {
+                "lib_type": "bazel",
+                "bazel_target": "//hardware/google/aemu/tools/toolchain/tests/amc/custom_target/binaries:my_pkgconfig_prog",
+                "version": "0.0.1",
+                "shim": {
+                    "name": "my-pkgconfig-prog",
+                    "extra_vars": {
+                        "my_pkgconfig_prog": "${libdir}/my_pkgconfig_prog"
+                    }
+                }
+            }
         },
         "meson_options": {
             "-Dmessage": "'A common message.'"

@@ -25,10 +25,19 @@ msg_1_header = custom_target(
   depfile: 'msg_1.h.d',
   install: false)
 
+# Test custom_target with a program pulled from a pkg-config file
+my_pkgconfig_dep = dependency('my-pkgconfig-prog', native: true)
+my_pkgconfig_prog = find_program(my_pkgconfig_dep.get_variable(pkgconfig : 'my_pkgconfig_prog'))
+my_pkgconfig_header = custom_target('my_pkgconfig_header.h',
+  output : 'my_pkgconfig_header.h',
+  command : [my_pkgconfig_prog, '@OUTPUT@'],
+  install: false)
+
 executable(
   'custom_target_exe',
   'main.cpp',
   sources: [
     message_header,
-    msg_1_header
+    msg_1_header,
+    my_pkgconfig_header
   ])
