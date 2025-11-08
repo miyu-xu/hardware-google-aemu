@@ -26,6 +26,14 @@
     "project_name": "sample",
     "source_path": "hardware/google/aemu/tools/toolchain/example",
     "common": {
+        // The versions of the compiler toolchains from $AOSP/prebuilts to use
+        // if these are not defined the global project wide versions in
+        // $AOSP/build/bazel/toolchains/tool_versions.json
+        // will be used.
+        "tool_versions": {
+            "clang": "clang-r563880",
+             "rust": "1.85.1"
+        },
         // "dependencies": A dictionary of libraries required for the build. These
         // are used to generate pkg-config (.pc) files, which Meson uses to find
         // libraries and their headers.

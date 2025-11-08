@@ -33,13 +33,16 @@ class ToolchainGenerator:
 
     PKGCFG_DIR = "pc-config"
 
-    def __init__(self, aosp: Path, dest: Path, prefix: str) -> None:
+    def __init__(
+        self, aosp: Path, dest: Path, prefix: str, versions: Dict[str, str] = None
+    ) -> None:
         """Initializes a ToolchainGenerator object.
 
         Args:
             aosp: The path to the AOSP source tree.
             dest: The destination directory for the toolchain.
             prefix: The prefix for the toolchain binaries.
+            versions: A dictionary of toolchain versions.
         """
         self.aosp = aosp.absolute()
         # self.bazel = Bazel(self.aosp, dest)
@@ -49,14 +52,17 @@ class ToolchainGenerator:
         self.reconstructor = CommandLineReconstructor()
         self.command_line = self.reconstructor.get_command_string()
 
-        toolchain_json = (
-            self.aosp / "build" / "bazel" / "toolchains" / "tool_versions.json"
-        )
-        with open(
-            toolchain_json,
-            encoding="utf-8",
-        ) as f:
-            self.versions = json.load(f)
+        if versions:
+            self.versions = versions
+        else:
+            toolchain_json = (
+                self.aosp / "build" / "bazel" / "toolchains" / "tool_versions.json"
+            )
+            with open(
+                toolchain_json,
+                encoding="utf-8",
+            ) as f:
+                self.versions = json.load(f)
         self.dest: Path = dest
         self.prefix = prefix
         self.toolchain_map: Dict[str, str] = {}

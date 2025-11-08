@@ -66,7 +66,11 @@ def get_target_alias(target: str) -> str:
 
 
 def get_toolchain_generator(
-    target: str, toolchain_dir: Path, prefix: str, aosp: Path
+    target: str,
+    toolchain_dir: Path,
+    prefix: str,
+    aosp: Path,
+    versions: dict = None,
 ) -> ToolchainGenerator:
     """Factory method for ToolchainGenerator objects.
 
@@ -77,6 +81,7 @@ def get_toolchain_generator(
         toolchain_dir: The directory where the toolchain will be installed.
         prefix: The prefix for the toolchain binaries.
         aosp: The path to the AOSP source tree.
+        versions: A dictionary of toolchain versions.
 
     Returns:
         A ToolchainGenerator object for the specified target.
@@ -101,4 +106,4 @@ def get_toolchain_generator(
     toolchain_klazz = generator_map[canonical_target]
     # Initialize the toolchain generator with the specified destination and an empty suffix.
     # This generator will be used to manage toolchain-related configurations.
-    return toolchain_klazz(Path(aosp), Path(toolchain_dir), prefix)
+    return toolchain_klazz(Path(aosp), Path(toolchain_dir), prefix, versions)

@@ -39,6 +39,28 @@ bazel_dep(name = "goldfish_build")
 
 This module provides the necessary platform definitions and toolchains that `amc` relies on.
 
+### 4. Toolchain Version Configuration
+
+By default, `amc` uses the toolchain versions specified in the global `tool_versions.json` file located in `build/bazel/toolchains/`. However, you can override these versions for a specific project by adding a `tool_versions` object to your `build-config.jsonc` file.
+
+This object can be placed in the `common` section to apply to all platforms, or in a platform-specific section for more granular control.
+
+**Example:**
+
+To use a specific version of Clang and Rust for all platforms, add the following to the `common` section of your `build-config.jsonc`:
+
+```json
+"common": {
+  "tool_versions": {
+    "clang": "clang-r522817",
+    "rust": "1.72.0"
+  },
+  ...
+}
+```
+
+This provides a convenient way to pin toolchain versions for a project, ensuring reproducible builds without modifying global configuration files.
+
 ## Commands
 
 `amc` provides several commands to manage the build lifecycle.

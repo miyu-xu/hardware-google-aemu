@@ -16,7 +16,7 @@
 from aemu.toolchains.toolchain_generator import ToolchainGenerator
 from pathlib import Path
 import shutil
-from typing import Tuple
+from typing import Tuple, Dict
 
 
 class LinuxToLinuxAarch64Generator(ToolchainGenerator):
@@ -29,7 +29,9 @@ class LinuxToLinuxAarch64Generator(ToolchainGenerator):
     GCC_VER = 10
     GCC_PREFIX = "aarch64-linux-gnu-"
 
-    def __init__(self, aosp: Path, dest: Path, prefix: str) -> None:
+    def __init__(
+        self, aosp: Path, dest: Path, prefix: str, versions: Dict[str, str] = None
+    ) -> None:
         """Initializes a LinuxToLinuxAarch64Generator object.
 
         Args:
@@ -37,7 +39,7 @@ class LinuxToLinuxAarch64Generator(ToolchainGenerator):
             dest: The destination directory for the toolchain.
             prefix: The prefix for the toolchain binaries.
         """
-        super().__init__(aosp, dest, prefix)
+        super().__init__(aosp, dest, prefix, versions)
         self.target_arch = "aarch64"
 
     def _fetch_toolchain(self) -> Path:

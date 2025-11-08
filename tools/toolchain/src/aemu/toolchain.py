@@ -28,6 +28,7 @@ import zipfile
 from pathlib import Path
 from typing import List, Optional
 
+from aemu import jsonc
 from aemu.command import CommandLineReconstructor
 from aemu.configure.meson_project_builder import MesonProjectBuilder
 from aemu.configure.shim import create_shim
@@ -68,11 +69,24 @@ def setup_command(args: argparse.Namespace) -> MesonProjectBuilder:
         A MesonProjectBuilder object.
     """
     mkdirs(Path(args.out).absolute(), args.force)
+
+    # Load the configuration to get the tool versions.
+    with open(args.config, "r") as f:
+        config = jsonc.load(f)
+
+    common_config = config.get("common", {})
+    platform_config = config.get("platforms", {}).get(get_target_alias(args.target), {})
+    tool_versions = {
+        **common_config.get("tool_versions", {}),
+        **platform_config.get("tool_versions", {}),
+    }
+
     toolchain_generator = get_toolchain_generator(
         args.target,
         get_toolchain_dir(args.out),
         args.prefix,
         Path(args.aosp),
+        tool_versions,
     )
     builder = MesonProjectBuilder(
         config_file=args.config,
@@ -158,11 +172,25 @@ def toolchain_command(args: argparse.Namespace) -> None:
         return
 
     mkdirs(Path(args.out).absolute(), args.force)
+    tool_versions = None
+    if args.config:
+        with open(args.config, "r") as f:
+            config = jsonc.load(f)
+        common_config = config.get("common", {})
+        platform_config = config.get("platforms", {}).get(
+            get_target_alias(args.target), {}
+        )
+        tool_versions = {
+            **common_config.get("tool_versions", {}),
+            **platform_config.get("tool_versions", {}),
+        }
+
     toolchain = get_toolchain_generator(
         args.target,
         toolchain_dir,
         args.prefix,
         Path(args.aosp),
+        tool_versions,
     )
     toolchain.bazel = Bazel(
         Path(args.aosp).absolute(),

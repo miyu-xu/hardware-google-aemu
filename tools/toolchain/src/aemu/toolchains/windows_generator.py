@@ -47,7 +47,9 @@ class WindowsToWindowsGenerator(ToolchainGenerator):
 
     COMPAT_ARCHIVE = "//third_party/qemu/google/compat/windows:compat"
 
-    def __init__(self, aosp: Path, dest: Path, prefix: str) -> None:
+    def __init__(
+        self, aosp: Path, dest: Path, prefix: str, versions: Dict[str, str] = None
+    ) -> None:
         """Initializes a WindowsToWindowsGenerator object.
 
         Args:
@@ -55,7 +57,7 @@ class WindowsToWindowsGenerator(ToolchainGenerator):
             dest: The destination directory for the toolchain.
             prefix: The prefix for the toolchain binaries.
         """
-        super().__init__(aosp, dest, prefix)
+        super().__init__(aosp, dest, prefix, versions)
         self.target_arch = "x86_64"
         self.env: Dict[str, str] = {}
         for key in os.environ:

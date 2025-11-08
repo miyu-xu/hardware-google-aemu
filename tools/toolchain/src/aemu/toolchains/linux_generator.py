@@ -15,7 +15,7 @@
 
 from aemu.toolchains.toolchain_generator import ToolchainGenerator
 from pathlib import Path
-from typing import Tuple
+from typing import Tuple, Dict
 
 
 class LinuxToLinuxGenerator(ToolchainGenerator):
@@ -23,7 +23,9 @@ class LinuxToLinuxGenerator(ToolchainGenerator):
 
     COMPAT_ARCHIVE = "//third_party/qemu/google/compat/linux:compat"
 
-    def __init__(self, aosp: Path, dest: Path, prefix: str) -> None:
+    def __init__(
+        self, aosp: Path, dest: Path, prefix: str, versions: Dict[str, str] = None
+    ) -> None:
         """Initializes a LinuxToLinuxGenerator object.
 
         Args:
@@ -31,7 +33,7 @@ class LinuxToLinuxGenerator(ToolchainGenerator):
             dest: The destination directory for the toolchain.
             prefix: The prefix for the toolchain binaries.
         """
-        super().__init__(aosp, dest, prefix)
+        super().__init__(aosp, dest, prefix, versions)
         self.target_arch = "x86_64"
 
     def initialize(self) -> None:
