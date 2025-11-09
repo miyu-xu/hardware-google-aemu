@@ -92,6 +92,7 @@ class Bazel:
         """Returns the host operating system."""
         return platform.system().lower()
 
+    @lru_cache(maxsize=None)
     def build_exe(
         self,
         bazel_target: str,
@@ -128,6 +129,7 @@ class Bazel:
         return dest.absolute()
 
 
+    @lru_cache(maxsize=None)
     def build_target(
         self,
         bazel_target: str,
