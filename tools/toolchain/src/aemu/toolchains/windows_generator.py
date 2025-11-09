@@ -45,7 +45,7 @@ class VisualStudioNativeWorkloadNotFoundException(Exception):
 class WindowsToWindowsGenerator(ToolchainGenerator):
     """A toolchain generator for building on Windows for Windows."""
 
-    COMPAT_ARCHIVE = "//third_party/qemu/google/compat/windows:compat"
+    COMPAT_ARCHIVE = "@aemu//windows:compat"
 
     def __init__(self, aosp: Path, dest: Path, prefix: str) -> None:
         """Initializes a WindowsToWindowsGenerator object.
@@ -107,11 +107,23 @@ class WindowsToWindowsGenerator(ToolchainGenerator):
                 self.env[key.upper()] = val
 
         if "VSINSTALLDIR" not in self.env:
-            raise VisualStudioMissingVarException("Missing VSINSTALLDIR in environment")
+            raise VisualStudioMissingVarException(
+                f"Missing VSINSTALLDIR in environment, got {self.env}"
+            )
 
         if "VCTOOLSINSTALLDIR" not in self.env:
             raise VisualStudioMissingVarException(
-                "Missing VCTOOLSINSTALLDIR in environment"
+                f"Missing VCTOOLSINSTALLDIR in environment, got {self.env}"
+            )
+
+        if "WINDOWSSDKLIBVERSION" not in self.env:
+            raise VisualStudioMissingVarException(
+                f"Missing WINDOWSSDKLIBVERSION in environment, got {self.env}"
+            )
+
+        if "WINDOWSSDKDIR" not in self.env:
+            raise VisualStudioMissingVarException(
+                f"Missing WINDOWSSDKDIR in environment, got {self.env}"
             )
 
     def _get_toolchain_config(self) -> str:
@@ -224,12 +236,12 @@ rem Bazel: {target}
             packages: A list of packages to generate pkg-config files for.
             binaries: A dictionary of binaries to generate wrappers for.
         """
-        super().gen_toolchain(packages, binaries)
-
         # Generate the resource compilers.
         self.gen_script("windres", self.dest / "rc", self.windres)
         self.gen_script("windmc", self.dest / "rc", self.windres)
         self.gen_script("ld-rust", self.dest / "ld-rust", self.rust_link_script)
+        self.gen_script("clang-cl", self.dest / "clang-cl.cmd", self.clang_cl)
+        super().gen_toolchain(packages, binaries)
 
     def cmake(self) -> Tuple[str, str]:
         """Returns the cmake command and extra arguments."""
@@ -342,6 +354,22 @@ rem Bazel: {target}
         return (
             f"set PKG_CONFIG_PATH={pkg_path}\n" f"{pkg_exe}",
             "",
+        )
+
+    def clang_cl(self) -> Tuple[str, str]:
+        """Returns the clang-cl command and extra arguments."""
+        self.initialize()
+        cache = f'"{self.ccache}"' if self.ccache else ""
+        compat_lib_dir = self.bazel.get_archive(self.COMPAT_ARCHIVE).parent
+        rust_lib_dir = self.dest / "lib"
+
+        cache = f'"{self.ccache}"' if self.ccache else ""
+        cl = self.clang() / "bin" / "clang-cl"
+        flags = f""
+
+        return (
+            f"{cache} {cl}",
+            f"{flags}",
         )
 
     def cc(self, clang: str = "clang") -> Tuple[str, str]:
