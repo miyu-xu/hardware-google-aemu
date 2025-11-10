@@ -67,7 +67,12 @@ class DarwinToDarwinGenerator(ToolchainGenerator):
     OSX_DEPLOYMENT_TARGET = "11.0"
 
     def __init__(
-        self, aosp: Path, dest: Path, prefix: str, target_arch: str = "arm64"
+        self,
+        aosp: Path,
+        dest: Path,
+        prefix: str,
+        versions: Dict[str, str] = None,
+        target_arch: str = "arm64",
     ) -> None:
         """Initializes a DarwinToDarwinGenerator object.
 
@@ -77,7 +82,7 @@ class DarwinToDarwinGenerator(ToolchainGenerator):
             prefix: The prefix for the toolchain binaries.
             target_arch: The target architecture.
         """
-        super().__init__(aosp, dest, prefix)
+        super().__init__(aosp, dest, prefix, versions)
         self.target_arch = target_arch
 
         verinfo = check_output(["xcodebuild", "-version"]).splitlines()
@@ -239,7 +244,9 @@ class DarwinToDarwinGenerator(ToolchainGenerator):
 class DarwinToDarwinX64Generator(DarwinToDarwinGenerator):
     """A toolchain generator for building on Darwin for x86_64."""
 
-    def __init__(self, aosp: Path, dest: Path, prefix: str) -> None:
+    def __init__(
+        self, aosp: Path, dest: Path, prefix: str, str, versions: Dict[str, str] = None
+    ) -> None:
         """Initializes a DarwinToDarwinX64Generator object.
 
         Args:
@@ -247,4 +254,4 @@ class DarwinToDarwinX64Generator(DarwinToDarwinGenerator):
             dest: The destination directory for the toolchain.
             prefix: The prefix for the toolchain binaries.
         """
-        super().__init__(aosp, dest, prefix, "x86_64")
+        super().__init__(aosp, dest, prefix, str, versions, "x86_64")
