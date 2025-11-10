@@ -228,6 +228,7 @@ rem Bazel: {target}
             packages: A list of packages to generate pkg-config files for.
             binaries: A dictionary of binaries to generate wrappers for.
         """
+        super().gen_toolchain(packages, binaries)
         # Generate the resource compilers, not they all point to rc, llvm-rc.
         # llvm-rc is a clean room implementation of msvc-rc, with a series of
         # extensions.
@@ -236,7 +237,6 @@ rem Bazel: {target}
         self.gen_script("rc", self.dest / "rc", self.windres)
         self.gen_script("ld-rust", self.dest / "ld-rust", self.rust_link_script)
         self.gen_script("clang-cl", self.dest / "clang-cl.cmd", self.clang_cl)
-        super().gen_toolchain(packages, binaries)
 
     def cmake(self) -> Tuple[str, str]:
         """Returns the cmake command and extra arguments."""
@@ -278,7 +278,13 @@ rem Bazel: {target}
 
         # We should have loaded the visual studio environment.
         # We are going to extract the -L paths from this.
-        lib_paths = '"-L' + '" "-L'.join(self.env["LIB"].split(";")) + '"'
+        lib_paths = ""
+        if "LIB" in self.env:
+            lib_paths = '"-L' + '" "-L'.join(self.env["LIB"].split(";")) + '"'
+        else:
+            logging.warning(
+                "Not adding paths from `LIB` to the rust linker as it is not available in the environment"
+            )
 
         script = (
             "# Link script for cargo \n"
