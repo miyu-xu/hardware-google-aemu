@@ -118,16 +118,6 @@ class WindowsToWindowsGenerator(ToolchainGenerator):
                 f"Missing VCTOOLSINSTALLDIR in environment, got {self.env}"
             )
 
-        if "WINDOWSSDKLIBVERSION" not in self.env:
-            raise VisualStudioMissingVarException(
-                f"Missing WINDOWSSDKLIBVERSION in environment, got {self.env}"
-            )
-
-        if "WINDOWSSDKDIR" not in self.env:
-            raise VisualStudioMissingVarException(
-                f"Missing WINDOWSSDKDIR in environment, got {self.env}"
-            )
-
     def _get_toolchain_config(self) -> str:
         """Returns the toolchain configuration."""
         result = super()._get_toolchain_config()
@@ -238,9 +228,12 @@ rem Bazel: {target}
             packages: A list of packages to generate pkg-config files for.
             binaries: A dictionary of binaries to generate wrappers for.
         """
-        # Generate the resource compilers.
+        # Generate the resource compilers, not they all point to rc, llvm-rc.
+        # llvm-rc is a clean room implementation of msvc-rc, with a series of
+        # extensions.
         self.gen_script("windres", self.dest / "rc", self.windres)
         self.gen_script("windmc", self.dest / "rc", self.windres)
+        self.gen_script("rc", self.dest / "rc", self.windres)
         self.gen_script("ld-rust", self.dest / "ld-rust", self.rust_link_script)
         self.gen_script("clang-cl", self.dest / "clang-cl.cmd", self.clang_cl)
         super().gen_toolchain(packages, binaries)
@@ -406,24 +399,28 @@ rem Bazel: {target}
         return self.cc("clang++")
 
     def windres(self) -> Tuple[str, str]:
-        """Returns the windres command and extra arguments."""
-        winsdk_rc_bin = (
-            Path(self.env["WINDOWSSDKDIR"])
-            / "bin"
-            / self.env["WINDOWSSDKLIBVERSION"]
-            / "x64"
-            / "rc.exe"
-        )
+        """Returns the rc command and extra arguments."""
+        winsdk_rc_bin = self.clang() / "bin" / "llvm-rc"
         return f'"{winsdk_rc_bin}"', ""
 
     def lld(self) -> Tuple[str, str]:
         """Returns the lld command and extra arguments."""
-        winsdk_lib = (
-            Path(self.env["WINDOWSSDKDIR"])
-            / "Lib"
-            / self.env["WINDOWSSDKLIBVERSION"]
-            / "um"
-            / "x64"
-        )
+
+        link_opts = ""
+        if "WINDOWSSDKLIBVERSION" in self.env and "WINDOWSSDKDIR" in self.env:
+            winsdk_lib = (
+                Path(self.env["WINDOWSSDKDIR"])
+                / "Lib"
+                / self.env["WINDOWSSDKLIBVERSION"]
+                / "um"
+                / "x64"
+            )
+            link_opts = f"/libpath:{winsdk_lib}"
+        else:
+            logging.warning(
+                "Missing WINDOWSSDKLIBVERSION or WINDOWSSDKDIR in environment. "
+                "These will not be added to the default link path."
+            )
+
         lld = self.clang() / "bin" / "lld-link"
-        return f'{lld} /libpath:"{winsdk_lib}"', ""
+        return f'{lld} {link_opts}"', ""
