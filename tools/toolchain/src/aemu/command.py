@@ -13,9 +13,11 @@
 # limitations under the License.
 """A module for reconstructing the command used to invoke a script."""
 import os
+import logging
 import sys
 import shlex
 from typing import List
+from pathlib import Path
 
 
 class CommandLineReconstructor:
@@ -46,7 +48,7 @@ class CommandLineReconstructor:
         """Reconstructs the command used to invoke the script as a properly quoted string."""
         return " ".join(shlex.quote(p) for p in self.get_command_parts())
 
-    def get_cwd(self) -> str:
+    def get_cwd(self, fallback: Path = None) -> str:
         """Returns the current working directory.
 
         If running under bazel, this will be the workspace root.
@@ -55,4 +57,12 @@ class CommandLineReconstructor:
             The path to the current working directory.
         """
         # BUILD_WORKSPACE_DIRECTORY is set by Bazel to the root of the workspace.
-        return os.environ.get("BUILD_WORKSPACE_DIRECTORY", os.getcwd())
+        try:
+            return os.environ.get("BUILD_WORKSPACE_DIRECTORY", os.getcwd())
+        except FileNotFoundError as e:
+            logging.warning(
+                "Unable to find the current working directory %s, falling back to: %s",
+                e,
+                fallback,
+            )
+            return str(fallback)
