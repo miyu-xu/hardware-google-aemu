@@ -157,7 +157,7 @@ def toolchain_command(args: argparse.Namespace) -> None:
                         cwd,
                     )
                     reconstructor = CommandLineReconstructor()
-                    cwd = reconstructor.get_cwd()
+                    cwd = reconstructor.get_cwd(toolchain_dir)
 
             logging.info(
                 "Running: %s in %s",
@@ -165,11 +165,13 @@ def toolchain_command(args: argparse.Namespace) -> None:
                 cwd,
             )
             run(cmd_parts, cwd=Path(cwd))
+            return
         else:
             logging.warning(
                 "No [amc] section with 'cmd' in aosp-cl.ini, cannot update."
             )
-        return
+            if not args.force:
+                return
 
     mkdirs(Path(args.out).absolute(), args.force)
     tool_versions = None
@@ -228,7 +230,7 @@ def toolchain_command(args: argparse.Namespace) -> None:
 
     reconstructor = CommandLineReconstructor()
     config["amc"]["cmd"] = json.dumps(reconstructor.get_command_parts())
-    config["amc"]["cwd"] = reconstructor.get_cwd()
+    config["amc"]["cwd"] = reconstructor.get_cwd(toolchain_dir)
     with open(toolchain_dir / "aosp-cl.ini", "w") as configfile:
         config.write(configfile)
 
