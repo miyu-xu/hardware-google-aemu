@@ -1,5 +1,5 @@
 load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
-load("@rules_python//python:defs.bzl", "py_library")
+load("@rules_python//python:defs.bzl", "py_library", "py_test")
 load(":self.bzl", "py_binary_with_self_label")
 
 package(default_visibility = ["//visibility:public"])
@@ -64,6 +64,24 @@ py_binary_with_self_label(
         ":amc_common_lib",
         ":amc_qemu_configure_lib",
         ":amc_toolchain_lib",
+    ],
+)
+
+py_test(
+    name = "jsonc_test",
+    srcs = ["src/aemu/jsonc_test.py"],
+    imports = ["src"],
+    deps = [
+        ":amc_common_lib",
+    ],
+)
+
+py_test(
+    name = "command_test",
+    srcs = ["src/aemu/command_test.py"],
+    imports = ["src"],
+    deps = [
+        ":amc_common_lib",
     ],
 )
 

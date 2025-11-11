@@ -57,8 +57,11 @@ class CommandLineReconstructor:
             The path to the current working directory.
         """
         # BUILD_WORKSPACE_DIRECTORY is set by Bazel to the root of the workspace.
+        bazel_workspace_dir = os.environ.get("BUILD_WORKSPACE_DIRECTORY")
+        if bazel_workspace_dir:
+            return bazel_workspace_dir
         try:
-            return os.environ.get("BUILD_WORKSPACE_DIRECTORY", os.getcwd())
+            return os.getcwd()
         except FileNotFoundError as e:
             logging.warning(
                 "Unable to find the current working directory %s, falling back to: %s",
