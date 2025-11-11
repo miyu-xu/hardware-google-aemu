@@ -26,6 +26,7 @@ py_library(
         "src/aemu/process/cmake.py",
         "src/aemu/toolchain.py",
         "src/aemu/toolchains/__init__.py",
+        "src/aemu/toolchains/binary_patcher.py",
         "src/aemu/toolchains/darwin_generator.py",
         "src/aemu/toolchains/factory.py",
         "src/aemu/toolchains/linux_arm_generator.py",

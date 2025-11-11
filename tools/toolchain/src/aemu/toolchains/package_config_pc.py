@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import Dict, Set, Optional
 
 from aemu.process.runner import check_output, run
+from aemu.toolchains.binary_patcher import BinaryPatcher
 
 
 class PackageConfigPc:
@@ -139,43 +140,6 @@ class PackageConfigPc:
             if not shim_link.exists():
                 archive.link_to(shim_link)
 
-    def _patch_dylib(self, dylib: Path) -> None:
-        """Patches a dylib to work around b/331243894.
-
-        Args:
-            dylib: The path to the dylib.
-        """
-        # Workaround for b/331243894
-        rpath_regex = re.compile(r"^.*@rpath\/([^\s]+)")
-        result = check_output(["otool", "-L", str(dylib)])
-        rpathline = result.splitlines()[1]
-        match = rpath_regex.match(rpathline)
-        if match:
-            bazel_name = dylib.parent / match.group(1)
-            if not bazel_name.exists():
-                bazel_name.symlink_to(dylib)
-            logging.info("Patching up bazel @path %s -> %s", bazel_name, dylib)
-        else:
-            logging.info("Not patching %s", dylib)
-
-    def _patch_solib(self, solib: Path) -> None:
-        """Patches a shared library to set up the SONAME.
-
-        Args:
-            solib: The path to the shared library.
-        """
-        # Run the objdump command to extract SONAME
-        objdump_output = run(["objdump", "-p", str(solib)])
-
-        # Find the line containing SONAME
-        soname_line = next((line for line in objdump_output if "SONAME" in line), None)
-
-        if soname_line:
-            # Extract the SONAME file that the library is using and setup the symlink
-            soname = solib.parent / soname_line.split()[1]
-            target_relative = solib.relative_to(soname.parent)
-            soname.symlink_to(target_relative)
-
     def binplace(self, dest_dir: Path) -> None:
         """Binplace the shared libraries to the given location."""
         so_ext = [".so", ".dylib", ".dll"]
@@ -192,10 +156,10 @@ class PackageConfigPc:
                     shutil.copyfile(possible, destination)
                     if ext == ".dylib":
                         # Patch up bazel @rpath
-                        self._patch_dylib(destination)
+                        BinaryPatcher.patch_dylib(destination)
                     if ext == ".so":
                         # Patch up links if needed
-                        self._patch_solib(destination)
+                        BinaryPatcher.patch_solib(destination)
 
                     return
 
