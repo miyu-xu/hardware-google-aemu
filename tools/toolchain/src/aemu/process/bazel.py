@@ -128,7 +128,6 @@ class Bazel:
         dest = self.aosp / files.splitlines()[0].strip()
         return dest.absolute()
 
-
     @lru_cache(maxsize=None)
     def build_target(
         self,
@@ -170,7 +169,7 @@ class Bazel:
             + self.startup_options
             + ["build"]
             + build_options
-    + [bazel_target],
+            + [bazel_target],
             cwd=self.aosp,
         )
         return [x for x in output if x.startswith("bazel")]
@@ -206,12 +205,16 @@ class Bazel:
         """
         try:
             from python.runfiles import Runfiles
+
             r = Runfiles.Create()
-            return Path(r.Rlocation("aemu+/tools/toolchain/src/aemu/process/introspection.cquery.bzl"))
+            return Path(
+                r.Rlocation(
+                    "aemu+/tools/toolchain/src/aemu/process/introspection.cquery.bzl"
+                )
+            )
         except:
             # Likely outside of bazel, the introspection file is next to us.
             return Path(__file__).parent.absolute() / "introspection.cquery.bzl"
-        
 
     @lru_cache(maxsize=None)
     def package_info(self, bazel_target: str) -> Dict[str, List[str]]:
@@ -248,7 +251,7 @@ class Bazel:
             + self.startup_options
             + ["cquery"]
             + build_options
-            + [bazel_target],
+            + [f'"{bazel_target}"'],
             cwd=self.aosp,
         )
         normalized = self._replace_labels(starlark)
