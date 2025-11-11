@@ -21,4 +21,6 @@ exports_files([
     "build-config.jsonc",
     "shim.jsonc",
     "py_gen.py",
+    "input0.txt",
+    "input1.txt",
 ])

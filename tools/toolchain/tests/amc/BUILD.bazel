@@ -27,6 +27,8 @@ amc_test(
 amc_test(
     name = "custom_target_test",
     srcs = [
+        "//hardware/google/aemu/tools/toolchain/tests/amc/custom_target:input0.txt",
+        "//hardware/google/aemu/tools/toolchain/tests/amc/custom_target:input1.txt",
         "//hardware/google/aemu/tools/toolchain/tests/amc/custom_target:main.cpp",
         "//hardware/google/aemu/tools/toolchain/tests/amc/custom_target:meson.build",
         "//hardware/google/aemu/tools/toolchain/tests/amc/custom_target:meson_options.txt",

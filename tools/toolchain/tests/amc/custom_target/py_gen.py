@@ -17,13 +17,26 @@ from pathlib import Path
 
 def main():
     parser = argparse.ArgumentParser(description='Generate a C++ header file with a message.')
-    parser.add_argument('-m', '--message', required=True,
+    parser.add_argument('-m', '--message',
                         help='The message to include in the header file.')
+    parser.add_argument('--msg-file',
+                        help='The file containing the message to include in the header file.')
     parser.add_argument('--msg-var', required=True,
                         help='The name of the message variable in the header file')
     parser.add_argument('-o', '--output', required=True, help='The output header file path.')
     parser.add_argument('-d', '--depfile', required=True, help='The output dependency file.')
     args = parser.parse_args()
+
+    if (args.message is None and args.msg_file is None) or \
+       (args.message is not None and args.msg_file is not None):
+        parser.error("Either --message or --msg-file must be provided, but not both.")
+
+    message_content = ""
+    if args.msg_file:
+        with open(args.msg_file, 'r') as f:
+            message_content = f.read().strip()
+    else:
+        message_content = args.message
 
     out = Path(args.output).absolute()
     depfile = Path(args.depfile).absolute()
@@ -33,7 +46,7 @@ def main():
     with open(out, 'w') as f:
         f.write(f'#include <string>\n\n')
         f.write(f'namespace generated {{\n')
-        f.write(f'  std::string {args.msg_var} = "From py_gen: {args.message}";\n')
+        f.write(f'  std::string {args.msg_var} = "From py_gen: {message_content}";\n')
         f.write(f'}}\n')
 
     with open(depfile, 'w') as f:
