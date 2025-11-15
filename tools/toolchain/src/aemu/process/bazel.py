@@ -172,7 +172,27 @@ class Bazel:
             + [bazel_target],
             cwd=self.aosp,
         )
-        return [x for x in output if x.startswith("bazel")]
+
+        # Now we query the artifacts using cquery
+        cquery_options = self.build_options[:]
+        if not for_host and self.platform:
+            cquery_options += [
+                f"--platforms={self.platform}",
+            ]
+
+        try:
+            files = check_output(
+                [self.exe]
+                + self.startup_options
+                + ["cquery"]
+                + cquery_options
+                + ["--output=files", bazel_target],
+                cwd=self.aosp,
+            )
+            return [x.strip() for x in files.splitlines() if x.strip()]
+        except:
+            logging.warning("Failed to determine output files for %s", bazel_target)
+            return []
 
     def _replace_labels(self, package_info_result: str) -> str:
         """Replaces labels from the package info script."""
