@@ -103,9 +103,6 @@ void emuglConfig_get_vulkan_hardware_gpu(char** vendor, int* major, int* minor, 
 // static constant string, it is NOT heap-allocated.
 const char* emuglConfig_renderer_to_string(SelectedRenderer renderer);
 
-// Returns if the current renderer supports snapshot.
-bool emuglConfig_current_renderer_supports_snapshot();
-
 void free_emugl_host_gpu_props(emugl_host_gpu_prop_list props);
 
 // Initialize an EmuglConfig instance based on the AVD's hardware properties
