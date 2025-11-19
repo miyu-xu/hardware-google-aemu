@@ -86,6 +86,8 @@ SelectedRenderer emuglConfig_get_renderer(const char* gpu_mode);
 
 // Returns the renderer that is active, after config is done.
 SelectedRenderer emuglConfig_get_current_renderer();
+SelectedRenderer emuglConfig_get_current_gles_renderer();
+SelectedRenderer emuglConfig_get_current_vulkan_renderer();
 
 // Returns the '-gpu <mode>' option. If '-gpu <mode>' option is NULL, returns
 // the hw.gpu.mode hardware property.
