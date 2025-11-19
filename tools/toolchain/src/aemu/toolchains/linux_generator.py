@@ -105,7 +105,7 @@ class LinuxToLinuxGenerator(ToolchainGenerator):
         cache = f"{self.ccache}" if self.ccache else ""
         script = (
             f"{cache} {self.clang()}/bin/clang "
-            "-m64 -march=native -mtune=native -mcx16 "
+            "-m64 -march=x86-64 "
             f"{self.cflags} "
         )
         extra = "-Wno-unused-command-line-argument -lc++ -ldl "
@@ -119,8 +119,7 @@ class LinuxToLinuxGenerator(ToolchainGenerator):
         cache = f"{self.ccache}" if self.ccache else ""
         script = (
             f"{cache} {self.clang()}/bin/clang++ "
-            "-m64 -march=native -mtune=native -mcx16 "
-            "-stdlib=libc++ "
+            "-m64 -march=x86-64 -stdlib=libc++ "
             f"{self.cflags} "
         )
 
