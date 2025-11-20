@@ -23,27 +23,6 @@
 
 ANDROID_BEGIN_HEADER
 
-// List of values describing how EGL/GLES emulation should work in a given
-// Android virtual device.
-//
-// kAndroidGlesEmulationOff
-//    Means there is no GPU emulation, equivalent to "-gpu off" and instructs
-//    the guest system to use its old GLES 1.x software renderer.
-//
-// kAndroidGlesEmulationHost
-//    Means Host GPU emulation is being used. All EGL/GLES commands are
-//    sent to the host GPU or CPU through a simple wire protocol. This
-//    corresponds to "-gpu host" and "-gpu mesa".
-//
-// kAndroidGlesEmulationGuest
-//    Means a guest GLES 2.x library (e.g. SwiftShader) is being used in
-//    the guest. This should only be used with accelerated emulation, or
-//    results will be very very slow.
-typedef enum {
-    kAndroidGlesEmulationOff = 0,
-    kAndroidGlesEmulationHost,
-    kAndroidGlesEmulationGuest,
-} AndroidGlesEmulationMode;
 // A small structure used to model the EmuGL configuration
 // to use.
 // |enabled| is true if GPU emulation is enabled, false otherwise.
@@ -86,6 +65,8 @@ SelectedRenderer emuglConfig_get_renderer(const char* gpu_mode);
 
 // Returns the renderer that is active, after config is done.
 SelectedRenderer emuglConfig_get_current_renderer();
+SelectedRenderer emuglConfig_get_current_gles_renderer();
+SelectedRenderer emuglConfig_get_current_vulkan_renderer();
 
 // Returns the '-gpu <mode>' option. If '-gpu <mode>' option is NULL, returns
 // the hw.gpu.mode hardware property.
@@ -102,9 +83,6 @@ void emuglConfig_get_vulkan_hardware_gpu(char** vendor, int* major, int* minor, 
 // Returns a string representation of the renderer enum. Return value is a
 // static constant string, it is NOT heap-allocated.
 const char* emuglConfig_renderer_to_string(SelectedRenderer renderer);
-
-// Returns if the current renderer supports snapshot.
-bool emuglConfig_current_renderer_supports_snapshot();
 
 void free_emugl_host_gpu_props(emugl_host_gpu_prop_list props);
 
