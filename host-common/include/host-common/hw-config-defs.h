@@ -608,12 +608,26 @@ HWCFG_STRING(
   "Configures camera facing back",
   "Must be 'emulated' for a fake camera, 'webcam<N>' for a web camera, or 'none' if back camera is disabled.")
 
+HWCFG_INT(
+  hw_camera_back_orientation,
+  "hw.camera.back.orientation",
+  90,
+  "Configures sensor orientation of camera facing back",
+  "Must be in increments of 90 degrees")
+
 HWCFG_STRING(
   hw_camera_front,
   "hw.camera.front",
   "none",
   "Configures camera facing front",
   "Must be 'emulated' for a fake camera, 'webcam<N>' for a web camera, or 'none' if front camera is disabled.")
+
+HWCFG_INT(
+  hw_camera_front_orientation,
+  "hw.camera.front.orientation",
+  90,
+  "Configures sensor orientation of camera facing front",
+  "Must be in increments of 90 degrees")
 
 HWCFG_INT(
   vm_heapSize,
