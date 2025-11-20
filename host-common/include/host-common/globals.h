@@ -60,6 +60,8 @@ extern const char* to_set_locale;
 /* on emulator host. */
 extern int use_keycode_forwarding;
 
+#ifndef DECL_WinsysPreferredGlesBackend
+#define DECL_WinsysPreferredGlesBackend
 enum WinsysPreferredGlesBackend {
     WINSYS_GLESBACKEND_PREFERENCE_AUTO = 0,
     WINSYS_GLESBACKEND_PREFERENCE_ANGLE = 1,
@@ -75,4 +77,4 @@ enum WinsysPreferredGlesApiLevel {
     WINSYS_GLESAPILEVEL_PREFERENCE_COMPAT = 2,
     WINSYS_GLESAPILEVEL_PREFERENCE_NUM = 3,
 };
-
+#endif
