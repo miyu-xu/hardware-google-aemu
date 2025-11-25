@@ -156,6 +156,9 @@ class ToolchainGenerator:
 
     def ninja(self) -> Tuple[Path, str]:
         """Returns the ninja command and extra arguments."""
+        if len(self.bazel.build_target("@ninja", for_host=True)) != 0:
+            return f"{self.bazel.info['bazel-bin']}/external/ninja+/ninja", ""
+
         prebuilts = self.aosp / "prebuilts"
         options = [
             prebuilts / "build-tools" / f"{self.host()}-x86" / "bin",
