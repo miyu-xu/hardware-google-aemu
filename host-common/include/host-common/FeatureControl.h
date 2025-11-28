@@ -64,6 +64,7 @@ void setIfNotOverriden(Feature feature, bool isEnabled);
 void setIfNotOverridenOrGuestDisabled(Feature feature, bool isEnabled);
 
 Feature stringToFeature(const std::string& str);
+std::string_view featureToString(Feature feature);
 
 // For hardware configurations special enough to warrant
 // disabling or enabling features, we use the concept of
