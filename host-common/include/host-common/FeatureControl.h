@@ -43,6 +43,8 @@ namespace featurecontrol {
 
 void initialize();
 
+void reset();
+
 bool isEnabled(Feature feature);
 bool isEnabledByGuest(Feature feature);
 AEMU_EXPORT void setEnabledOverride(Feature feature, bool isEnabled);

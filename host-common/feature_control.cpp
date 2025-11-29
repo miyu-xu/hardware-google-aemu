@@ -48,6 +48,13 @@ static FeatureState sFeatureState;
 // Call this function first to initialize the feature control.
 void feature_initialize() { }
 
+// Call this function to reset all feature values
+void feature_reset() {
+    for (auto& iter : sFeatureState.enabled) {
+        iter.second = false;
+    }
+}
+
 // Get the access rules given by |name| if they exist, otherwise returns NULL
 bool feature_is_enabled(Feature feature) {
     if (android::featurecontrol::sFeatureEnabledCb)
