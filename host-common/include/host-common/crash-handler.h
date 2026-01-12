@@ -60,6 +60,10 @@ void crashhandler_append_message_format_v(const char* format, va_list args);
 // The strings are stored in the minidump as 'name' : 'string'
 void crashhandler_add_string(const char* name, const char* string);
 
+// Variadic versions
+void crashhandler_add_string_format(const char* name, const char* format, ...);
+void crashhandler_add_string_format_v(const char* name, const char* format, va_list args);
+
 // Reads the contents of file |source| and attaching it as a string annotation 
 // under |source|. This is the same as reading the file source and calling
 // crashhandler_add_string(destination, contents_of_file_source)
