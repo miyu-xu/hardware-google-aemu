@@ -1,0 +1,57 @@
+load("@grpc//bazel:cc_grpc_library.bzl", "cc_grpc_library")
+load("@protobuf//bazel:cc_proto_library.bzl", "cc_proto_library")
+load("@rules_proto//proto:defs.bzl", "proto_library")
+
+package(default_visibility = ["//visibility:public"])
+
+proto_library(
+    name = "emulated_bluetooth_proto",
+    srcs = ["emulated_bluetooth.proto"],
+    strip_import_prefix = "",
+    deps = [":emulated_bluetooth_device_proto"],
+)
+
+cc_proto_library(
+    name = "emulated_bluetooth_cc_proto",
+    deps = [":emulated_bluetooth_proto"],
+)
+
+cc_grpc_library(
+    name = "emulated_bluetooth_cc_grpc",
+    srcs = [":emulated_bluetooth_proto"],
+    grpc_only = True,
+    deps = [":emulated_bluetooth_cc_proto"],
+)
+
+proto_library(
+    name = "emulated_bluetooth_device_proto",
+    srcs = ["emulated_bluetooth_device.proto"],
+    strip_import_prefix = "",
+    deps = [
+        ":grpc_endpoint_description_proto",
+        "@protobuf//:empty_proto",
+    ],
+)
+
+cc_proto_library(
+    name = "emulated_bluetooth_device_cc_proto",
+    deps = [":emulated_bluetooth_device_proto"],
+)
+
+cc_grpc_library(
+    name = "emulated_bluetooth_device_cc_grpc",
+    srcs = [":emulated_bluetooth_device_proto"],
+    grpc_only = True,
+    deps = [":emulated_bluetooth_device_cc_proto"],
+)
+
+proto_library(
+    name = "grpc_endpoint_description_proto",
+    srcs = ["grpc_endpoint_description.proto"],
+    strip_import_prefix = "",
+)
+
+cc_proto_library(
+    name = "grpc_endpoint_description_cc_proto",
+    deps = [":grpc_endpoint_description_proto"],
+)
