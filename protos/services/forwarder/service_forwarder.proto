@@ -1,0 +1,46 @@
+// Copyright 2026 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.android.emulation.forwarding";
+option objc_class_prefix = "AEF";
+
+package android.emulation.forwarding;
+
+import "grpc_endpoint_description.proto";
+import "google/protobuf/empty.proto";
+
+service ServiceForwarder {
+  // Registers a forwarding rule for a specific service.
+  // If a rule for the given service_uri already exists, it will be overwritten.
+  rpc registerForwarder(ForwardingRule) returns (google.protobuf.Empty) {}
+
+  // Lists all currently active forwarding rules.
+  rpc listForwardingRules(google.protobuf.Empty) returns (ForwardingRuleList) {}
+}
+
+message ForwardingRule {
+  // The fully qualified name of the service to forward.
+  // For example: "android.emulation.control.UiController"
+  string service_uri = 1;
+
+  // The destination endpoint where requests should be forwarded.
+  android.emulation.remote.Endpoint endpoint = 2;
+}
+
+message ForwardingRuleList {
+  repeated ForwardingRule rules = 1;
+}
