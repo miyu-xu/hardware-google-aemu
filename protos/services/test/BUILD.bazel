@@ -1,0 +1,42 @@
+load("@grpc//bazel:cc_grpc_library.bzl", "cc_grpc_library")
+load("@protobuf//bazel:cc_proto_library.bzl", "cc_proto_library")
+load("@rules_proto//proto:defs.bzl", "proto_library")
+
+package(default_visibility = ["//visibility:public"])
+
+proto_library(
+    name = "test_echo_service_proto",
+    srcs = ["test_echo_service.proto"],
+    strip_import_prefix = "",
+    deps = ["@protobuf//:empty_proto"],
+)
+
+cc_proto_library(
+    name = "test_echo_service_cc_proto",
+    deps = [":test_echo_service_proto"],
+)
+
+cc_grpc_library(
+    name = "test_echo_service_cc_grpc",
+    srcs = [":test_echo_service_proto"],
+    grpc_only = True,
+    deps = [":test_echo_service_cc_proto"],
+)
+
+proto_library(
+    name = "ipc_test_service_proto",
+    srcs = ["ipc_test_service.proto"],
+    strip_import_prefix = "",
+)
+
+cc_proto_library(
+    name = "ipc_test_service_cc_proto",
+    deps = [":ipc_test_service_proto"],
+)
+
+cc_grpc_library(
+    name = "ipc_test_service_cc_grpc",
+    srcs = [":ipc_test_service_proto"],
+    grpc_only = True,
+    deps = [":ipc_test_service_cc_proto"],
+)

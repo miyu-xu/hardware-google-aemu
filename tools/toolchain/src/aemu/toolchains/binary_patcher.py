@@ -57,6 +57,10 @@ class BinaryPatcher:
 
         if soname_line:
             # Extract the SONAME file that the library is using and setup the symlink
-            soname = solib.parent / soname_line.split()[1]
-            target_relative = solib.relative_to(soname.parent)
-            soname.symlink_to(target_relative)
+            soname_string = soname_line.split()[1]
+            if soname_string != solib.name:
+                soname = solib.parent / soname_string
+                target_relative = solib.relative_to(soname.parent)
+                if soname.exists():
+                    soname.unlink()
+                soname.symlink_to(target_relative)
