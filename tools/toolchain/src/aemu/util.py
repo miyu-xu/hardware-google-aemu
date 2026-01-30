@@ -30,7 +30,14 @@ def mkdirs(out: Path, force: bool):
     """
     if out.exists():
         if force:
-            shutil.rmtree(out)
+            try:
+                shutil.rmtree(out)
+            except OSError as e:
+                logging.warning(
+                    "Failed to remove directory %s: %s, will overwrite files instead.",
+                    out,
+                    e,
+                )
         else:
             logging.fatal(
                 "The directory %s already exists, please delete it first or use the -f flag.",
