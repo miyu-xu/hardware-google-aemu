@@ -59,14 +59,14 @@ class LinuxToLinuxAarch64Generator(ToolchainGenerator):
 
         return sysroot
 
-    def cc(self) -> Tuple[str, str]:
+    def cc(self, clang="clang") -> Tuple[str, str]:
         """Generates the script for the C compiler."""
         cache = f"{self.ccache}" if self.ccache else ""
         toolchain = self._fetch_toolchain()
         sysroot = toolchain / "aarch64-none-linux-gnu" / "libc"
 
         script = (
-            f"{cache} {self.clang()}/bin/clang "
+            f"{cache} {self.clang()}/bin/{clang} "
             f"--target=aarch64-none-linux-gnu --sysroot={sysroot} "
             f"--gcc-toolchain={toolchain} -fuse-ld=lld"
         )
@@ -74,7 +74,7 @@ class LinuxToLinuxAarch64Generator(ToolchainGenerator):
 
     def cxx(self) -> Tuple[str, str]:
         """Generates the script for the C++ compiler."""
-        return self.cc()
+        return self.cc("clang++")
 
     def rustc(self) -> Tuple[str, str]:
         """Gets the path to the rustc compiler."""
