@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import logging
+import os
 import re
 import shutil
 from pathlib import Path
@@ -20,6 +21,7 @@ from typing import Dict, Set, Optional
 
 from aemu.process.runner import check_output, run
 from aemu.toolchains.binary_patcher import BinaryPatcher
+from aemu.util import safe_link, safe_link_tree
 
 
 class PackageConfigPc:
@@ -85,11 +87,12 @@ class PackageConfigPc:
             self.lib = self.lib[3:]
         self.shim = shim
 
+        self.all_includes = includes if includes else set()
         if includes is None:
             self.include_dir = ""
             self.cflags = ""
         else:
-            self.include_dir = next(iter(includes))
+            self.include_dir = next(iter(includes)).as_posix()
             self.cflags = (
                 " ".join([f"-I{path.as_posix()}" for path in includes if path.exists()])
                 + f" {shim.get('cflags', '')}"
@@ -103,6 +106,90 @@ class PackageConfigPc:
     def extra_args(self) -> str:
         """Returns the extra variables in a format suitable for a .pc file."""
         return "\n".join([f"{k}={v}" for k, v in self.extra_vars.items()])
+
+    def persist(self, packages_dir: Path, workspace: Optional[Path] = None) -> None:
+        """
+        Persist the dependency artifacts (archives and includes) into the toolchain's
+        'packages' directory.
+
+        Strategy:
+        - If the artifact is INSIDE the workspace (sandbox), we use hardlinks (safe_link).
+          This ensures that if the sandbox is cleaned/deleted, the toolchain still has
+          access to the file content (via the hardlink count).
+        - If the artifact is OUTSIDE the workspace (e.g. system libs), we use symlinks.
+          This prevents copying massive external trees and respects the external location.
+        """
+        pkg_root = packages_dir / self.name
+        pkg_root.mkdir(parents=True, exist_ok=True)
+
+        def is_in_sandbox(path: Path) -> bool:
+            if not workspace:
+                # If we don't know the workspace, assume it's external?
+                # Or safe to assume everything is external if not in a known workspace.
+                return False
+            try:
+                path.relative_to(workspace)
+                return True
+            except ValueError:
+                return False
+
+        if self.archive and self.archive.name and self.archive.exists():
+            new_lib_dir = pkg_root / "lib"
+            new_lib_dir.mkdir(parents=True, exist_ok=True)
+            new_archive = new_lib_dir / self.archive.name
+
+            if new_archive.exists() or new_archive.is_symlink():
+                new_archive.unlink()
+
+            if is_in_sandbox(self.archive):
+                safe_link(self.archive, new_archive)
+            else:
+                os.symlink(self.archive.absolute(), new_archive)
+
+            self.archive = new_archive
+            self.libdir = new_lib_dir.as_posix()
+
+            # Update self.libs since it might have contained the old path
+            if self.archive.suffix == ".a":
+                self.libs = f"{self.archive} {self.link_flags}"
+            else:
+                self.libs = f"-L{self.libdir} -l{self.lib} {self.link_flags}"
+
+        if self.all_includes:
+            new_include_root = pkg_root / "include"
+            new_include_root.mkdir(parents=True, exist_ok=True)
+
+            new_include_paths = []
+            for idx, include in enumerate(sorted(list(self.all_includes))):
+                if not include.exists():
+                    logging.debug(
+                        "Include path %s does not exist, skipping persist.", include
+                    )
+                    continue
+
+                target_include_dir = new_include_root / str(idx)
+                if target_include_dir.exists() or target_include_dir.is_symlink():
+                    if (
+                        target_include_dir.is_dir()
+                        and not target_include_dir.is_symlink()
+                    ):
+                        shutil.rmtree(target_include_dir)
+                    else:
+                        target_include_dir.unlink()
+
+                if is_in_sandbox(include):
+                    safe_link_tree(include, target_include_dir)
+                else:
+                    os.symlink(include.absolute(), target_include_dir)
+
+                new_include_paths.append(target_include_dir)
+
+            if new_include_paths:
+                self.include_dir = new_include_paths[0].as_posix()
+                self.cflags = (
+                    " ".join([f"-I{path.as_posix()}" for path in new_include_paths])
+                    + f" {self.shim.get('cflags', '')}"
+                )
 
     def _template(self) -> str:
         """Returns the template for the .pc file."""
