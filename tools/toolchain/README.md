@@ -18,8 +18,16 @@ The tool is driven by a `JSONC` (JSON with Comments) file, typically named `buil
 
 ### 2. Toolchain Generation
 
-`amc` generates a set of wrapper scripts for the compiler, linker, and other toolchain utilities (e.g., `cc`, `c++`, `ar`, `nm`). These wrappers ensure that Meson uses the correct Clang toolchain and sysroots that are provided within the AOSP source tree, along with the necessary flags for the target platform. This will configure a cross compilation toolchain if neccessary.
-This process fully supports cross-compilation, allowing you to build for a target platform that is different from your host machine.
+`amc` generates a set of wrapper scripts for a wide range of toolchain utilities, including:
+
+-   **Compilers**: `cc`, `c++`, `objc`, `rustc`.
+-   **Linkers**: `ld`, `lld`, `ld.lld`, `ld64.lld`, `wasm-ld`.
+-   **Binary Analysis**: `nm`, `objdump`, `strings`, `size`, `readelf`, `readobj`.
+-   **Archive & Library Tools**: `ar`, `ranlib`, `lib`, `dlltool`.
+-   **Analysis & Debugging**: `clang-tidy`, `clang-format`, `clang-check`, `lldb`, `llvm-symbolizer`, `dsymutil`.
+-   **LLVM Utilities**: `llvm-as`, `llvm-dis`, `llvm-objcopy`, `llvm-strip`, `llvm-cov`, `llvm-profdata`.
+
+These wrappers ensure that Meson (or any other build system) uses the correct Clang toolchain and sysroots provided within the AOSP source tree, along with the necessary flags for the target platform. This process fully supports cross-compilation, allowing you to build for a target platform that is different from your host machine.
 
 ### 3. Dependency Management via pkg-config
 
