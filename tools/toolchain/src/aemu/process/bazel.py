@@ -236,6 +236,71 @@ class Bazel:
             # Likely outside of bazel, the introspection file is next to us.
             return Path(__file__).parent.absolute() / "introspection.cquery.bzl"
 
+    def aquery(
+        self,
+        query: str,
+        aquery_options: List[str] = [],
+    ) -> str:
+        """Runs a Bazel aquery.
+
+        Args:
+            query: The query string.
+            aquery_options: Additional aquery options.
+
+        Returns:
+            The output of the aquery.
+        """
+        options = aquery_options
+        if self.platform and not any(opt.startswith("--platforms") for opt in options):
+            options.append(f"--platforms={self.platform}")
+
+        return check_output(
+            [self.exe] + self.startup_options + ["aquery"] + options + [query],
+            cwd=self.aosp,
+        )
+
+    def cquery(
+        self,
+        query: str,
+        cquery_options: List[str] = [],
+    ) -> str:
+        """Runs a Bazel cquery.
+
+        Args:
+            query: The query string.
+            cquery_options: Additional cquery options.
+
+        Returns:
+            The output of the cquery.
+        """
+        options = cquery_options
+        if self.platform and not any(opt.startswith("--platforms") for opt in options):
+            options.append(f"--platforms={self.platform}")
+
+        return check_output(
+            [self.exe] + self.startup_options + ["cquery"] + options + [query],
+            cwd=self.aosp,
+        )
+
+    def query(
+        self,
+        query: str,
+        query_options: List[str] = [],
+    ) -> str:
+        """Runs a Bazel query.
+
+        Args:
+            query: The query string.
+            query_options: Additional query options.
+
+        Returns:
+            The output of the query.
+        """
+        return check_output(
+            [self.exe] + self.startup_options + ["query"] + query_options + [query],
+            cwd=self.aosp,
+        )
+
     @lru_cache(maxsize=None)
     def package_info(self, bazel_target: str) -> Dict[str, List[str]]:
         """Retrieves information about the Bazel target with paths normalized.
@@ -277,7 +342,8 @@ class Bazel:
         normalized = self._replace_labels(starlark)
         info = json.loads(normalized)
         for k, v in info.items():
-            info[k] = list(set(v.split(";")))
+            if isinstance(v, str):
+                info[k] = list(set(v.split(";")))
 
         logging.info("Target %s config info: %s", bazel_target, info)
         return info
