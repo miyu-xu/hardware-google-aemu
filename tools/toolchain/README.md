@@ -80,6 +80,44 @@ These artifacts are organized into the following structure:
 
 The persistence mechanism primarily uses **hard links**, which is highly efficient as it avoids consuming additional disk space when the destination is on the same filesystem. If hard-linking fails (e.g., when the toolchain is generated on a different filesystem than the Bazel output base), `amc` automatically falls back to copying the files. The generated `.pc` files are updated to point to these stable, persistent paths.
 
+## 6. Enhanced Dependency Resolution (Opt-in)
+
+For complex libraries with transitive dependencies, `amc` provides an advanced resolution mechanism that ensures all required archives are correctly linked in the Meson build.
+
+To enable these features, add a `features` array to the root of your `build-config.jsonc`:
+
+```jsonc
+{
+  "project_name": "aemu",
+  "features": ["transitive_dependencies"],
+  ...
+}
+```
+
+### Manual Bundling (`extra_targets`)
+
+The `extra_targets` shim allows you to manually specify additional Bazel targets that should be bundled into a single `pkg-config` package. This is useful when a library is composed of multiple internal Bazel targets that don't need their own standalone `.pc` files.
+
+```jsonc
+"libuuid": {
+  "lib_type": "bazel",
+  "bazel_target": "//external/qemu:libuuid",
+  "shim": {
+    "extra_targets": ["@libuuid//:common"]
+  }
+}
+```
+Archives from `extra_targets` are automatically collected and added to the `Libs:` line of the generated `.pc` file.
+
+### Smart Dependency Mapping
+
+When `transitive_dependencies` is enabled, `amc` performs an automated traversal of the Bazel dependency graph and intelligently decides how to handle each dependency:
+
+1.  **Requirement Mapping**: If a dependency target is already defined as a top-level entry in your `build-config.jsonc` (e.g., `zlib`), it is added to the `Requires:` field of the generated `.pc` file. This prevents duplicate symbol linking and respects shared dependencies.
+2.  **Internal Bundling**: If a dependency target is NOT found in your configuration, `amc` treats it as an internal implementation detail and **bundles** its static archive directly into the `Libs:` field of the current package.
+
+This automation significantly reduces the need for manual shims and ensures that complex Bazel libraries work "out of the box" within Meson.
+
 ## Commands
 
 `amc` provides several commands to manage the build lifecycle.

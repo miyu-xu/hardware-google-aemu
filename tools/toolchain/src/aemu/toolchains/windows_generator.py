@@ -224,9 +224,6 @@ rem Bazel: {target}
             f.write(script)
         exe.chmod(0o755)
 
-    def wasm_ld(self) -> Tuple[str, str]:
-        return f'"{self.clang() / "bin" / "wasm-ld.exe"}"', ""
-
     def cmake(self) -> Tuple[str, str]:
         """Returns the cmake command and extra arguments."""
         vs = self._visual_studio()
