@@ -61,6 +61,17 @@ To use a specific version of Clang and Rust for all platforms, add the following
 
 This provides a convenient way to pin toolchain versions for a project, ensuring reproducible builds without modifying global configuration files.
 
+### 5. Artifact Persistence
+
+To ensure that the generated toolchain remains functional even after a `bazel clean` or when Bazel recycles its sandbox, `amc` persists all required dependency artifacts (library archives and header files) into a stable `packages` directory within the toolchain.
+
+These artifacts are organized into the following structure:
+
+-   `<toolchain_dir>/packages/<package_name>/lib/`: Contains the library archives.
+-   `<toolchain_dir>/packages/<package_name>/include/<index>/`: Contains the header files.
+
+The persistence mechanism primarily uses **hard links**, which is highly efficient as it avoids consuming additional disk space when the destination is on the same filesystem. If hard-linking fails (e.g., when the toolchain is generated on a different filesystem than the Bazel output base), `amc` automatically falls back to copying the files. The generated `.pc` files are updated to point to these stable, persistent paths.
+
 ## Commands
 
 `amc` provides several commands to manage the build lifecycle.

@@ -32,6 +32,7 @@ class ToolchainGenerator:
     """A class for generating toolchain wrappers."""
 
     PKGCFG_DIR = "pc-config"
+    PACKAGES_DIR = "packages"
 
     def __init__(
         self, aosp: Path, dest: Path, prefix: str, versions: Dict[str, str] = None
@@ -73,6 +74,10 @@ class ToolchainGenerator:
         # Create pkgconfig directory.
         self.pkgconfig_directory = self.dest / ToolchainGenerator.PKGCFG_DIR
         self.pkgconfig_directory.mkdir(parents=True, exist_ok=True)
+
+        # Create packages directory.
+        self.packages_directory = self.dest / ToolchainGenerator.PACKAGES_DIR
+        self.packages_directory.mkdir(parents=True, exist_ok=True)
 
     def version(self) -> str:
         """Returns the clang version."""
@@ -375,4 +380,5 @@ class ToolchainGenerator:
             package.generate_pkg_config(
                 self.dest,
                 self.pkgconfig_directory,
+                self.packages_directory,
             )

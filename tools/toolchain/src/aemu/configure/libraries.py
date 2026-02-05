@@ -14,7 +14,7 @@
 # limitations under the License.
 import shutil
 from pathlib import Path
-from typing import Dict, List, Tuple, Any
+from typing import Dict, List, Tuple, Any, Optional
 
 from aemu.toolchains.package_config_pc import PackageConfigPc
 
@@ -23,7 +23,9 @@ from aemu.toolchains.package_config_pc import PackageConfigPc
 class Lib:
     """A base class for representing a library dependency."""
 
-    def __init__(self, builder: Any, target: str, version: str, shim: Dict[str, str]) -> None:
+    def __init__(
+        self, builder: Any, target: str, version: str, shim: Dict[str, str]
+    ) -> None:
         """Initializes a Lib object.
 
         Args:
@@ -75,7 +77,17 @@ class Lib:
 
         return includes, archive
 
-    def generate_pkg_config(self, dest: Path, pkg_config_dir: Path) -> None:
+    def get_workspace(self) -> Optional[Path]:
+        """Returns the workspace root directory."""
+        if hasattr(self.builder, "info") and "workspace" in self.builder.info:
+            return Path(self.builder.info["workspace"])
+        if hasattr(self.builder, "aosp"):
+            return Path(self.builder.aosp)
+        return None
+
+    def generate_pkg_config(
+        self, dest: Path, pkg_config_dir: Path, packages_dir: Path
+    ) -> None:
         """Generate a pkgconfig .pc file for the given Bazel target.
 
         This method registers the library with a provided version and applies
@@ -86,6 +98,7 @@ class Lib:
         Args:
             dest: The destination directory for the release.
             pkg_config_dir: The directory to write the .pc file to.
+            packages_dir: The directory to persist the packages to.
         """
         # Build the specified Bazel target.
         builder = self.builder
@@ -106,15 +119,19 @@ class Lib:
             target=self.target,
         )
 
-        cfg.write(pkg_config_dir)
         if not cfg.is_static():
             cfg.binplace(dest)
+        # Make sure the package artifacts are persisted, so bazel cleanup doesn't remove them.
+        cfg.persist(packages_dir, self.get_workspace())
+        cfg.write(pkg_config_dir)
 
 
 class BazelLib(Lib):
     """A library dependency that is built with Bazel."""
 
-    def __init__(self, builder: Any, target: str, version: str, shim: Dict[str, str]) -> None:
+    def __init__(
+        self, builder: Any, target: str, version: str, shim: Dict[str, str]
+    ) -> None:
         """Initializes a BazelLib object.
 
         Args:
@@ -129,7 +146,9 @@ class BazelLib(Lib):
 class CMakeLib(Lib):
     """A library dependency that is built with CMake."""
 
-    def __init__(self, builder: Any, target: str, version: str, shim: Dict[str, str]) -> None:
+    def __init__(
+        self, builder: Any, target: str, version: str, shim: Dict[str, str]
+    ) -> None:
         """Initializes a CMakeLib object.
 
         Args:
@@ -140,12 +159,15 @@ class CMakeLib(Lib):
         """
         super().__init__(builder, target, version, shim)
 
-    def generate_pkg_config(self, dest: Path, pkg_config_dir: Path) -> None:
+    def generate_pkg_config(
+        self, dest: Path, pkg_config_dir: Path, packages_dir: Path
+    ) -> None:
         """Generate a pkgconfig .pc file for the given CMake target.
 
         Args:
             dest: The destination directory for the release.
             pkg_config_dir: The directory to write the .pc file to.
+            packages_dir: The directory to persist the packages to.
         """
         builder = self.builder
         output = builder.build_target(self.target)
@@ -162,6 +184,7 @@ class CMakeLib(Lib):
             target=self.target,
         )
 
+        cfg.persist(packages_dir, self.get_workspace())
         cfg.write(pkg_config_dir)
         if not cfg.is_static():
             cfg.binplace(dest)
