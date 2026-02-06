@@ -127,39 +127,155 @@ class ToolchainGenerator:
         """Returns the host operating system."""
         return platform.system().lower()
 
-    def nm(self) -> Tuple[Path, str]:
-        """Returns the nm command and extra arguments."""
-        return self.clang() / "bin" / "llvm-nm", ""
+    def tool_exe_extension(self) -> str:
+        """Returns the executable extension for the toolchain tools."""
+        return ".exe" if self.host() == "windows" else ""
 
-    def ar(self) -> Tuple[Path, str]:
-        """Returns the ar command and extra arguments."""
-        return self.clang() / "bin" / "llvm-ar", ""
+    def llvm_tool(self, tool_name: str) -> Tuple[str, str]:
+        """Returns the path to the given llvm tool."""
+        return f'"{self.clang() / "bin" / (tool_name + self.tool_exe_extension())}"', ""
 
-    def objdump(self) -> Tuple[Path, str]:
-        """Returns the objdump command and extra arguments."""
-        return self.clang() / "bin" / "llvm-objdump", ""
+    def nm(self) -> Tuple[str, str]:
+        """List symbols from object files, helping developers identify defined and undefined symbols."""
+        return self.llvm_tool("llvm-nm")
 
-    def strings(self) -> Tuple[Path, str]:
-        """Returns the strings command and extra arguments."""
-        return self.clang() / "bin" / "llvm-strings", ""
+    def ar(self) -> Tuple[str, str]:
+        """Create, modify, and extract from archives (static libraries)."""
+        return self.llvm_tool("llvm-ar")
 
-    def ranlib(self) -> Tuple[Path, str]:
-        """Returns the ranlib command and extra arguments."""
-        return self.clang() / "bin" / "llvm-ranlib", ""
+    def objdump(self) -> Tuple[str, str]:
+        """Display detailed information from object files, including headers, sections, and disassembly."""
+        return self.llvm_tool("llvm-objdump")
 
-    def cxx(self) -> Tuple[Path, str]:
-        """Returns the C++ compiler command and extra arguments."""
-        return self.clang() / "bin" / "clang++", ""
+    def strings(self) -> Tuple[str, str]:
+        """Print the sequences of printable characters in files, useful for finding embedded text in binaries."""
+        return self.llvm_tool("llvm-strings")
 
-    def cc(self) -> Tuple[Path, str]:
-        """Returns the C compiler command and extra arguments."""
-        return self.clang() / "bin" / "clang", ""
+    def ranlib(self) -> Tuple[str, str]:
+        """Generate an index to the contents of an archive and store it in the archive."""
+        return self.llvm_tool("llvm-ranlib")
 
-    def lld(self) -> Tuple[Path, str]:
-        """Returns the lld command and extra arguments."""
-        return self.clang() / "bin" / "lld", ""
+    def cxx(self) -> Tuple[str, str]:
+        """The Clang C++ compiler."""
+        return self.llvm_tool("clang++")
 
-    def ninja(self) -> Tuple[Path, str]:
+    def cc(self) -> Tuple[str, str]:
+        """The Clang C compiler."""
+        return self.llvm_tool("clang")
+
+    def objc(self) -> Tuple[str, str]:
+        """The Clang Objective-C compiler."""
+        return self.cc()
+
+    def lld(self) -> Tuple[str, str]:
+        """A generic, high-performance replacement for system linkers."""
+        return self.llvm_tool("lld")
+
+    def ld_lld(self) -> Tuple[str, str]:
+        """The LLVM linker for ELF-based systems (Linux)."""
+        return self.llvm_tool("ld.lld")
+
+    def ld64_lld(self) -> Tuple[str, str]:
+        """The LLVM linker for Mach-O-based systems (macOS)."""
+        return self.llvm_tool("ld64.lld")
+
+    def wasm_ld(self) -> Tuple[str, str]:
+        """The LLVM linker for WebAssembly."""
+        return self.llvm_tool("wasm-ld")
+
+    def llvm_dis(self) -> Tuple[str, str]:
+        """LLVM disassembler that converts LLVM bitcode into human-readable assembly."""
+        return self.llvm_tool("llvm-dis")
+
+    def llvm_link(self) -> Tuple[str, str]:
+        """LLVM bitcode linker, used to combine multiple bitcode files into one."""
+        return self.llvm_tool("llvm-link")
+
+    def llvm_extract(self) -> Tuple[str, str]:
+        """Extract a specific function or global variable from an LLVM bitcode file."""
+        return self.llvm_tool("llvm-extract")
+
+    def llvm_cov(self) -> Tuple[str, str]:
+        """Display code coverage information by processing profile data."""
+        return self.llvm_tool("llvm-cov")
+
+    def llvm_profdata(self) -> Tuple[str, str]:
+        """Tool for manipulating and merging code profile data."""
+        return self.llvm_tool("llvm-profdata")
+
+    def llvm_dwarfdump(self) -> Tuple[str, str]:
+        """Dump and verify DWARF debug information in executable files."""
+        return self.llvm_tool("llvm-dwarfdump")
+
+    def llvm_as(self) -> Tuple[str, str]:
+        """LLVM assembler that converts human-readable LLVM assembly into bitcode."""
+        return self.llvm_tool("llvm-as")
+
+    def llvm_size(self) -> Tuple[str, str]:
+        """List the section sizes—such as code, data, and bss—and total size for object files."""
+        return self.llvm_tool("llvm-size")
+
+    def llvm_readobj(self) -> Tuple[str, str]:
+        """Display low-level, format-independent information about object files."""
+        return self.llvm_tool("llvm-readobj")
+
+    def llvm_readelf(self) -> Tuple[str, str]:
+        """Display information about ELF-formatted object files."""
+        return self.llvm_tool("llvm-readelf")
+
+    def llvm_objcopy(self) -> Tuple[str, str]:
+        """Copy and translate object files, often used to strip symbols or change formats."""
+        return self.llvm_tool("llvm-objcopy")
+
+    def llvm_strip(self) -> Tuple[str, str]:
+        """Discard symbols and other data from binary files to reduce their size."""
+        return self.llvm_tool("llvm-strip")
+
+    def llvm_dlltool(self) -> Tuple[str, str]:
+        """Create Windows DLL import libraries and definition files."""
+        return self.llvm_tool("llvm-dlltool")
+
+    def llvm_addr2line(self) -> Tuple[str, str]:
+        """Convert program addresses into file names and line numbers using debug information."""
+        return self.llvm_tool("llvm-addr2line")
+
+    def llvm_dwp(self) -> Tuple[str, str]:
+        """Merge split DWARF (.dwo) files into a single DWARF package (.dwp) file."""
+        return self.llvm_tool("llvm-dwp")
+
+    def llvm_cxxfilt(self) -> Tuple[str, str]:
+        """Demangle C++ and Java symbols, restoring human-readable names from mangled identifiers."""
+        return self.llvm_tool("llvm-c++filt")
+
+    def llvm_lib(self) -> Tuple[str, str]:
+        """An MSVC-compatible tool for managing object library archives."""
+        return self.llvm_tool("llvm-lib")
+
+    def clang_tidy(self) -> Tuple[str, str]:
+        """A Clang-based C++ linter tool that provides static analysis and fixes for common coding errors."""
+        return self.llvm_tool("clang-tidy")
+
+    def clang_format(self) -> Tuple[str, str]:
+        """A tool to automatically format C/C++/Java/JavaScript/Objective-C/Protobuf code."""
+        return self.llvm_tool("clang-format")
+
+    def clang_check(self) -> Tuple[str, str]:
+        """Perform static analysis, syntax checks, and other diagnostics on source code."""
+        return self.llvm_tool("clang-check")
+
+    def llvm_symbolizer(self) -> Tuple[str, str]:
+        """Convert addresses into source code locations (file, line, function)."""
+        return self.llvm_tool("llvm-symbolizer")
+
+    def dsymutil(self) -> Tuple[str, str]:
+        """Link and manipulate archived debug symbol files (macOS .dSYM bundles)."""
+        return self.llvm_tool("dsymutil")
+
+    def lldb(self) -> Tuple[str, str]:
+        """The LLVM debugger, providing high-performance debugging for C, C++, and Objective-C."""
+        return self.llvm_tool("lldb")
+
+    def ninja(self) -> Tuple[str, str]:
         """Returns the ninja command and extra arguments."""
         if len(self.bazel.build_target("@ninja", for_host=True)) != 0:
             return f"{self.bazel.info['bazel-bin']}/external/ninja+/ninja", ""
@@ -317,26 +433,61 @@ class ToolchainGenerator:
             binaries: A dictionary of binaries to generate wrappers for.
         """
         cmds = {
-            "nm": self.nm,
-            "ar": self.ar,
-            "c++": self.cxx,
+            # Compilers
             "cc": self.cc,
+            "c++": self.cxx,
+            "objc": self.objc,
             "clang": self.cc,
             "clang++": self.cxx,
-            "g++": self.cxx,
             "gcc": self.cc,
-            "lld": self.lld,
+            "g++": self.cxx,
+            "rustc": self.rustc,
+            # Linkers
             "ld": self.lld,
+            "lld": self.lld,
+            "ld.lld": self.ld_lld,
+            "ld64.lld": self.ld64_lld,
+            "wasm-ld": self.wasm_ld,
+            # Archive/Library Tools
+            "ar": self.ar,
+            "ranlib": self.ranlib,
+            "llvm-lib": self.llvm_lib,
+            "dlltool": self.llvm_dlltool,
+            "link": self.llvm_link,
+            # Binary Analysis/Manipulation
+            "nm": self.nm,
             "objdump": self.objdump,
             "strings": self.strings,
-            "ranlib": self.ranlib,
+            "size": self.llvm_size,
+            "readobj": self.llvm_readobj,
+            "readelf": self.llvm_readelf,
+            "objcopy": self.llvm_objcopy,
+            "strip": self.strip,
+            "addr2line": self.llvm_addr2line,
+            "c++filt": self.llvm_cxxfilt,
+            "symbolizer": self.llvm_symbolizer,
+            "dsymutil": self.dsymutil,
+            # LLVM Specific Tools
+            "as": self.llvm_as,
+            "dis": self.llvm_dis,
+            "extract": self.llvm_extract,
+            "dwp": self.llvm_dwp,
+            # Code Coverage/Profiling
+            "cov": self.llvm_cov,
+            "profdata": self.llvm_profdata,
+            # Build Systems/Package Managers
             "meson": self.meson,
             "ninja": self.ninja,
             "pkg-config": self.pkg_config,
-            "strip": self.strip,
             "cmake": self.cmake,
             "cargo": self.cargo,
-            "rustc": self.rustc,
+            # Static Analysis/Formatting/Linting
+            "tidy": self.clang_tidy,
+            "format": self.clang_format,
+            "check": self.clang_check,
+            # Debugging
+            "lldb": self.lldb,
+            "dwarfdump": self.llvm_dwarfdump,
         }
         for cmd, fn in cmds.items():
             self.gen_script(cmd, self.dest / f"{self.prefix}{cmd}", fn)

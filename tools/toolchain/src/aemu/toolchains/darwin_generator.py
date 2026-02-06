@@ -175,16 +175,6 @@ class DarwinToDarwinGenerator(ToolchainGenerator):
         super().link_dirs()
         (self.dest / "sysroot").symlink_to(self.osx_sdk_root)
 
-    def gen_toolchain(self, packages: List[Any], binaries: Dict[str, str]) -> None:
-        """Generates the toolchain.
-
-        Args:
-            packages: A list of packages to generate pkg-config files for.
-            binaries: A dictionary of binaries to generate wrappers for.
-        """
-        super().gen_toolchain(packages, binaries)
-        self.gen_script("objc", self.dest / f"{self.prefix}objc", self.cc)
-
     def parse_xcode_sdks(self) -> Dict[str, Dict[str, str]]:
         """
         Runs and parses the output of 'xcodebuild -showsdks' and return a dictionary of installed SDKs.
