@@ -270,4 +270,4 @@ class CMakeLib(Lib):
 
         pc_file = Path(output) / self.shim.get("pc", "")
         if pc_file.is_file() and pc_file.exists():
-            shutil.copyfile(pc_file, pkg_config_dir / pc_file.name)
+            shutil.copy2(pc_file, pkg_config_dir / pc_file.name)

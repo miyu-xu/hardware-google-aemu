@@ -313,7 +313,13 @@ Libs: {self.libs}
                     if possible.exists():
                         logging.debug("Binplacing: %s -> %s", possible, dest_dir)
                         destination = dest_dir / f"{lib}{self.shim.get('dll_ext', ext)}"
-                        shutil.copyfile(possible, destination)
+
+                        # We must unlink the destination first to avoid PermissionError
+                        # if the destination is a read-only file (e.g. a hard link
+                        # from the bazel cache).
+                        if destination.exists() or destination.is_symlink():
+                            destination.unlink()
+                        shutil.copy2(possible, destination)
                         if ext == ".dylib":
                             # Patch up bazel @rpath
                             BinaryPatcher.patch_dylib(destination)
