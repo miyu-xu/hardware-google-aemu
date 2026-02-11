@@ -209,8 +209,10 @@ class BazelLib(Lib):
                 # We use the path directly from the introspection info.
                 da_path = Path(path)
                 if da_path and da_path.name and da_path not in archives:
+                    # Check if bazel created the dependency archive, if not build it.
+                    if not da_path.is_file() or not da_path.exists():
+                        builder.build_target(label)
                     archives.append(da_path)
-
         return includes, archives, sorted(list(set(requires)))
 
 
