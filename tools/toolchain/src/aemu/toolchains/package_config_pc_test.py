@@ -40,7 +40,7 @@ class PackageConfigPcTest(unittest.TestCase):
                 name="foo",
                 version="1.0",
                 release_dir=tmp_path / "release",
-                archive=archive,
+                archives=[archive],
                 includes=None,
                 shim={},
                 target="//foo:foo",
@@ -54,9 +54,10 @@ class PackageConfigPcTest(unittest.TestCase):
             self.assertEqual(persisted_archive.read_text(), "dummy archive content")
 
             # Check if state was updated
-            self.assertEqual(cfg.archive, persisted_archive)
+            self.assertEqual(cfg.archives[0], persisted_archive)
             self.assertEqual(cfg.libdir, (packages_dir / "foo" / "lib").as_posix())
-            self.assertIn(persisted_archive.as_posix(), cfg.libs)
+            self.assertIn("-lfoo", cfg.libs)
+            self.assertIn("-L${libdir}", cfg.libs)
 
     def test_persist_includes(self):
         with TemporaryDirectory() as tmp_dir:
@@ -67,6 +68,8 @@ class PackageConfigPcTest(unittest.TestCase):
             # Create dummy includes outside the workspace
             outside = tmp_path / "outside"
             outside.mkdir()
+            archive = outside / "libfoo.a"
+            archive.write_text("dummy")
             inc1 = outside / "include1"
             inc1.mkdir()
             (inc1 / "foo.h").write_text("foo.h content")
@@ -81,7 +84,7 @@ class PackageConfigPcTest(unittest.TestCase):
                 name="foo",
                 version="1.0",
                 release_dir=tmp_path / "release",
-                archive=outside / "libfoo.a",
+                archives=[archive],
                 includes={inc1, inc2},
                 shim={},
                 target="//foo:foo",
@@ -119,7 +122,7 @@ class PackageConfigPcTest(unittest.TestCase):
                 name="foo",
                 version="1.0",
                 release_dir=tmp_path / "release",
-                archive=archive,
+                archives=[archive],
                 includes=None,
                 shim={},
                 target="//foo:foo",
@@ -132,7 +135,7 @@ class PackageConfigPcTest(unittest.TestCase):
             self.assertTrue(persisted_archive.exists())
             self.assertEqual(persisted_archive.read_text(), "dummy archive content")
             self.assertFalse(persisted_archive.is_symlink())
-            self.assertEqual(cfg.archive, persisted_archive)
+            self.assertEqual(cfg.archives[0], persisted_archive)
 
 
 if __name__ == "__main__":

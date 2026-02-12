@@ -1,0 +1,25 @@
+load("@rules_python//python:pip.bzl", "compile_pip_requirements")
+load("@rules_python//python:py_library.bzl", "py_library")
+
+py_library(
+    name = "ab",
+    srcs = [
+        "ab/android_build_client.py",
+        "ab/fetch_artifact.py",
+        "ab/log.py",
+    ],
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@pypi_aemu//google_api_python_client",
+        "@pypi_aemu//oauth2client",
+        "@pypi_aemu//tqdm",
+    ],
+)
+
+compile_pip_requirements(
+    name = "requirements",
+    src = "requirements.in",
+    requirements_txt = "requirements_lock.txt",
+    requirements_windows = "requirements_windows.txt",
+)

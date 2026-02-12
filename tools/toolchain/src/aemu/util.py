@@ -36,7 +36,7 @@ def safe_link(src: Path, dst: Path):
         os.link(src, dst)
     except OSError as e:
         logging.debug("Hard link failed (%s), falling back to copy.", e)
-        shutil.copyfile(src, dst)
+        shutil.copy2(src, dst)
 
 
 def safe_link_tree(src: Path, dst: Path):

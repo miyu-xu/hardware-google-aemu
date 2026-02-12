@@ -399,7 +399,7 @@ def bazel_command(args: argparse.Namespace) -> None:
                 zipf.write(fname, arcname)
 
         (bazel_out / "logs").mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(
+        shutil.copy2(
             get_build_dir(bazel_build_dir) / "meson-logs" / "meson-log.txt",
             bazel_out / "logs" / "meson-log.txt",
         )

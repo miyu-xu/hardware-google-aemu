@@ -24,7 +24,13 @@ class Lib:
     """A base class for representing a library dependency."""
 
     def __init__(
-        self, builder: Any, target: str, version: str, shim: Dict[str, str]
+        self,
+        builder: Any,
+        target: str,
+        version: str,
+        shim: Dict[str, str],
+        features: List[str] = [],
+        label_to_pkg_name: Dict[str, str] = {},
     ) -> None:
         """Initializes a Lib object.
 
@@ -33,16 +39,20 @@ class Lib:
             target: The build target for the library.
             version: The version of the library.
             shim: A dictionary of shims to apply.
+            features: A list of enabled features.
+            label_to_pkg_name: A mapping from Bazel labels to pkg-config names.
         """
         self.builder = builder
         self.version = version
         self.shim = shim
         self.target = target
+        self.features = features
+        self.label_to_pkg_name = label_to_pkg_name
 
     def get_library_config(
         self, builder: Any, bazel_target: str, shim: Dict[str, str]
-    ) -> Tuple[List[Path], Path]:
-        """Get the public includes and archive path exported by the given Bazel target.
+    ) -> Tuple[List[Path], List[Path], List[str]]:
+        """Get the public includes, archive paths and requirements exported by the given Bazel target.
 
         Args:
             builder: The builder object.
@@ -50,19 +60,24 @@ class Lib:
             shim: Additional shims we wish to apply.
 
         Returns:
-            A tuple containing a list of include paths and the archive path.
+            A tuple containing a list of include paths, a list of archive paths, and a list of requirements.
         """
+        archives = []
         if "archive" in shim:
-            archive = Path(shim["archive"])
+            archives = [Path(shim["archive"])]
         else:
             if "archive_target" in shim:
-                archive = builder.get_archive(shim["archive_target"])
+                archives = [builder.get_archive(shim["archive_target"])]
             else:
-                archive = builder.get_archive(bazel_target)
+                archives = [builder.get_archive(bazel_target)]
+
+        if "extra_targets" in shim:
+            for extra in shim["extra_targets"]:
+                archives.append(builder.get_archive(extra))
 
         if "includes" in shim:
             # Apply shims, vs. what bazel reports.
-            libdir = str(archive.parent)
+            libdir = str(archives[0].parent) if archives else ""
             includes = list(
                 set([Path(x.replace("${libdir}", libdir)) for x in shim["includes"]])
             )
@@ -75,7 +90,7 @@ class Lib:
         if "include_suffix" in shim:
             includes = [i / Path(shim["include_suffix"]) for i in includes]
 
-        return includes, archive
+        return includes, archives, []
 
     def get_workspace(self) -> Optional[Path]:
         """Returns the workspace root directory."""
@@ -104,18 +119,30 @@ class Lib:
         builder = self.builder
 
         # Retrieve the information associated with the target.
-        includes, archive = self.get_library_config(builder, self.target, self.shim)
+        includes, archives, discovered_requires = self.get_library_config(
+            builder, self.target, self.shim
+        )
 
         # Name is @module//:<name>, i.e. the thing after :
         pkglib_name = self.target[self.target.rfind(":") + 1 :]
+
+        # Merge discovered requirements with shimmed ones.
+        shim = self.shim.copy()
+        if discovered_requires:
+            existing_reqs = shim.get("Requires", "")
+            all_reqs = set(
+                [r.strip() for r in existing_reqs.split(",") if r.strip()]
+                + discovered_requires
+            )
+            shim["Requires"] = ", ".join(sorted(list(all_reqs)))
 
         cfg = PackageConfigPc(
             name=pkglib_name,
             version=self.version,
             release_dir=dest / "release",
-            archive=archive,
+            archives=archives,
             includes=includes,
-            shim=self.shim,
+            shim=shim,
             target=self.target,
         )
 
@@ -129,25 +156,77 @@ class Lib:
 class BazelLib(Lib):
     """A library dependency that is built with Bazel."""
 
-    def __init__(
-        self, builder: Any, target: str, version: str, shim: Dict[str, str]
-    ) -> None:
-        """Initializes a BazelLib object.
+    def get_library_config(
+        self, builder: Any, bazel_target: str, shim: Dict[str, str]
+    ) -> Tuple[List[Path], List[Path], List[str]]:
+        """Get the public includes, archive paths and requirements exported by the given Bazel target.
 
         Args:
-            builder: The Bazel build system to use.
-            target: The Bazel target for the library.
-            version: The version of the library.
-            shim: A dictionary of shims to apply.
+            builder: The builder object.
+            bazel_target: The Bazel target to query.
+            shim: Additional shims we wish to apply.
+
+        Returns:
+            A tuple containing a list of include paths, a list of archive paths, and a list of requirements.
         """
-        super().__init__(builder, target, version, shim)
+        if "transitive_dependencies" not in self.features:
+            return super().get_library_config(builder, bazel_target, shim)
+
+        # Retrieve detailed information about the target using introspection.
+        info = builder.package_info(bazel_target)
+
+        includes = [Path(i) for i in info.get("includes", [])]
+        if "include_suffix" in shim:
+            includes = [i / Path(shim["include_suffix"]) for i in includes]
+
+        archives = []
+        requires = []
+
+        # The direct archive(s) of the target
+        target_archives = [builder.get_archive(bazel_target)]
+        if "extra_targets" in shim:
+            for extra in shim["extra_targets"]:
+                target_archives.append(builder.get_archive(extra))
+
+        archives.extend([a for a in target_archives if a and a.name])
+
+        # Transitive dependencies
+        for dep in info.get("dependencies", []):
+            if "|" not in dep:
+                continue
+
+            label, path = dep.split("|", 1)
+
+            if label == bazel_target:
+                continue
+
+            if label in self.label_to_pkg_name:
+                # This dependency is a top-level dependency in our config.
+                # Add it to Requires instead of bundling it.
+                requires.append(self.label_to_pkg_name[label])
+            else:
+                # This is an internal dependency, bundle it.
+                # We use the path directly from the introspection info.
+                da_path = Path(path)
+                if da_path and da_path.name and da_path not in archives:
+                    # Check if bazel created the dependency archive, if not build it.
+                    if not da_path.is_file() or not da_path.exists():
+                        builder.build_target(label)
+                    archives.append(da_path)
+        return includes, archives, sorted(list(set(requires)))
 
 
 class CMakeLib(Lib):
     """A library dependency that is built with CMake."""
 
     def __init__(
-        self, builder: Any, target: str, version: str, shim: Dict[str, str]
+        self,
+        builder: Any,
+        target: str,
+        version: str,
+        shim: Dict[str, str],
+        features: List[str] = [],
+        label_to_pkg_name: Dict[str, str] = {},
     ) -> None:
         """Initializes a CMakeLib object.
 
@@ -156,8 +235,10 @@ class CMakeLib(Lib):
             target: The CMake target for the library.
             version: The version of the library.
             shim: A dictionary of shims to apply.
+            features: A list of enabled features.
+            label_to_pkg_name: A mapping from Bazel labels to pkg-config names.
         """
-        super().__init__(builder, target, version, shim)
+        super().__init__(builder, target, version, shim, features, label_to_pkg_name)
 
     def generate_pkg_config(
         self, dest: Path, pkg_config_dir: Path, packages_dir: Path
@@ -191,4 +272,4 @@ class CMakeLib(Lib):
 
         pc_file = Path(output) / self.shim.get("pc", "")
         if pc_file.is_file() and pc_file.exists():
-            shutil.copyfile(pc_file, pkg_config_dir / pc_file.name)
+            shutil.copy2(pc_file, pkg_config_dir / pc_file.name)

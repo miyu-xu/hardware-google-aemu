@@ -41,9 +41,25 @@ def format(target):
 
         defines = compilation_context.defines.to_list()
 
+    # Extract transitive dependencies and their archives.
+    dependencies = []
+    if hasattr(cc_info, "linking_context"):
+        linker_inputs = cc_info.linking_context.linker_inputs.to_list()
+        for linker_input in linker_inputs:
+            for lib in linker_input.libraries:
+                lib_path = ""
+                if lib.static_library:
+                    lib_path = lib.static_library.path
+                elif lib.pic_static_library:
+                    lib_path = lib.pic_static_library.path
+
+                if lib_path:
+                    dependencies.append(str(linker_input.owner) + "|" + _normalize_execroot_path(lib_path))
+
     json_struct = {
         "includes": ";".join(combined_includes),
         "defines": ";".join(defines),
+        "dependencies": ";".join(_uniq(dependencies)),
     }
 
     # Add archive information if present.
