@@ -79,8 +79,8 @@ const char* emuglConfig_get_vulkan_runtime_full_path();
 void emuglConfig_get_vulkan_hardware_gpu(char** vendor, int* major, int* minor, int* patch,
                                          uint64_t* deviceMemBytes, uint32_t* driverVersion,
                                          uint64_t* deviceMaxAllocationCount,
-                                         bool* supportsExternalMemory,
-                                         bool* supportsSwapchain);
+                                         bool* supportsExternalMemory, bool* supportsSwapchain,
+                                         bool* supportsYcbcrConversion);
 
 // Returns a string representation of the renderer enum. Return value is a
 // static constant string, it is NOT heap-allocated.
