@@ -33,6 +33,9 @@ Follow the **Google C++ Style Guide** and **Google Python Style Guide** strictly
 ### 4. Whitespace & Hygiene
 Ensure all files (C++, Markdown, Python, etc.) are free of:
 *   **Trailing Whitespaces:** Use `sed -i 's/[[:space:]]*$//' <file>` or similar logic.
+*   **Safe Removal:** When using the `replace` tool to remove trailing whitespaces, ensure you
+    do NOT remove the newline character itself unless specifically requested, to avoid
+    accidental line merging.
 *   **Missing Newlines:** Ensure all files end with a single newline character.
 
 ## Execution Workflow

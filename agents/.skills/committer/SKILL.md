@@ -53,9 +53,13 @@ impact, and the patchset passes reviews without trivial errors.
 0.  **Mandatory Audit:** You MUST activate the `reviewer` skill to perform a final audit of the diff
     and metadata before proceeding to step 1.
 1.  **Directory:** Always upload from within the project directory.
-2.  **Command:** Use `repo upload --cbr --verify . -y`.
-3.  **Approval Gate:** Immediately after a successful upload, you MUST ask the human: "I have
-    uploaded the CLs. Do you approve these commits for the next phase?"
+2.  **Command:** Use `repo upload --cbr --verify . -y`. The `--cbr` (Current Branch) flag is
+    mandatory to prevent repo from picking up and uploading other local branches that
+    might have "unpublished" changes.
+3.  **Approval Gate:** Immediately after a successful upload, you MUST:
+    a. Capture the specific Gerrit URL(s) from the `repo upload` output.
+    b. Present these URLs clearly to the human.
+    c. Ask: "I have uploaded the CLs. Do you approve these commits for the next phase?"
 4.  **Evolver Trigger:** If the human approves, you MUST immediately activate the
     `agent_autonomy_evolver` skill to perform the post-task analysis.
 

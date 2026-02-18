@@ -20,7 +20,9 @@ Before any upload, you must perform a `git diff --cached` and verify:
     *   **The "Side-Quest" Rule:** If you see an unrelated bugfix or cleanup in a feature commit,
         you MUST flag it for the human and request it be moved to a separate commit.
     *   **No Multi-Tasking:** Reject any commit that attempts to "Implement A AND fix B."
-*   **Trailing Whitespace:** Run a final check for trailing spaces in the staged diff.
+*   **Trailing Whitespace:** Run a final check for trailing spaces in the staged diff. You MUST
+    automatically remove them (using `sed` or the `style_enforcer`) before proceeding to upload.
+    Do not wait for a human reviewer to point them out.
 
 ### 2. Commit Stack Integrity
 If the task involves a stack of commits:
@@ -35,6 +37,9 @@ If the task involves a stack of commits:
 *   **Header Match:** Verify the commit subject prefix (e.g., `[aemu]`, `[goldfish]`) matches the
     repository.
 *   **Footer Check:** Ensure `Bug:` and `Test:` lines are present and valid.
+*   **Change-Id Integrity:** When amending a commit, EXPLICITLY verify that the `Change-Id`
+    matches the original one on Gerrit. A mismatched `Change-Id` will create a new CL, which
+    is often an error for bugfixes.
 *   **Before/After:** For technical changes, ensure the message includes examples of the impact.
 *   **Documentation Audit:** Verify that new public functions, classes, and parameters are
     documented with Doxygen-style comments.
