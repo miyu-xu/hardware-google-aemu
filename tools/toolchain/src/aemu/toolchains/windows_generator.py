@@ -86,6 +86,9 @@ class WindowsToWindowsGenerator(ToolchainGenerator):
             .as_posix()
         )
 
+    def tool_exe_extension(self) -> str:
+        return ".exe"
+
     def initialize(self) -> None:
         """Initializes the toolchain generator."""
         if hasattr(self, "initialized"):
@@ -221,39 +224,27 @@ rem Bazel: {target}
             f.write(script)
         exe.chmod(0o755)
 
-    def gen_toolchain(self, packages: List[Any], binaries: Dict[str, str]) -> None:
-        """Generates the toolchain.
-
-        Args:
-            packages: A list of packages to generate pkg-config files for.
-            binaries: A dictionary of binaries to generate wrappers for.
-        """
-        super().gen_toolchain(packages, binaries)
-        # Generate the resource compilers, not they all point to rc, llvm-rc.
-        # llvm-rc is a clean room implementation of msvc-rc, with a series of
-        # extensions.
-        self.gen_script("windres", self.dest / "rc", self.windres)
-        self.gen_script("windmc", self.dest / "rc", self.windres)
-        self.gen_script("rc", self.dest / "rc", self.windres)
-        self.gen_script("ld-rust", self.dest / "ld-rust", self.rust_link_script)
-        self.gen_script("clang-cl", self.dest / "clang-cl.cmd", self.clang_cl)
-
     def cmake(self) -> Tuple[str, str]:
         """Returns the cmake command and extra arguments."""
         vs = self._visual_studio()
         cmake = (
-            self.aosp / "prebuilts" / "cmake" / f"{self.host()}-x86" / "bin" / "cmake"
+            self.aosp
+            / "prebuilts"
+            / "cmake"
+            / f"{self.host()}-x86"
+            / "bin"
+            / "cmake.exe"
         )
         # We make sure that the vs variables are loaded before launching cmake
         # This will enable cmake to derive the visual studio compiler toolchain.
         return (
-            f'call "{vs}"\n' f"{cmake}",
+            f'call "{vs}"\n' f'"{cmake}"',
             "",
         )
 
     def rust_link_script(self) -> Tuple[str, str]:
         """Returns the rust link script and extra arguments."""
-        cl = self.clang() / "bin" / "clang"
+        cl = self.clang() / "bin" / "clang.exe"
 
         rust_lib_dir = self.dest / "rust_libs"
         rust_lib_dir.mkdir(parents=True, exist_ok=True)
@@ -288,7 +279,7 @@ rem Bazel: {target}
 
         script = (
             "# Link script for cargo \n"
-            f"{cl} "
+            f'"{cl}" '
             "--target=x86_64-pc-windows-gnu "
             f"--sysroot={self.mingw_dir}/x86_64-w64-mingw32 "
             f"-B{self.mingw_dir}/lib/gcc/x86_64-w64-mingw32/4.8.3 "
@@ -308,11 +299,11 @@ rem Bazel: {target}
     def rustc(self) -> Tuple[str, str]:
         """Returns the rustc command and extra arguments."""
         mingw = self.mingw_dir / "x86_64-w64-mingw32"
-        rustc_bin = self.rust_bin_dir / "rustc"
+        rustc_bin = self.rust_bin_dir / "rustc.exe"
         script = (
             "setlocal\n"
             f"set PATH={self.rust_bin_dir};{mingw}\\bin;{mingw}\\lib;\n"
-            f"{rustc_bin}"
+            f'"{rustc_bin}"'
         )
         return script, ""
 
@@ -320,8 +311,8 @@ rem Bazel: {target}
         """Returns the cargo command and extra arguments."""
         rust_linker = (self.dest / "ld-rust.cmd").as_posix()
         mingw = self.mingw_dir / "x86_64-w64-mingw32"
-        rustc_bin = self.rust_bin_dir / "rustc"
-        cargo_bin = self.rust_bin_dir / "cargo"
+        rustc_bin = self.rust_bin_dir / "rustc.exe"
+        cargo_bin = self.rust_bin_dir / "cargo.exe"
         cache = f"set RUSTC_WRAPPER={self.ccache}" if self.ccache else ""
         script = (
             "setlocal\n"
@@ -334,10 +325,10 @@ rem Bazel: {target}
             f"{cache}\n"
             f'set CC_x86_64-pc-windows-gnu={self.dest / "cc.cmd"}\n'
             f'set HOST_CC={self.dest / "cc.cmd"}\n'
-            f'set CXX_x86_64-pc-windows-gnu={self.dest / "cc.cmd"}\n'
-            f'set HOST_CXX={self.dest / "cc.cmd"}\n'
+            f'set CXX_x86_64-pc-windows-gnu={self.dest / "c++.cmd"}\n'
+            f'set HOST_CXX={self.dest / "c++.cmd"}\n'
             f'set AR_x86_64-pc-windows-gnu={self.dest / "ar.cmd"}\n'
-            f"{cargo_bin}"
+            f'"{cargo_bin}"'
         )
         return script, ""
 
@@ -353,7 +344,7 @@ rem Bazel: {target}
         )
         pkg_path = self.pkgconfig_directory.as_posix()
         return (
-            f"set PKG_CONFIG_PATH={pkg_path}\n" f"{pkg_exe}",
+            f"set PKG_CONFIG_PATH={pkg_path}\n" f'"{pkg_exe}"',
             "",
         )
 
@@ -361,15 +352,11 @@ rem Bazel: {target}
         """Returns the clang-cl command and extra arguments."""
         self.initialize()
         cache = f'"{self.ccache}"' if self.ccache else ""
-        compat_lib_dir = self.bazel.get_archive(self.COMPAT_ARCHIVE).parent
-        rust_lib_dir = self.dest / "lib"
-
-        cache = f'"{self.ccache}"' if self.ccache else ""
-        cl = self.clang() / "bin" / "clang-cl"
+        cl = self.clang() / "bin" / "clang-cl.exe"
         flags = f""
 
         return (
-            f"{cache} {cl}",
+            f'{cache} "{cl}"',
             f"{flags}",
         )
 
@@ -380,6 +367,8 @@ rem Bazel: {target}
         rust_lib_dir = self.dest / "lib"
 
         cache = f'"{self.ccache}"' if self.ccache else ""
+        if not clang.endswith(".exe"):
+            clang += ".exe"
         cl = self.clang() / "bin" / clang
         flags = (
             "-Wno-constant-conversion "
@@ -396,7 +385,7 @@ rem Bazel: {target}
         )
 
         return (
-            f"{cache} {cl} -I{self.compat_path} -march=native -target x86_64-pc-windows-msvc -fms-extensions",
+            f'{cache} "{cl}" -I{self.compat_path} -march=native -target x86_64-pc-windows-msvc -fms-extensions',
             f"{flags}",
         )
 
@@ -405,9 +394,16 @@ rem Bazel: {target}
         return self.cc("clang++")
 
     def windres(self) -> Tuple[str, str]:
+        """Returns the windres command and extra arguments."""
+        return f'"{self.clang() / "bin" / "llvm-windres.exe"}"', ""
+
+    def rc(self) -> Tuple[str, str]:
         """Returns the rc command and extra arguments."""
-        winsdk_rc_bin = self.clang() / "bin" / "llvm-rc"
-        return f'"{winsdk_rc_bin}"', ""
+        return f'"{self.clang() / "bin" / "llvm-rc.exe"}"', ""
+
+    def windmc(self) -> Tuple[str, str]:
+        """Returns the mc command and extra arguments."""
+        return self.rc()
 
     def lld(self) -> Tuple[str, str]:
         """Returns the lld command and extra arguments."""
@@ -428,5 +424,25 @@ rem Bazel: {target}
                 "These will not be added to the default link path."
             )
 
-        lld = self.clang() / "bin" / "lld-link"
-        return f'{lld} {link_opts}"', ""
+        lld = self.clang() / "bin" / "lld-link.exe"
+        return f'"{lld}" {link_opts}', ""
+
+    def gen_toolchain(self, packages: List[Any], binaries: Dict[str, str]) -> None:
+        """Generates the toolchain.
+
+        Args:
+            packages: A list of packages to generate pkg-config files for.
+            binaries: A dictionary of binaries to generate wrappers for.
+        """
+        super().gen_toolchain(packages, binaries)
+        # Generate the resource compilers, not they all point to rc, llvm-rc.
+        # llvm-rc is a clean room implementation of msvc-rc, with a series of
+        # extensions.
+        self.gen_script("windres", self.dest / "windres", self.windres)
+        self.gen_script("windmc", self.dest / "windmc", self.windmc)
+        self.gen_script("rc", self.dest / "rc", self.rc)
+        self.gen_script("ld-rust", self.dest / "ld-rust", self.rust_link_script)
+        self.gen_script("clang-cl", self.dest / "clang-cl", self.clang_cl)
+
+        # linkers
+        self.gen_script("lld-link", self.dest / "lld-link", self.lld)

@@ -85,6 +85,51 @@ py_test(
     ],
 )
 
+py_test(
+    name = "package_config_pc_test",
+    srcs = ["src/aemu/toolchains/package_config_pc_test.py"],
+    imports = ["src"],
+    deps = [
+        ":amc_toolchain_lib",
+    ],
+)
+
+py_test(
+    name = "windows_generator_test",
+    srcs = ["src/aemu/toolchains/windows_generator_test.py"],
+    imports = ["src"],
+    deps = [
+        ":amc_toolchain_lib",
+    ],
+)
+
+py_test(
+    name = "linux_generator_test",
+    srcs = ["src/aemu/toolchains/linux_generator_test.py"],
+    imports = ["src"],
+    deps = [
+        ":amc_toolchain_lib",
+    ],
+)
+
+py_test(
+    name = "linux_arm_generator_test",
+    srcs = ["src/aemu/toolchains/linux_arm_generator_test.py"],
+    imports = ["src"],
+    deps = [
+        ":amc_toolchain_lib",
+    ],
+)
+
+py_test(
+    name = "darwin_generator_test",
+    srcs = ["src/aemu/toolchains/darwin_generator_test.py"],
+    imports = ["src"],
+    deps = [
+        ":amc_toolchain_lib",
+    ],
+)
+
 cc_binary(
     name = "hello",
     srcs = ["src/hello.c"],

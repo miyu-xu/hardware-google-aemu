@@ -120,6 +120,20 @@ class MesonProjectBuilder:
         self.toolchain_generator.bazel = self.bazel
 
         self._load_config(config_file)
+        self.features = self.config.get("features", [])
+        self.label_to_pkg_name = self._build_label_registry()
+
+    def _build_label_registry(self) -> Dict[str, str]:
+        """Builds a mapping from Bazel labels to their corresponding pkg-config names."""
+        registry = {}
+        deps = self._get_merged_config("dependencies", {})
+        for name, config in deps.items():
+            target = config.get("bazel_target")
+            if target:
+                # Canonicalize labels if possible, though they should be consistent in config.
+                pkg_name = config.get("shim", {}).get("name", name)
+                registry[target] = pkg_name
+        return registry
 
     def _load_config(self, config_file: str) -> None:
         """Loads and parses the JSONC build configuration file.
@@ -195,7 +209,9 @@ class MesonProjectBuilder:
         cmd.append(f"-Dprefix={prefix}")
         cmd.extend(meson_flags)
 
-        run_meson_command(cmd, self.dest, cwd=source_path, toolchain_path=self.toolchain)
+        run_meson_command(
+            cmd, self.dest, cwd=source_path, toolchain_path=self.toolchain
+        )
 
     def packages(self) -> List[Lib]:
         """Constructs a list of dependency library objects for the current target.
@@ -230,7 +246,14 @@ class MesonProjectBuilder:
                 raise ValueError(f"No target specified for dependency {name}")
 
             platform_deps_list.append(
-                lib_class(builder, target, config["version"], config.get("shim", {}))
+                lib_class(
+                    builder,
+                    target,
+                    config["version"],
+                    config.get("shim", {}),
+                    self.features,
+                    self.label_to_pkg_name,
+                )
             )
         return platform_deps_list
 
@@ -288,7 +311,9 @@ class MesonProjectBuilder:
                 with open(output_path, "w") as f:
                     f.write(content)
 
-    def _get_platform_config_from_def(self, config_def: Dict[str, Any]) -> Dict[str, str]:
+    def _get_platform_config_from_def(
+        self, config_def: Dict[str, Any]
+    ) -> Dict[str, str]:
         """Merges "common" and platform-specific dicts from a file definition.
 
         This is a helper for `generate_files` to construct the final content

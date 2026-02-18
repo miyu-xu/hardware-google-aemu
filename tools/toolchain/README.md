@@ -18,8 +18,16 @@ The tool is driven by a `JSONC` (JSON with Comments) file, typically named `buil
 
 ### 2. Toolchain Generation
 
-`amc` generates a set of wrapper scripts for the compiler, linker, and other toolchain utilities (e.g., `cc`, `c++`, `ar`, `nm`). These wrappers ensure that Meson uses the correct Clang toolchain and sysroots that are provided within the AOSP source tree, along with the necessary flags for the target platform. This will configure a cross compilation toolchain if neccessary.
-This process fully supports cross-compilation, allowing you to build for a target platform that is different from your host machine.
+`amc` generates a set of wrapper scripts for a wide range of toolchain utilities, including:
+
+-   **Compilers**: `cc`, `c++`, `objc`, `rustc`.
+-   **Linkers**: `ld`, `lld`, `ld.lld`, `ld64.lld`, `wasm-ld`.
+-   **Binary Analysis**: `nm`, `objdump`, `strings`, `size`, `readelf`, `readobj`.
+-   **Archive & Library Tools**: `ar`, `ranlib`, `lib`, `dlltool`.
+-   **Analysis & Debugging**: `clang-tidy`, `clang-format`, `clang-check`, `lldb`, `llvm-symbolizer`, `dsymutil`.
+-   **LLVM Utilities**: `llvm-as`, `llvm-dis`, `llvm-objcopy`, `llvm-strip`, `llvm-cov`, `llvm-profdata`.
+
+These wrappers ensure that Meson (or any other build system) uses the correct Clang toolchain and sysroots provided within the AOSP source tree, along with the necessary flags for the target platform. This process fully supports cross-compilation, allowing you to build for a target platform that is different from your host machine.
 
 ### 3. Dependency Management via pkg-config
 
@@ -60,6 +68,55 @@ To use a specific version of Clang and Rust for all platforms, add the following
 ```
 
 This provides a convenient way to pin toolchain versions for a project, ensuring reproducible builds without modifying global configuration files.
+
+### 5. Artifact Persistence
+
+To ensure that the generated toolchain remains functional even after a `bazel clean` or when Bazel recycles its sandbox, `amc` persists all required dependency artifacts (library archives and header files) into a stable `packages` directory within the toolchain.
+
+These artifacts are organized into the following structure:
+
+-   `<toolchain_dir>/packages/<package_name>/lib/`: Contains the library archives.
+-   `<toolchain_dir>/packages/<package_name>/include/<index>/`: Contains the header files.
+
+The persistence mechanism primarily uses **hard links**, which is highly efficient as it avoids consuming additional disk space when the destination is on the same filesystem. If hard-linking fails (e.g., when the toolchain is generated on a different filesystem than the Bazel output base), `amc` automatically falls back to copying the files. The generated `.pc` files are updated to point to these stable, persistent paths.
+
+## 6. Enhanced Dependency Resolution (Opt-in)
+
+For complex libraries with transitive dependencies, `amc` provides an advanced resolution mechanism that ensures all required archives are correctly linked in the Meson build.
+
+To enable these features, add a `features` array to the root of your `build-config.jsonc`:
+
+```jsonc
+{
+  "project_name": "aemu",
+  "features": ["transitive_dependencies"],
+  ...
+}
+```
+
+### Manual Bundling (`extra_targets`)
+
+The `extra_targets` shim allows you to manually specify additional Bazel targets that should be bundled into a single `pkg-config` package. This is useful when a library is composed of multiple internal Bazel targets that don't need their own standalone `.pc` files.
+
+```jsonc
+"libuuid": {
+  "lib_type": "bazel",
+  "bazel_target": "//external/qemu:libuuid",
+  "shim": {
+    "extra_targets": ["@libuuid//:common"]
+  }
+}
+```
+Archives from `extra_targets` are automatically collected and added to the `Libs:` line of the generated `.pc` file.
+
+### Smart Dependency Mapping
+
+When `transitive_dependencies` is enabled, `amc` performs an automated traversal of the Bazel dependency graph and intelligently decides how to handle each dependency:
+
+1.  **Requirement Mapping**: If a dependency target is already defined as a top-level entry in your `build-config.jsonc` (e.g., `zlib`), it is added to the `Requires:` field of the generated `.pc` file. This prevents duplicate symbol linking and respects shared dependencies.
+2.  **Internal Bundling**: If a dependency target is NOT found in your configuration, `amc` treats it as an internal implementation detail and **bundles** its static archive directly into the `Libs:` field of the current package.
+
+This automation significantly reduces the need for manual shims and ensures that complex Bazel libraries work "out of the box" within Meson.
 
 ## Commands
 
