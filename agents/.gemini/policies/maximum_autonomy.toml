@@ -1,0 +1,7 @@
+# Tier 4: Maximum Autonomy
+# Full shell and git access. High-trust mode.
+
+[[rule]]
+toolName = ["run_shell_command", "write_file", "replace"]
+decision = "allow"
+priority = 100

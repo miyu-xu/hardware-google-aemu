@@ -21,7 +21,7 @@ from typing import Tuple, Dict
 class LinuxToLinuxGenerator(ToolchainGenerator):
     """A toolchain generator for building on Linux for Linux."""
 
-    COMPAT_ARCHIVE = "//third_party/qemu/google/compat/linux:compat"
+    COMPAT_ARCHIVE = "@qemu//google/compat/linux:compat"
 
     def __init__(
         self, aosp: Path, dest: Path, prefix: str, versions: Dict[str, str] = None
