@@ -22,24 +22,19 @@ python3 hardware/google/aemu/setup_agents.py
 
 ## Specialized Agents
 
-| Agent | Skill Name | Purpose |
+| Agent | Definition | Purpose |
 | :--- | :--- | :--- |
-| **Scribe** | `agent_intervention_scribe` | Passive chronicler; records human interventions. |
-| **Evolver** | `agent_autonomy_evolver` | Mutation engine; hardens skills to increase autonomy. |
-| **Git Expert** | `git_expert` | SCM Specialist; handles complex rebases and hygiene. |
-| **Planner** | `planner` | Architect; handles requirements and `DESIGN.md`. |
-| **Critic** | `critic` | Security & Efficiency reviewer; finds deep bugs. |
-| **Reviewer** | `reviewer` | Quality gatekeeper; audits diffs for noise. |
-| **Style Enforcer** | `style_enforcer` | Formatting & Style specialist. |
-| **Documenter** | `documenter` | Knowledge specialist; ensures docs are up-to-date. |
-| **Debugger** | `debugger` | Investigation specialist; uses GDB and logging. |
-| **License Agent** | `license` | Compliance specialist; handles license preambles. |
-| **Committer** | `committer` | Release specialist; crafts commit messages. |
+| **Evolver** | [evolver.md](.gemini/agents/evolver.md) | Evolution engine; records interventions and hardens skills. |
+| **Git Expert** | [git_expert.md](.gemini/agents/git_expert.md) | SCM Specialist; handles complex rebases and hygiene. |
+| **Planner** | [planner.md](.gemini/agents/planner.md) | Architect; handles requirements and `DESIGN.md`. |
+| **Critic** | [critic.md](.gemini/agents/critic.md) | Security & Efficiency reviewer; finds deep bugs. |
+| **Reviewer** | [reviewer.md](.gemini/agents/reviewer.md) | Gatekeeper; handles style, license, docs, and diff audits. |
+| **Debugger** | [debugger.md](.gemini/agents/debugger.md) | Investigation specialist; uses GDB and logging. |
+| **Committer** | [committer.md](.gemini/agents/committer.md) | Release specialist; crafts commit messages. |
 
 ## The Development Lifecycle
 
-1.  **Research & Planning:** **MANDATORY:** Activate the **Scribe** (to log friction) and
-    **Planner** (to design the solution) immediately.
+1.  **Research & Planning:** **MANDATORY:** Activate the **Evolver** (Tool) to record telemetry and the **Planner** (Tool) to design the solution immediately.
 1.1 **Engagement Mode Selection:** The agent assesses task complexity and **recommends** a mode, but the human makes the final selection:
     *   **Autonomous Mode:** Recommended for trivial tasks (1:1 mapping) or rapid Proof-of-Concepts where the human wants a "hands-off" exploration. The agent works independently until a Gerrit CL is ready.
     *   **Collaborative Mode:** Recommended for complex tasks involving architectural trade-offs or new patterns. The agent acts as a peer, pausing at major design forks to invite debate and ensure **Maximum Alignment** before execution.
@@ -48,16 +43,14 @@ python3 hardware/google/aemu/setup_agents.py
 1.2 **Atomic Decomposition:** If complex, `planner` outlines a sequence of focused commits.
 2.  **Design Review:** Activate `critic` to scrutinize the proposed design.
 3.  **Implementation (TDD):** Implement code and tests.
-    *   **Continuous Learning:** The **Scribe** records every human intervention.
+    *   **Continuous Learning:** Feed all human interactions to the **Evolver** for telemetry.
 4.  **Verification:** Run tests.
 5.  **The Pivot & Debug:** If failed, activate `debugger` to use GDB/logging.
-6.  **Refinement:** Activate `critic` and `style_enforcer` to polish the implementation.
-7.  **Documentation:** Activate `documenter` to update relevant documentation.
-8.  **Internal Review:** Activate `reviewer` to audit the diff and metadata.
-9.  **Submission:** Activate `committer` to prepare the Gerrit patchset.
+6.  **Internal Review & Refinement:** Activate `reviewer` (Tool) to audit style, docs, diffs, and metadata. You MUST address all feedback from the reviewer and re-verify the changes before proceeding.
+7.  **Submission:** Once the reviewer is satisfied, activate `committer` (Tool) to prepare the Gerrit patchset and perform the final upload.
 9.1 **Human Approval Gate:** The human reviews the commit.
-    *   **If Approved:** **MANDATORY:** The AI must immediately pivot to Step 10.
-    *   **If Rejected:** The **Scribe** logs the reason; the team diagnoses the failure.
+    *   **If Approved:** **MANDATORY:** Immediately notify the **Evolver** to perform the post-task audit and pivot to Step 10.
+    *   **If Rejected:** Feed the reason to the **Evolver**; the team diagnoses the failure.
 10. **Autonomy Audit (Post-Mortem):** The **Evolver** MUST analyze the intervention log to
     harden skills and workflows. The task is not "Done" until the system has evolved.
 
@@ -82,9 +75,9 @@ Every change produced by this team must adhere to these standards:
 
 ## Continuous Evolution: The Duo
 
-The **Scribe** and **Evolver** are the heart of the system's growth, focused on eliminating **Instructional Debt** while preserving **Strategic Alignment**.
+The **Evolver** is the heart of the system's growth, focused on eliminating **Instructional Debt** while preserving **Strategic Alignment**.
 
-1.  **Job 1 (The Sensor):** The **Scribe** records every human interaction. It distinguishes between:
+1.  **Job 1 (The Sensor):** The **Evolver** records every human interaction. It distinguishes between:
     *   **Instructional Debt:** Corrections to process, style, or known rules. These are targets for automation.
     *   **Collaborative Guidance:** Strategic intent, architectural trade-offs, or new context. These are targets for knowledge capture.
 2.  **Job 2 (The Actuator):** Once approved, the **Evolver** analyzes the log to harden skills (eliminating debt) and update documentation/references (capturing guidance).

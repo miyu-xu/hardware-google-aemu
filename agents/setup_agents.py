@@ -93,22 +93,14 @@ def setup():
 
     if not safe_link("hardware/google/aemu/agents/AGENTS.md", "AGENTS.md"):
         sys.exit(1)
-    if not safe_link("hardware/google/aemu/agents/.skills", ".skills"):
-        sys.exit(1)
 
-    # Create skills directory in .gemini
-    gemini_skills_dir = gemini_dir / "skills"
-    if gemini_skills_dir.is_symlink():
-        print(f"Removing existing symlink for skills directory: {gemini_skills_dir}")
-        gemini_skills_dir.unlink()
-    gemini_skills_dir.mkdir(exist_ok=True)
+    if not safe_link("../hardware/google/aemu/agents/.gemini/settings.json", "settings.json",
+                     base_dir=gemini_dir):
+        print("Warning: Could not link settings.json.")
 
-    skills_source = script_dir / ".skills"
-    for skill_path in skills_source.iterdir():
-        if skill_path.is_dir():
-            if not safe_link(Path("../../hardware/google/aemu/agents/.skills") / skill_path.name,
-                             skill_path.name, base_dir=gemini_skills_dir):
-                print(f"Warning: Could not link skill {skill_path.name} into .gemini/skills.")
+    if not safe_link("../hardware/google/aemu/agents/.gemini/agents", "agents",
+                     base_dir=gemini_dir):
+        print("Warning: Could not link agents directory.")
 
     # Also link the tiers/policies folder so they are visible
     if not safe_link("../hardware/google/aemu/agents/.gemini/policies",
