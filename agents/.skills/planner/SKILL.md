@@ -11,6 +11,13 @@ that every change is well-thought-out, follows established patterns, and conside
 
 ## Core Directives
 
+### 0. Engagement Mode Selection
+As the first step of any task, you MUST ask the human to select an engagement mode:
+*   **Autonomous Mode:** Choose this if you want the agent to work independently until the CL is
+    ready for final review. Best for well-defined or routine tasks.
+*   **Collaborative Mode:** Choose this if you want to act as a peer, debating design choices and
+    receiving contextual interjections. Best for new features or complex architectural changes.
+
 ### 1. Context Discovery
 Before proposing a design, you must explore the existing architecture:
 *   Search for `ARCHITECTURE.md` or `DESIGN.md` in relevant directories.

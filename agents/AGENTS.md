@@ -3,6 +3,15 @@
 This repository uses a multi-agent architecture to ensure high-quality engineering and
 continuous improvement.
 
+## Core Philosophy: Maximum Alignment
+
+Our primary goal is **Maximum Alignment**, ensuring that the agent's actions are perfectly synchronized with human intent and architectural vision. This is distinct from—and superior to—merely maximizing autonomy.
+
+1. **High Autonomy in Execution (The "How"):** The agent is 100% autonomous in managing process, style, testing, and Gerrit metadata. Human intervention here is considered **Instructional Debt** and must be eliminated.
+2. **Deep Collaboration in Intent (The "What"):** For complex tasks with multiple implementation paths, the agent proactively seeks alignment. Human guidance here is **Strategic Value** and is welcomed to ensure the best architectural outcome.
+
+The objective is **Frictionless Collaboration**: removing mechanical "noise" so human and agent can focus entirely on high-signal design and logic.
+
 ## Installation
 
 To use this workflow from the source root, run the setup script once:
@@ -31,7 +40,12 @@ python3 hardware/google/aemu/setup_agents.py
 
 1.  **Research & Planning:** **MANDATORY:** Activate the **Scribe** (to log friction) and
     **Planner** (to design the solution) immediately.
-1.1 **Atomic Decomposition:** If complex, `planner` outlines a sequence of focused commits.
+1.1 **Engagement Mode Selection:** The agent assesses task complexity and **recommends** a mode, but the human makes the final selection:
+    *   **Autonomous Mode:** Recommended for trivial tasks (1:1 mapping) or rapid Proof-of-Concepts where the human wants a "hands-off" exploration. The agent works independently until a Gerrit CL is ready.
+    *   **Collaborative Mode:** Recommended for complex tasks involving architectural trade-offs or new patterns. The agent acts as a peer, pausing at major design forks to invite debate and ensure **Maximum Alignment** before execution.
+
+    **Dynamic Mode Switching:** The engagement mode is not permanent. A human may start in **Autonomous Mode** to quickly see a rough implementation, then pivot to **Collaborative Mode** to refine the solution. Conversely, a human may start in **Collaborative Mode** to set the strategy and then switch to **Autonomous Mode** for the bulk of the implementation.
+1.2 **Atomic Decomposition:** If complex, `planner` outlines a sequence of focused commits.
 2.  **Design Review:** Activate `critic` to scrutinize the proposed design.
 3.  **Implementation (TDD):** Implement code and tests.
     *   **Continuous Learning:** The **Scribe** records every human intervention.
@@ -68,9 +82,9 @@ Every change produced by this team must adhere to these standards:
 
 ## Continuous Evolution: The Duo
 
-The **Scribe** and **Evolver** are the heart of the system's growth.
+The **Scribe** and **Evolver** are the heart of the system's growth, focused on eliminating **Instructional Debt** while preserving **Strategic Alignment**.
 
-1.  **Job 1 (The Sensor):** The **Scribe** notes every interaction where the human had to correct,
-    clarify, or provide context. These are the barriers to full autonomy.
-2.  **Job 2 (The Actuator):** Once approved, the **Evolver** analyze these notes to eliminate future
-    human interaction by hardening skills and workflow rules.
+1.  **Job 1 (The Sensor):** The **Scribe** records every human interaction. It distinguishes between:
+    *   **Instructional Debt:** Corrections to process, style, or known rules. These are targets for automation.
+    *   **Collaborative Guidance:** Strategic intent, architectural trade-offs, or new context. These are targets for knowledge capture.
+2.  **Job 2 (The Actuator):** Once approved, the **Evolver** analyzes the log to harden skills (eliminating debt) and update documentation/references (capturing guidance).

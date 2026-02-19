@@ -35,7 +35,13 @@ Before EVERY commit action (including `commit`, `amend`, or `fixup`):
     staged.
 *   **Style Check:** Verify that the code has been formatted.
 
-### 3. Atomic Commits & Stacks
+### 3. Metadata Integrity
+*   **Bug ID Accuracy:** Verify that the `Bug:` ID matches the task or the human's correction.
+*   **Change-Id Preservation:** When amending (`git commit --amend`), ensure the `Change-Id` line
+    is preserved and NOT overwritten or duplicated. Always grep the existing commit message for
+    the `Change-Id` before re-writing the message.
+
+### 4. Atomic Commits & Stacks
 To keep reviews manageable, handle complex tasks as a "Stack":
 *   **Semantic Atomicity:** Each commit must be a stand-alone unit of work.
 *   **Focus:** Each commit should do exactly one thing.
@@ -71,5 +77,7 @@ impact, and the patchset passes reviews without trivial errors.
 1.  **Documentation:** Does every new public method in `.h` files have
     Doxygen-style comments?
 2.  **Formatting:** Run `clang-format` BEFORE committing.
-3.  **Safety:** Never use `git reset --hard` if the user has uncommitted work.
+3.  **Completion Check:** Run `git status` after committing to ensure no
+    intended files were missed or left unstaged.
+4.  **Safety:** Never use `git reset --hard` if the user has uncommitted work.
     Use `git stash` or `git reset --soft`.

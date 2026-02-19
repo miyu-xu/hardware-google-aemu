@@ -17,6 +17,10 @@ Before any upload, you must perform a `git diff --cached` and verify:
     (`__pycache__`, `.o`), and temporary files are NOT present.
 *   **Strict Scope (Semantic Atomicity):** Every changed line must be directly related to the
     *single* logical change described in the commit message.
+    *   **Readability over Conciseness:** Favor explicit logic and descriptive control structures
+        (e.g., switch statements) over concise but opaque mathematical or bitwise shortcuts
+        when it improves maintainability. If a concise route is necessary, it MUST be
+        accompanied by a descriptive comment explaining the logic for future developers.
     *   **The "Side-Quest" Rule:** If you see an unrelated bugfix or cleanup in a feature commit,
         you MUST flag it for the human and request it be moved to a separate commit.
     *   **No Multi-Tasking:** Reject any commit that attempts to "Implement A AND fix B."
