@@ -31,28 +31,29 @@ python3 hardware/google/aemu/setup_agents.py
 | **Reviewer** | [reviewer.md](.gemini/agents/reviewer.md) | Gatekeeper; handles style, license, docs, and diff audits. |
 | **Debugger** | [debugger.md](.gemini/agents/debugger.md) | Investigation specialist; uses GDB and logging. |
 | **Committer** | [committer.md](.gemini/agents/committer.md) | Release specialist; crafts commit messages. |
+| **Emu Main Next Engineer** | [emu_main_next_engineer.md](.gemini/agents/emu_main_next_engineer.md) | Domain Specialist; implements features/fixes in `emu-main-next`. |
 
-## The Development Lifecycle
+## The Development Lifecycle (Orchestration Protocol)
 
-1.  **Research & Planning:** **MANDATORY:** Activate the **Evolver** (Tool) to record telemetry and the **Planner** (Tool) to design the solution immediately.
-1.1 **Engagement Mode Selection:** The agent assesses task complexity and **recommends** a mode, but the human makes the final selection:
-    *   **Autonomous Mode:** Recommended for trivial tasks (1:1 mapping) or rapid Proof-of-Concepts where the human wants a "hands-off" exploration. The agent works independently until a Gerrit CL is ready.
-    *   **Collaborative Mode:** Recommended for complex tasks involving architectural trade-offs or new patterns. The agent acts as a peer, pausing at major design forks to invite debate and ensure **Maximum Alignment** before execution.
+This workflow ensures high-quality delivery through specialized hand-offs.
 
-    **Dynamic Mode Switching:** The engagement mode is not permanent. A human may start in **Autonomous Mode** to quickly see a rough implementation, then pivot to **Collaborative Mode** to refine the solution. Conversely, a human may start in **Collaborative Mode** to set the strategy and then switch to **Autonomous Mode** for the bulk of the implementation.
-1.2 **Atomic Decomposition:** If complex, `planner` outlines a sequence of focused commits.
-2.  **Design Review:** Activate `critic` to scrutinize the proposed design.
-3.  **Implementation (TDD):** Implement code and tests.
-    *   **Continuous Learning:** Feed all human interactions to the **Evolver** for telemetry.
-4.  **Verification:** Run tests.
-5.  **The Pivot & Debug:** If failed, activate `debugger` to use GDB/logging.
-6.  **Internal Review & Refinement:** Activate `reviewer` (Tool) to audit style, docs, diffs, and metadata. You MUST address all feedback from the reviewer and re-verify the changes before proceeding.
-7.  **Submission:** Once the reviewer is satisfied, activate `committer` (Tool) to prepare the Gerrit patchset and perform the final upload.
-9.1 **Human Approval Gate:** The human reviews the commit.
-    *   **If Approved:** **MANDATORY:** Immediately notify the **Evolver** to perform the post-task audit and pivot to Step 10.
-    *   **If Rejected:** Feed the reason to the **Evolver**; the team diagnoses the failure.
-10. **Autonomy Audit (Post-Mortem):** The **Evolver** MUST analyze the intervention log to
-    harden skills and workflows. The task is not "Done" until the system has evolved.
+1.  **Telemetry Setup:**
+    *   Activate the **Evolver** to record telemetry and intervention logs.
+2.  **Architecture & Design:**
+    *   **Context Discovery:** If `emu_main_next_documenter` is available, task it to map the relevant components and existing flows. If not, use `grep_search` and `glob` manually.
+    *   **Design:** Activate the **Planner** to design the solution and draft a `DESIGN.md`.
+    *   **Engagement Mode Selection:** The human selects either *Autonomous Mode* or *Collaborative Mode*.
+3.  **Design Review:**
+    *   Activate the **Critic** to scrutinize the `DESIGN.md`.
+4.  **Implementation (The Choice):**
+    *   **Delegated Path:** If `emu_main_next_engineer` is available, delegate the implementation task entirely. They will handle the TDD loop and `test_enforcer` coordination.
+    *   **Default Path:** If no Specialist exists, perform the implementation yourself following the TDD loop (Red/Green/Refactor). Confirm every fix with a new or updated unit test.
+5.  **Quality Audit:**
+    *   Activate the **Reviewer** to perform a final audit of style, documentation, and diffs.
+6.  **Submission:**
+    *   Activate the **Committer** to prepare the semantic commit message and perform the Gerrit upload (`repo upload`).
+7.  **Autonomy Audit (Post-Mortem):**
+    *   Upon approval, the **Evolver** analyzes the session log to harden skills.
 
 ## The Organizational Hierarchy
 

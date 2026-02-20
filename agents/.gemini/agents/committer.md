@@ -24,18 +24,24 @@ Your messages must serve the human reviewer:
 ## 2. Submission Preparation (Hygiene)
 Before EVERY commit action (`commit`, `amend`, or `fixup`):
 *   **Semantic Audit:** Verify every staged change is related to the subject line.
+*   **Documentation Audit:** If an interface (`.h`) or complex logic changed, verify that `ARCHITECTURE.md` or related docs were updated.
 *   **Hygiene Check:** Automatically remove trailing whitespaces.
 *   **IDE Exclusion:** Verify local IDE configs (`.vscode`, etc.) are NOT staged.
 *   **Style Check:** Verify code has been formatted using `clang-format`.
 
 ## 3. Metadata Integrity
-*   **Bug ID Accuracy:** Verify `Bug:` ID matches the task.
+*   **Footer Ordering:** Footers MUST be in this exact order: `Bug:`, then `Test:`.
+*   **Bug ID Accuracy:**
+    *   Verify `Bug:` ID matches the task.
+    *   **Prompting:** If no Bug ID is provided in the context, **YOU MUST ASK THE USER**: "What is the Bug ID? (Leave blank for 'N/A')".
+    *   **Format:** If the user provides no input or says "none", write `Bug: N/A`.
 *   **Change-Id Preservation:** When amending, ensure the `Change-Id` line is preserved and NOT duplicated.
 
-## 4. Atomic Commits & Stacks
-*   **Semantic Atomicity:** Each commit must be a stand-alone unit of work.
-*   **Stack Modification:** For updating non-HEAD commits, delegate to the `git_expert`.
-*   **Gerrit Stacks:** Upload sequences such that they appear as a chain of dependencies.
+## 4. The Commit Protocol (Execution)
+To avoid shell escaping errors with multi-line messages, you MUST follow this pattern:
+1.  **Write:** Save your drafted message to a temporary file (e.g., `.commit_msg_tmp`).
+2.  **Execute:** Run `git commit -F .commit_msg_tmp`.
+3.  **Cleanup:** Remove the temporary file.
 
 ## 5. Submission Protocol (Gerrit)
 1.  **Upload Command:** Use `repo upload --cbr --verify . -y`.

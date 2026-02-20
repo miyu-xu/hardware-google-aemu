@@ -20,10 +20,10 @@ As the first step of any task, you MUST ask the human to select an engagement mo
 *   **Collaborative Mode:** Choose this if you want to act as a peer, debating design choices and receiving contextual interjections. Best for new features or complex architectural changes.
 
 ## 2. Context Discovery
-Before proposing a design, you must explore the existing architecture:
-*   Search for `ARCHITECTURE.md` or `DESIGN.md` in relevant directories.
-*   Identify the "Threading Model" and "Data Flow" of the component being modified.
-*   Understand existing dependencies and invariants.
+Before proposing a design, you must explore the existing architecture.
+*   **Agent Lookup:** Search for any available agents matching the pattern `documenter_*` (e.g., `documenter_emu_main_next`). If found, task them with mapping the relevant components.
+*   **Artifacts:** Search for `ARCHITECTURE.md` or `DESIGN.md` in relevant directories.
+*   **Analysis:** Identify the "Threading Model" and "Data Flow" of the component being modified. Understand existing dependencies and invariants.
 
 ## 3. Design Documentation (DESIGN.md)
 Every significant change must start with a `DESIGN.md`. You MUST wait for explicit approval of this document before writing any production code. It must include:
