@@ -1,0 +1,146 @@
+// Copyright 2026 The Android Open Source Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+syntax = "proto3";
+
+package android.control.interceptor;
+
+// Represents a single point-in-time breadcrumb event during the lifecycle of a gRPC call.
+//
+// Breadcrumbs are used primarily for telemetry, debugging, and post-crash analysis.
+// By aggregating `GrpcBreadcrumb` messages with the same `call_id`, engineers can
+// reconstruct the exact state machine of an RPC (on either the client or server)
+// leading up to a failure or performance bottleneck.
+message GrpcBreadcrumb {
+
+    // Defines the intercepted lifecycle phases of a gRPC call.
+    // These correspond directly to gRPC core interceptor hooks.
+    enum Phase {
+        PHASE_UNKNOWN = 0;
+
+        // --- Initialization ---
+
+        // The very beginning of a call's lifecycle.
+        // Server: An incoming request has been detected but not yet parsed.
+        // Client: The client is preparing to initiate a new request.
+        START = 1;
+
+        // --- Sending Data ---
+
+        // The interceptor is about to send initial metadata to the peer.
+        PRE_SEND_INITIAL_METADATA = 2;
+
+        // The interceptor is about to send a message payload.
+        // Client: Sending a request message.
+        // Server: Sending a response message.
+        PRE_SEND_MESSAGE = 3;
+
+        // The message payload has been successfully handed off to the underlying gRPC stack.
+        POST_SEND_MESSAGE = 4;
+
+        // --- Receiving Data ---
+
+        // Initial metadata has been received from the peer and is ready for inspection.
+        PRE_RECV_INITIAL_METADATA = 7;
+
+        // The metadata received hook has completed processing.
+        POST_RECV_INITIAL_METADATA = 10;
+
+        // A message has been received from the peer and is ready for inspection.
+        PRE_RECV_MESSAGE = 8;
+
+        // The message received hook has completed processing.
+        POST_RECV_MESSAGE = 11;
+
+        // --- Teardown & Status ---
+
+        // The server is preparing to send the final status and trailing metadata.
+        PRE_SEND_STATUS = 5;
+
+        // The final status and trailing metadata have been received from the server.
+        PRE_RECV_STATUS = 9;
+
+        // The status received hook has completed processing.
+        POST_RECV_STATUS = 12;
+
+        // The call is being explicitly closed by the sender (e.g., half-close in streaming).
+        PRE_SEND_CLOSE = 6;
+
+        // The call has been marked as closed by the receiver.
+        POST_RECV_CLOSE = 13;
+
+        // The call is actively being cancelled by either party.
+        PRE_SEND_CANCEL = 14;
+
+        // The terminal state of the RPC. All interceptor operations have completely finished.
+        END_OF_CALL = 15;
+    }
+
+    // Standard gRPC status codes.
+    // Mirrors `grpc::StatusCode` from the gRPC Core specification.
+    enum GrpcStatusCode {
+        OK = 0;
+        CANCELLED = 1;
+        UNKNOWN = 2;
+        INVALID_ARGUMENT = 3;
+        DEADLINE_EXCEEDED = 4;
+        NOT_FOUND = 5;
+        ALREADY_EXISTS = 6;
+        PERMISSION_DENIED = 7;
+        RESOURCE_EXHAUSTED = 8;
+        FAILED_PRECONDITION = 9;
+        ABORTED = 10;
+        OUT_OF_RANGE = 11;
+        UNIMPLEMENTED = 12;
+        INTERNAL = 13;
+        UNAVAILABLE = 14;
+        DATA_LOSS = 15;
+        UNAUTHENTICATED = 16;
+    }
+
+    // Session-unique call identifier.
+    // Use this to correlate multiple event breadcrumbs across buffers to a single RPC invocation.
+    uint32 call_id = 1;
+
+    // CRC32 hash of the fully qualified gRPC method name
+    // (e.g., "/android.emulation.control.EmulatorController/sendKey").
+    // Using a hash allows for compact memory/disk storage. Analytics backends must
+    // maintain a dictionary to resolve this hash back to the string literal.
+    fixed32 method_hash = 2;
+
+    // The current interceptor hook or lifecycle phase generating this event.
+    Phase phase = 3;
+
+    // Monotonic timestamp in nanoseconds.
+    // Useful for calculating latencies between phases (e.g., START to END_OF_CALL).
+    // Note: Do not use for wall-clock time correlation without an external epoch offset.
+    uint64 timestamp_ns = 4;
+
+    // Additional phase-specific context.
+    // Only one of these fields will be populated based on the current `phase`.
+    oneof detail {
+        // The final gRPC status code (e.g., 0 for OK, 14 for UNAVAILABLE).
+        // Expected during phases: END_OF_CALL, PRE_RECV_STATUS, or PRE_SEND_STATUS.
+        GrpcStatusCode status_code = 5;
+
+        // The serialized size of the message in bytes.
+        uint32 msg_size = 6;
+
+        // Raw payload for small, safe messages (e.g. keyboard/mouse events).
+        // Capture is subject to size constraints.
+        bytes payload = 7;
+    }
+
+    // The OS-level ID of the thread executing the interceptor hook.
+    uint64 thread_id = 8;
+}
