@@ -32,8 +32,8 @@ def setup():
     print("\nChoose an Autonomy Level for the Agents:")
     print("1) Minimal    - [minimal_discovery.toml] Read-only discovery.")
     print("2) Standard   - [standard_verification.toml] Adds build/test tools. [RECOMMENDED]")
-    print("3) Advanced   - [advanced_surgical.json] Adds autonomous file editing.")
-    print("4) Maximum    - [maximum_autonomy.json] Full shell/git access.")
+    print("3) Advanced   - [advanced_surgical.toml] Adds autonomous file editing.")
+    print("4) Maximum    - [maximum_autonomy.toml] Full shell/git access.")
 
     try:
         choice = input("Select level (1-4) [2]: ").strip() or "2"
@@ -65,10 +65,10 @@ def setup():
     # Inject detected build tools if Tier >= 2
     if choice in ["2", "3", "4"]:
         for tool in build_tools:
-            if f'commandPrefix = "{tool}"' not in policy_content:
+            if f'commandPrefix = ["{tool} "]' not in policy_content:
                 policy_content += (
                     f'\n[[rule]]\ntoolName = "run_shell_command"\n'
-                    f'commandPrefix = "{tool}"\ndecision = "allow"\n'
+                    f'commandPrefix = ["{tool} "]\ndecision = "allow"\n'
                     f'priority = 100\n'
                 )
 

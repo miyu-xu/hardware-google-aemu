@@ -5,3 +5,27 @@
 toolName = ["run_shell_command", "write_file", "replace"]
 decision = "allow"
 priority = 100
+
+[[rule]]
+toolName = "activate_skill"
+argsPattern = '.*"name":"emulator-build".*'
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "activate_skill"
+argsPattern = '.*"name":"aemu-ui-qt-expert".*'
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "activate_skill"
+argsPattern = '.*"name":"amc_build".*'
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "run_shell_command"
+commandRegex = ".*android/build/python/cmake\\.py.*"
+decision = "allow"
+priority = 200
