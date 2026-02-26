@@ -1,3 +1,6 @@
 {
-  "description": "AEMU Agentic Development Settings. Policy Engine in .gemini/policies/"
+  "description": "AEMU Agentic Development Settings. Policy Engine in .gemini/policies/",
+  "experimental": {
+    "enableAgents": true
+  }
 }

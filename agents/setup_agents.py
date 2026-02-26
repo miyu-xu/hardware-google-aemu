@@ -2,6 +2,7 @@
 from pathlib import Path
 import shutil
 import json
+import os
 import sys
 
 
@@ -31,8 +32,8 @@ def setup():
     print("\nChoose an Autonomy Level for the Agents:")
     print("1) Minimal    - [minimal_discovery.toml] Read-only discovery.")
     print("2) Standard   - [standard_verification.toml] Adds build/test tools. [RECOMMENDED]")
-    print("3) Advanced   - [advanced_surgical.json] Adds autonomous file editing.")
-    print("4) Maximum    - [maximum_autonomy.json] Full shell/git access.")
+    print("3) Advanced   - [advanced_surgical.toml] Adds autonomous file editing.")
+    print("4) Maximum    - [maximum_autonomy.toml] Full shell/git access.")
 
     try:
         choice = input("Select level (1-4) [2]: ").strip() or "2"
@@ -64,56 +65,122 @@ def setup():
     # Inject detected build tools if Tier >= 2
     if choice in ["2", "3", "4"]:
         for tool in build_tools:
-            if f'commandPrefix = "{tool}"' not in policy_content:
+            if f'commandPrefix = ["{tool} "]' not in policy_content:
                 policy_content += (
                     f'\n[[rule]]\ntoolName = "run_shell_command"\n'
-                    f'commandPrefix = "{tool}"\ndecision = "allow"\n'
+                    f'commandPrefix = ["{tool} "]\ndecision = "allow"\n'
                     f'priority = 100\n'
                 )
 
     with open(policy_dest, 'w') as f:
         f.write(policy_content)
 
-    # 5. Create symlinks
-    def safe_link(target_rel, link_name, base_dir=source_root):
-        full_link_path = base_dir / link_name
-        if full_link_path.is_symlink():
-            full_link_path.unlink()
-        elif full_link_path.exists():
-            print(f"ERROR: Local {link_name} already exists as a real file/dir at {full_link_path}")
-            print("Please backup and remove it manually before running this script.")
-            return False
+    # 5. Create copies
+    def safe_copy(source_path_rel, dest_name, base_dir=source_root):
+        source_path = source_root / source_path_rel
+        full_dest_path = base_dir / dest_name
+
+        if full_dest_path.is_symlink():
+            full_dest_path.unlink()
+        elif full_dest_path.exists():
+            if full_dest_path.is_dir():
+                shutil.rmtree(full_dest_path)
+            else:
+                full_dest_path.unlink() # Overwrite for setup
 
         try:
-            full_link_path.symlink_to(target_rel)
+            if source_path.is_dir():
+                shutil.copytree(source_path, full_dest_path)
+            else:
+                shutil.copy2(source_path, full_dest_path)
             return True
         except OSError as e:
-            print(f"ERROR: Failed to create symlink {link_name}: {e}")
+            print(f"ERROR: Failed to copy {dest_name}: {e}")
             return False
 
-    if not safe_link("hardware/google/aemu/agents/AGENTS.md", "AGENTS.md"):
-        sys.exit(1)
-    if not safe_link("hardware/google/aemu/agents/.skills", ".skills"):
+    if not safe_copy("hardware/google/aemu/agents/AGENTS.md", "AGENTS.md"):
         sys.exit(1)
 
-    # Create skills directory in .gemini
-    gemini_skills_dir = gemini_dir / "skills"
-    if gemini_skills_dir.is_symlink():
-        print(f"Removing existing symlink for skills directory: {gemini_skills_dir}")
-        gemini_skills_dir.unlink()
-    gemini_skills_dir.mkdir(exist_ok=True)
+    # Use safe_copy for settings.json to ensure it is read correctly
+    if not safe_copy("hardware/google/aemu/agents/.gemini/settings.json", "settings.json", base_dir=gemini_dir):
+        print("Warning: Could not copy settings.json.")
 
-    skills_source = script_dir / ".skills"
-    for skill_path in skills_source.iterdir():
-        if skill_path.is_dir():
-            if not safe_link(Path("../../hardware/google/aemu/agents/.skills") / skill_path.name,
-                             skill_path.name, base_dir=gemini_skills_dir):
-                print(f"Warning: Could not link skill {skill_path.name} into .gemini/skills.")
+    # Smart Agent Aggregation
+    # Use hard copies instead of symlinks as some environments/CLIs have issues with them.
+    agents_dir = gemini_dir / "agents"
+    if agents_dir.is_symlink():
+        agents_dir.unlink()
+    agents_dir.mkdir(exist_ok=True)
 
-    # Also link the tiers/policies folder so they are visible
-    if not safe_link("../hardware/google/aemu/agents/.gemini/policies",
+    def copy_agents_from(source_path_rel, target_dir):
+        # Resolve source relative to source_root to find actual files
+        source_full = source_root / source_path_rel
+        if not source_full.exists():
+            return
+
+        print(f"Copying agents from: {source_path_rel}")
+        for agent_file in source_full.glob("*.md"):
+            try:
+                dest = target_dir / agent_file.name
+                if dest.exists() or dest.is_symlink():
+                    dest.unlink()
+
+                shutil.copy2(agent_file, dest)
+                print(f"  + Copied {agent_file.name}")
+            except Exception as e:
+                print(f"  ! Failed to copy {agent_file.name}: {e}")
+
+    # Copy Generic AEMU Agents
+    copy_agents_from("hardware/google/aemu/agents/.gemini/agents", agents_dir)
+
+    # Copy Project-Specific Goldfish Agents (if present)
+    copy_agents_from("hardware/generic/goldfish/agents/.gemini/agents", agents_dir)
+
+    # Copy Project-Specific QEMU Agents (if present)
+    copy_agents_from("external/qemu/android/agents/.gemini/agents", agents_dir)
+
+    # Smart Skills Aggregation
+    skills_dir = gemini_dir / "skills"
+    if skills_dir.is_symlink():
+        skills_dir.unlink()
+    skills_dir.mkdir(exist_ok=True)
+
+    def copy_skills_from(source_path_rel, target_dir):
+        source_full = source_root / source_path_rel
+        if not source_full.exists():
+            return
+
+        print(f"Copying skills from: {source_path_rel}")
+        for skill_dir in source_full.iterdir():
+            if not skill_dir.is_dir():
+                continue
+
+            try:
+                dest = target_dir / skill_dir.name
+                if dest.exists() or dest.is_symlink():
+                    if dest.is_dir() and not dest.is_symlink():
+                        shutil.rmtree(dest)
+                    else:
+                        dest.unlink()
+
+                shutil.copytree(skill_dir, dest)
+                print(f"  + Copied skill {skill_dir.name}")
+            except Exception as e:
+                print(f"  ! Failed to copy skill {skill_dir.name}: {e}")
+
+    # Copy Generic AEMU Skills
+    copy_skills_from("hardware/google/aemu/agents/skills", skills_dir)
+
+    # Copy Project-Specific Goldfish Skills (if present)
+    copy_skills_from("hardware/generic/goldfish/agents/skills", skills_dir)
+
+    # Copy Project-Specific QEMU Skills (if present)
+    copy_skills_from("external/qemu/android/agents/skills", skills_dir)
+
+    # Also copy the tiers/policies folder so they are visible
+    if not safe_copy("hardware/google/aemu/agents/.gemini/policies",
                      "policies_templates", base_dir=gemini_dir):
-        print("Warning: Could not link policies directory.")
+        print("Warning: Could not copy policies directory.")
 
     print("-" * 50)
     print(f"Done. Gemini CLI configured with {tier_file}.")

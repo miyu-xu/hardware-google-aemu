@@ -7,6 +7,7 @@ package(default_visibility = ["//visibility:public"])
 proto_library(
     name = "virtual_scene_service_proto",
     srcs = ["virtual_scene_service.proto"],
+    strip_import_prefix = "",
     deps = [
         "@com_goole_protobuf//:wrappers_proto",
         "@protobuf//:empty_proto",
