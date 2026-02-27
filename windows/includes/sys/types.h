@@ -18,7 +18,10 @@
 #include <stddef.h>
 #include <BaseTsd.h>
 
+#ifndef _PID_T_
+#define _PID_T_
 typedef unsigned int pid_t;
+#endif
 
 #ifndef ssize_t
 typedef SSIZE_T ssize_t;
