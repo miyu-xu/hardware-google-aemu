@@ -1,0 +1,72 @@
+# Tier 2: Standard Verification
+# Adds support for building and testing (Bazel/CMake). RECOMMENDED.
+
+# Basic discovery tools
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = [
+  "find ",
+  "grep ",
+  "ls ",
+  "cat "
+]
+decision = "allow"
+priority = 100
+
+# Read-only git commands
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = [
+  "git status ",
+  "git log ",
+  "git diff "
+]
+decision = "allow"
+priority = 100
+
+# Bazel rules
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = [
+  "bazel build ",
+  "bazel test ",
+  "bazel query ",
+  "bazel "
+]
+decision = "allow"
+priority = 100
+
+# Emulator build rules
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = [
+  "cd ",
+  "python3 android/build/python/cmake.py ",
+  "android/rebuild.sh "
+]
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "activate_skill"
+argsPattern = '.*"name":"emulator-build".*'
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "activate_skill"
+argsPattern = '.*"name":"aemu-ui-qt-expert".*'
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "activate_skill"
+argsPattern = '.*"name":"amc_build".*'
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "run_shell_command"
+commandRegex = ".*android/build/python/cmake\\.py.*"
+decision = "allow"
+priority = 200

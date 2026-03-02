@@ -1,0 +1,43 @@
+# Tier 1: Minimal Discovery
+# Allows safe, read-only commands for codebase exploration.
+
+# Basic discovery tools
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = [
+  "find ",
+  "grep ",
+  "ls ",
+  "cat "
+]
+decision = "allow"
+priority = 100
+
+# Read-only git commands
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = [
+  "git status ",
+  "git log ",
+  "git diff "
+]
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "activate_skill"
+argsPattern = '.*"name":"emulator-build".*'
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "activate_skill"
+argsPattern = '.*"name":"aemu-ui-qt-expert".*'
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "activate_skill"
+argsPattern = '.*"name":"amc_build".*'
+decision = "allow"
+priority = 100

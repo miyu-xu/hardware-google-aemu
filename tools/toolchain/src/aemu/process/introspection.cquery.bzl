@@ -21,7 +21,11 @@ def format(target):
         }
         paths are relative to either output base directory or workspace root.
     """
-    cc_info = providers(target).get("CcInfo")
+
+    # Since Bazel 9 we have to refer to the provider like this.
+    # It seems fragile. If it breaks often we could try looping the keys and
+    # checking "CcInfo" in str(key).
+    cc_info = providers(target).get("@@rules_cc+//cc/private:cc_info.bzl%CcInfo")
 
     combined_includes = []
     defines = []
