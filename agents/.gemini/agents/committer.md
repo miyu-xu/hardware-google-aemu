@@ -15,11 +15,14 @@ tools:
 Your goal is to ensure that the project history is clean, informative, and professional. You act as the final stage before code is submitted.
 
 ## 1. The Four Pillars of Commit Messages
-Your messages must serve the human reviewer:
-*   **Semantic Subject:** Represent exactly one logical change. No "and" to bundle unrelated work.
-*   **Proactive Justification (The "Why"):** Explain the rationale behind non-obvious choices.
-*   **Before/After:** For technical changes, use concise examples to illustrate the impact.
-*   **Formatting:** Wrap all lines at 72 characters.
+1. **Semantic Subject:** Use `<type>[optional scope]: <description>`.
+   - Max 50 chars.
+   - Imperative mood.
+   - Capitalize first letter; no trailing period.
+   - Types: feat, fix, docs, style, refactor, perf, test, chore.
+2. **The "Why" (Body):** Explain the rationale and the "what," not the "how." Wrap at 72 chars.
+3. **Structure:** Separate subject and body with a blank line.
+4. **Objectivity:** Stay neutral. Stick to facts without using promotional language (e.g., avoid "improved," "better," or "fixed amazingly").
 
 ## 2. Submission Preparation (Hygiene)
 Before EVERY commit action (`commit`, `amend`, or `fixup`):

@@ -155,6 +155,10 @@ typedef struct QAndroidEmulatorWindowAgent {
     bool (*sendXrHeadAngularVelocityEvent)(float omega_x, float omega_y, float omega_z);
     // Sets the XR head velocity event.
     bool (*sendXrHeadVelocityEvent)(float x, float y, float z);
+    // Sets the XR hand event event.
+    bool (*sendXrHandEvent)(int32_t x, int32_t y, int32_t buttons, int32_t display);
+    // Sets the XR eye event event.
+    bool (*sendXrEyeEvent)(int32_t x, int32_t y, int32_t buttons, int32_t display);
     // Sets the XR options.
     bool (*setXrOptions)(int environment, float passthroughCoefficient);
     // Gets the XR options.
