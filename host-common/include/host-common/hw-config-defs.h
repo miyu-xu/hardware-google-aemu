@@ -1119,6 +1119,20 @@ HWCFG_STRING(
   "avd requires the version of emulator to boot properly from snapshot",
   "This is often set by avd manager in studio when creating avd")
 
+HWCFG_INT(
+  environment_width,
+  "environment.width",
+  0,
+  "Environment width",
+  "The width of the environment in which the device is placed. Ineffective when smaller than hw.lcd.width.")
+
+HWCFG_INT(
+  environment_height,
+  "environment.height",
+  0,
+  "Environment height",
+  "The height of the environment in which the device is placed. Ineffective when smaller than hw.lcd.height.")
+
 #undef HWCFG_INT
 #undef HWCFG_STRING
 #undef HWCFG_BOOL
