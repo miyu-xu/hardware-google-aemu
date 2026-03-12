@@ -1,8 +1,6 @@
 load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test", "objc_library")
 # Interface library
 
-# NOTE DO NOT USE this in emu-next
-# If you need AEMU base functionality then port it to hardware/generic/goldfish.
 cc_library(
     name = "aemu-base-headers",
     hdrs = [
@@ -174,8 +172,7 @@ cc_library(
         "//conditions:default": [],
     }),
     includes = ["include"],
-    # NOTE Do not make public.
-    visibility = ["//visibility:private"],
+    visibility = ["//visibility:public"],
     deps = [
         "//host-common:aemu-host-common-headers",
         "@abseil-cpp//absl/strings:str_format",
@@ -190,16 +187,14 @@ cc_library(
 cc_library(
     name = "aemu-base-metrics",
     srcs = ["Metrics.cpp"],
-    # NOTE Do not make public.
-    visibility = ["//visibility:private"],
+    visibility = ["//visibility:public"],
     deps = [":aemu-base-headers"],
 )
 
 cc_library(
     name = "aemu-base-allocator",
     srcs = ["SubAllocator.cpp"],
-    # NOTE Do not make public.
-    visibility = ["//visibility:private"],
+    visibility = ["//visibility:public"],
     deps = [":aemu-base-headers"],
 )
 
@@ -209,8 +204,7 @@ cc_library(
         "SocketUtils.cpp",
         "SocketWaiter.cpp",
     ],
-    # NOTE Do not make public.
-    visibility = ["//visibility:private"],
+    visibility = ["//visibility:public"],
     deps = [
         ":aemu-base-headers",
         ":aemu-base-logging",
@@ -242,8 +236,7 @@ cc_library(
         "include/aemu/base/events/policies/VectorStoragePolicy.h",
     ],
     includes = ["include"],
-    # NOTE Do not make public.
-    visibility = ["//visibility:private"],
+    visibility = ["//visibility:public"],
     deps = [
         ":aemu-base-headers",
         "@abseil-cpp//absl/container:flat_hash_set",
@@ -307,8 +300,7 @@ cc_library(
         "//conditions:default": [],
     }),
     includes = ["include"],
-    # NOTE Do not make public.
-    visibility = ["//visibility:private"],
+    visibility = ["//visibility:public"],
 )
 
 cc_library(
@@ -380,8 +372,7 @@ cc_library(
         ],
         "//conditions:default": [],
     }),
-    # NOTE Do not make public.
-    visibility = ["//visibility:private"],
+    visibility = ["//visibility:public"],
     deps = [
         ":aemu-base-headers",
         ":aemu-base-metrics",
@@ -403,8 +394,9 @@ cc_library(
     srcs = [
         "testing/file_io.cpp",
     ],
-    # NOTE Do not make public.
-    visibility = ["//visibility:private"],
+    visibility = [
+        "//visibility:public",
+    ],
     deps = [
         ":aemu-base",
         ":aemu-base-headers",

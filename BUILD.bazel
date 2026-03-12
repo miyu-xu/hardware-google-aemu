@@ -17,3 +17,8 @@ license(
 )
 
 exports_files(["LICENSE"])
+
+alias(
+    name = "aemu-host-common-test-headers",
+    actual = "//host-common:test-headers",
+)

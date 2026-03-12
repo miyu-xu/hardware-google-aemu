@@ -17,8 +17,7 @@ cc_library(
         "//conditions:default": [],
     }),
     includes = ["include/host-common"],
-    # NOTE Do not make public.
-    visibility = ["//visibility:private"],
+    visibility = ["//visibility:public"],
     deps = [
         ":aemu-host-common-headers",
         "//base:aemu-base-headers",
@@ -42,8 +41,7 @@ cc_library(
         "//conditions:default": [],
     }),
     includes = ["include/host-common"],
-    # NOTE Do not make public.
-    visibility = ["//visibility:private"],
+    visibility = ["//visibility:public"],
     deps = [
         ":aemu-host-common-headers",
         "//base:aemu-base-headers",
@@ -143,8 +141,7 @@ cc_library(
         "include/host-common/window_agent.h",
     ],
     includes = ["include"],
-    # NOTE Do not make public.
-    visibility = ["//visibility:private"],
+    visibility = ["//visibility:public"],
 )
 
 # Standalone Library (conditional)
@@ -174,8 +171,7 @@ cc_library(
         ],
         "//conditions:default": [],
     }),
-    # NOTE Do not make public.
-    visibility = ["//visibility:private"],
+    visibility = ["//visibility:public"],
     deps = [
         ":aemu-host-common-headers",
         ":logging",
@@ -198,8 +194,7 @@ cc_library(
         "//conditions:default": [],
     }),
     includes = ["include"],
-    # NOTE Do not make public.
-    visibility = ["//visibility:private"],
+    visibility = ["//visibility:public"],
     deps = [
         ":aemu-host-common-headers",
         "//base:aemu-base-headers",
@@ -238,8 +233,7 @@ cc_library(
         "testing/MockGraphicsAgentFactory.h",
     ],
     includes = ["include"],
-    # NOTE Do not make public.
-    visibility = ["//visibility:private"],
+    visibility = ["//visibility:public"],
     deps = ["//base:test-io"],
 )
 
