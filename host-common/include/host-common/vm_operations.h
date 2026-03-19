@@ -246,6 +246,10 @@ typedef struct QAndroidVmOperations {
     // Allow actual audio on host through to the guest.
     void (*allowRealAudio)(bool allow);
 
+    // Returns a pointer to an android::base::EventNotificationSupport<bool>
+    // object that fires when the real audio state changes. Returns NULL if unsupported.
+    void* (*getRealAudioEventListener)(void);
+
     // Get the host address of a guest physical address, if any.
     void* (*physicalMemoryGetAddr)(uint64_t gpa);
 
@@ -287,5 +291,8 @@ typedef struct QAndroidVmOperations {
 
     // Check if Vulkan snapshot is actively used, for stats.
     bool (*snapshotUseVulkan)();
+
+    // Add a message to the crash reporter system
+    void (*addCrashReporterLog)(const char* message);
 } QAndroidVmOperations;
 ANDROID_END_HEADER

@@ -86,6 +86,9 @@ void androidHwConfig_stripDefaults(CIniFile* source, CIniFile* target);
 // Checks if the hw config has the virtual scene camera enabled.
 int androidHwConfig_hasVirtualSceneCamera(AndroidHwConfig* config);
 
+// Checks if the hw config has either virtual scene or environment camera enabled.
+int androidHwConfig_hasVirtualSceneOrEnvironmentCamera(AndroidHwConfig* config);
+
 // Checks if the hw config has the video playback camera enabled.
 int androidHwConfig_hasVideoPlaybackCamera(AndroidHwConfig* config);
 
@@ -96,5 +99,13 @@ int androidHwConfig_hasVideoPlaybackBackCamera(AndroidHwConfig* config);
 
 int androidHwConfig_hasEnvironmentBackCamera(AndroidHwConfig* config);
 int androidHwConfig_hasEnvironmentFrontCamera(AndroidHwConfig* config);
+
+// Guest LCD display dimensions (hw.lcd.width and hw.lcd.height)
+void androidHwConfig_getLcdDimensions(const AndroidHwConfig* hwCfg, int* outWidth, int* outHeight);
+
+// Screen dimensions to be used, mainly to include the display layout
+// when an environment background is used.
+void androidHwConfig_getScreenDimensions(const AndroidHwConfig* hwCfg, int* outWidth,
+                                         int* outHeight);
 
 ANDROID_END_HEADER
