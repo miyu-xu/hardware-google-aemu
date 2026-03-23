@@ -275,7 +275,7 @@ HWCFG_INT(
 HWCFG_INT(
   hw_lcd_depth,
   "hw.lcd.depth",
-  16,
+  32,
   "LCD color depth",
   "Color bit depth of emulated framebuffer.")
 
