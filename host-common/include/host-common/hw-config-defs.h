@@ -275,7 +275,7 @@ HWCFG_INT(
 HWCFG_INT(
   hw_lcd_depth,
   "hw.lcd.depth",
-  16,
+  32,
   "LCD color depth",
   "Color bit depth of emulated framebuffer.")
 
@@ -880,20 +880,6 @@ HWCFG_BOOL(
   "yes",
   "Deprecated option. Ignored.",
   "Used to specify the Ext4 partition image type. This is now autodetected.")
-
-HWCFG_BOOL(
-  hw_arc,
-  "hw.arc",
-  "no",
-  "Chrome OS device (App Runtime for Chrome)",
-  "The emulated device is a Chrome OS machine.")
-
-HWCFG_BOOL(
-  hw_arc_autologin,
-  "hw.arc.autologin",
-  "no",
-  "Auto login for Chrome OS devices",
-  "Used to enable auto login into Chrome OS devices")
 
 HWCFG_STRING(
   hw_featureflags,
