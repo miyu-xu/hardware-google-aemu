@@ -15,21 +15,23 @@
 #define _MSVC_UNISTD_H
 
 #include "compat_compiler.h"
+#include <stddef.h>
+#include <stdint.h>
 #include <process.h>
 
 ANDROID_BEGIN_HEADER
 
 #include <direct.h>
-#include <inttypes.h>
 #include <io.h>
 #include <stdio.h>
 #include <sys/stat.h>
 
 typedef long long ssize_t;
-typedef unsigned long long size_t;
 typedef long off_t;
 typedef int64_t off64_t;
 typedef int mode_t;
+
+typedef char assert_sizeof_ssize_t[(sizeof(ssize_t) == sizeof(size_t)) ? 1 : -1];
 
 #undef fstat
 #define fstat _fstat64
