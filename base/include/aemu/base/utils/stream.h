@@ -14,11 +14,10 @@
 
 #pragma once
 
-#include "aemu/base/c_header.h"
-#include "aemu/base/msvc.h"
+#include <stdint.h>
+#include <unistd.h>
 
-#include <inttypes.h>
-#include <sys/types.h>
+#include "aemu/base/c_header.h"
 
 ANDROID_BEGIN_HEADER
 
