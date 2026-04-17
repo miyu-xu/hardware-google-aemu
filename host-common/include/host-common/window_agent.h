@@ -160,9 +160,9 @@ typedef struct QAndroidEmulatorWindowAgent {
     // Sets the XR eye event event.
     bool (*sendXrEyeEvent)(int32_t x, int32_t y, int32_t buttons, int32_t display);
     // Sets the XR options.
-    bool (*setXrOptions)(int environment, float passthroughCoefficient);
+    bool (*setXrOptions)(int environment, float passthroughCoefficient, float dimmingValue);
     // Gets the XR options.
-    bool (*getXrOptions)(int* environment, float* passthroughCoefficient);
+    bool (*getXrOptions)(int* environment, float* passthroughCoefficient, float* dimmingValue);
 
     // Sets the XR hand gesture.
     bool (*setXrHandGesture)(int);
