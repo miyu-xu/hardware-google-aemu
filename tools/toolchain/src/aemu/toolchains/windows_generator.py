@@ -335,13 +335,8 @@ rem Bazel: {target}
     def pkg_config(self) -> Tuple[str, str]:
         """Returns the pkg-config command and extra arguments."""
         # Build pkg-config from source.
-        self.bazel.build_target("@pkg-config")
-        pkg_exe = (
-            Path(self.bazel.info["bazel-bin"])
-            / "external"
-            / "pkg-config+"
-            / "pkg-config.exe"
-        )
+        artifacts = self.bazel.build_target("@pkg-config")
+        pkg_exe = Path(self.aosp / artifacts[0]).as_posix()
         pkg_path = self.pkgconfig_directory.as_posix()
         return (
             f"set PKG_CONFIG_PATH={pkg_path}\n" f'"{pkg_exe}"',
