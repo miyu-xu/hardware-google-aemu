@@ -126,7 +126,7 @@ class DarwinToDarwinGenerator(ToolchainGenerator):
             f"-arch {self.target_arch} "
             f"-isysroot {self.osx_sdk_root} "
             f"-isystem {self.osx_sdk_root}/usr/include/c++/v1 "
-            f"-isystem {self.clang()}/lib/clang/21/include "
+            f"-isystem {self.clang()}/lib/clang/{self.cc_version()}/include "
             f"-F {self.osx_sdk_root}/System/Library/Frameworks "
             f"-no-canonical-prefixes -nostdinc++ "
             f"-mmacosx-version-min={self.OSX_DEPLOYMENT_TARGET} "
@@ -173,7 +173,10 @@ class DarwinToDarwinGenerator(ToolchainGenerator):
     def link_dirs(self):
         """Setup symlink to macos sdk."""
         super().link_dirs()
-        (self.dest / "sysroot").symlink_to(self.osx_sdk_root)
+        target = self.dest / "sysroot"
+        if target.is_symlink() or target.exists():
+            target.unlink()
+        target.symlink_to(self.osx_sdk_root)
 
     def parse_xcode_sdks(self) -> Dict[str, Dict[str, str]]:
         """
@@ -235,7 +238,7 @@ class DarwinToDarwinX64Generator(DarwinToDarwinGenerator):
     """A toolchain generator for building on Darwin for x86_64."""
 
     def __init__(
-        self, aosp: Path, dest: Path, prefix: str, str, versions: Dict[str, str] = None
+        self, aosp: Path, dest: Path, prefix: str, versions: Dict[str, str] = None
     ) -> None:
         """Initializes a DarwinToDarwinX64Generator object.
 
@@ -244,4 +247,4 @@ class DarwinToDarwinX64Generator(DarwinToDarwinGenerator):
             dest: The destination directory for the toolchain.
             prefix: The prefix for the toolchain binaries.
         """
-        super().__init__(aosp, dest, prefix, str, versions, "x86_64")
+        super().__init__(aosp, dest, prefix, versions, "x86_64")

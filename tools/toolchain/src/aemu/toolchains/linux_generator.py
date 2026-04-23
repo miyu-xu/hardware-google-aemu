@@ -57,7 +57,7 @@ class LinuxToLinuxGenerator(ToolchainGenerator):
         # GCC_DIR = TOOLCHAIN_DIR / "lib" / "gcc" / "x86_64-linux" / "4.8.3"
         self.system_root = self.linux_sys_root / "sysroot"
         linux_lib_path = version_path / "lib" / "linux"
-        lib_path = self.clang() / "lib"
+        lib_path = self.clang() / "lib" / "x86_64-unknown-linux-gnu"
         include_path = version_path / "include"
 
         self.cflags = (
@@ -70,7 +70,7 @@ class LinuxToLinuxGenerator(ToolchainGenerator):
             f"-L{include_path} "
             f"-L{lib_path} "
             f"--sysroot={self.system_root} "
-            f"-Wl,-rpath,'$ORIGIN/lib64:$ORIGIN:{self.clang() / 'lib'}' "
+            f"-Wl,-rpath,'$ORIGIN/lib64:$ORIGIN:{self.clang() / 'lib' / 'x86_64-unknown-linux-gnu'}' "
         )
 
         if self.with_compat:
@@ -104,9 +104,7 @@ class LinuxToLinuxGenerator(ToolchainGenerator):
         self.initialize()
         cache = f"{self.ccache}" if self.ccache else ""
         script = (
-            f"{cache} {self.clang()}/bin/clang "
-            "-m64 -march=x86-64 "
-            f"{self.cflags} "
+            f"{cache} {self.clang()}/bin/clang " "-m64 -march=x86-64 " f"{self.cflags} "
         )
         extra = "-Wno-unused-command-line-argument -lc++ -ldl "
         if self.with_compat:
@@ -131,4 +129,7 @@ class LinuxToLinuxGenerator(ToolchainGenerator):
     def link_dirs(self) -> None:
         """Setup links to libc++.so etc.."""
         super().link_dirs()
-        (self.dest / "sysroot").symlink_to(self.system_root)
+        target = self.dest / "sysroot"
+        if target.is_symlink() or target.exists():
+            target.unlink()
+        target.symlink_to(self.system_root)
