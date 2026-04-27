@@ -22,6 +22,7 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
+from subprocess import check_output
 from typing import Tuple, List, Dict, Any, Callable
 
 from aemu.command import CommandLineReconstructor
@@ -277,8 +278,9 @@ class ToolchainGenerator:
 
     def ninja(self) -> Tuple[str, str]:
         """Returns the ninja command and extra arguments."""
-        if len(self.bazel.build_target("@ninja", for_host=True)) != 0:
-            return f"{self.bazel.info['bazel-bin']}/external/ninja+/ninja", ""
+        artifacts = self.bazel.build_target("@ninja", for_host=True)
+        if artifacts:
+            return f"{self.aosp / artifacts[0]}", ""
 
         prebuilts = self.aosp / "prebuilts"
         options = [
@@ -349,10 +351,10 @@ class ToolchainGenerator:
     def pkg_config(self) -> Tuple[str, str]:
         """Returns the pkg-config command and extra arguments."""
         # Build pkg-config from source for the host.
-        self.bazel.build_target("@pkg-config", for_host=True)
+        artifacts = self.bazel.build_target("@pkg-config", for_host=True)
         return (
             f'PKG_CONFIG_PATH={self.pkgconfig_directory}  PKG_CONFIG_LIBDIR="" '
-            f"{self.bazel.info['bazel-bin']}/external/pkg-config+/pkg-config",
+            f"{self.aosp / artifacts[0]}",
             "",
         )
 
@@ -421,7 +423,11 @@ class ToolchainGenerator:
             logging.warning("The clang lib directory: %s, does not exist.", clang_lib)
             return
 
-        (self.dest / "lib").symlink_to(clang_lib)
+        target = self.dest / "lib"
+        if target.is_symlink() or target.exists():
+            target.unlink()
+
+        target.symlink_to(clang_lib)
 
     def gen_toolchain(
         self, packages: List[Any] = [], binaries: Dict[str, str] = {}
@@ -451,6 +457,7 @@ class ToolchainGenerator:
             # Archive/Library Tools
             "ar": self.ar,
             "ranlib": self.ranlib,
+            "lib": self.llvm_lib,
             "llvm-lib": self.llvm_lib,
             "dlltool": self.llvm_dlltool,
             "link": self.llvm_link,
