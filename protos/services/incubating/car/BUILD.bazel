@@ -19,6 +19,7 @@ cc_proto_library(
 cc_grpc_library(
     name = "car_service_cc_grpc",
     srcs = [":car_service_proto"],
+    generate_mocks = True,
     grpc_only = True,
     deps = [":car_service_cc_proto"],
 )
