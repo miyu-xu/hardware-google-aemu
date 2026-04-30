@@ -1109,15 +1109,22 @@ HWCFG_INT(
   environment_width,
   "environment.width",
   0,
-  "Environment width",
+  "Environment window width",
   "The width of the environment in which the device is placed. Ineffective when smaller than hw.lcd.width.")
 
 HWCFG_INT(
   environment_height,
   "environment.height",
   0,
-  "Environment height",
+  "Environment window height",
   "The height of the environment in which the device is placed. Ineffective when smaller than hw.lcd.height.")
+
+HWCFG_STRING(
+  hw_dimmingLevels,
+  "hw.dimmingLevels",
+  "",
+  "Fixed levels for dimming",
+  "Percent of light levels to block, specified as a comma separated list of float values from 0.0 to 1.0")
 
 #undef HWCFG_INT
 #undef HWCFG_STRING
