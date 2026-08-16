@@ -38,9 +38,13 @@
 #include <mach/mach.h>
 #endif  // __APPLE__
 
-#ifdef _MSC_VER
+#ifdef _WIN32
 // #include "aemu/base/msvc.h"
 // #include <dirent.h>
+#ifdef __MINGW32__
+#include <sys/stat.h>
+#include <sys/time.h>
+#endif
 #else
 #include <time.h>
 #include <sys/time.h>

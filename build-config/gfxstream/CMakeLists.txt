@@ -35,10 +35,12 @@ set(aemu-base-posix-srcs
     SharedMemory_posix.cpp
     Thread_pthread.cpp)
 set(aemu-base-windows-srcs
-    msvc.cpp
     SharedMemory_win32.cpp
     Thread_win32.cpp
     Win32UnicodeString.cpp)
+if(MSVC)
+    list(APPEND aemu-base-windows-srcs msvc.cpp)
+endif()
 
 if (APPLE)
     set(aemu-base-platform-srcs ${aemu-base-posix-srcs} system-native-mac.mm)
